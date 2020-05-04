@@ -13,3 +13,4 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 - `git status` fornisce informazioni su commit, push e pull del branch corrente
 - `git checkout <nome branch>` cambia il branch corrente
 - `git push -u origin <nome branch locale>` crea una copia remota del branch locale
+- `git log --all --graph --oneline` fornisce l'elenco dei commit del progetto
