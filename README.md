@@ -18,4 +18,4 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 - `git checkout --track <nome branch>` imposta il branch corrente in modo che tracci il branch passato come argomento
 - `git push` tutti i commit effettuati nel branch corrente vengono caricati sul branch tracciato, l'upstream
 - `git pull` serve ad allineare il branch corrente con il branch in upstream quando questo è avanti rispetto al branch corrente
-- `git merge <nome branch>` allinea il branch corrente con il branch passato come argomento
+- `git merge <nome branch>` allinea il branch corrente con il branch passato come argomento (molto rischioso!)
