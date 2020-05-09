@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+    <title>edit_dati</title>
+
+   
+
+</head>
+<body>
+    <div class="container border" >
+        <form action="profilo" method="POST" name="aggiornamento"  onSubmit="return verificaForm();" >
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="ID_nome">Nome:</label>
+                    <input type="text" readonly class="form-control" id="ID_nome" value="Mark" required>   <!-- prendere i dati da scrivre in value -->
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ID_Cognome">Cognome</label>
+                    <input type="text" readonly class="form-control" id="ID_Cognome" value="Otto" required>    <!-- prendere i dati da scrivere in value -->
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="ID_user">Username</label>
+                    <input type="text" readonly class="form-control" id="ID_user"  value="pastrafrolla" required> <!-- prendere i dati da scrivere in value -->
+                </div>
+            </div>
+           
+            <div class="form-row">
+                <div class="col-md-3 mb-3">
+                    <label for="ID_citta">città</label>
+                    <input type="text" class="form-control" id="ID_citta" value="roma" required> <!-- verificare sia una citta valida -->
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationDefault04">Aggiungi competenza</label>
+                    <select class="custom-select" id="validationDefault04" required>
+                        <option selected disabled value="">Choose...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="ID_telefono">telefono</label>
+                    <input type="text" class="form-control" id="ID_telefono" name="telefono" value="123456789" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3 mb-3">
+                    <label for="ID_professione">Professione</label>
+                    <input type="text" class="form-control" id="ID_professione" value="pizzaiolo" required>  <!-- prendere i dati da scrivere in value -->
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="ID_email">aggiungi E-mail</label>
+                    <input type="email" class="form-control" id="ID_email" value="" required>  <!-- prendere i dati da scrivere in value -->
+                </div>
+                <!-- aggiungere campi ipotetici -->
+            </div>
+
+            <button class="btn btn-primary" type="submit"  >Aggiorna</button>  <!-- invia informazioni al server e aggiorna --><!-- all'invio verifica ala pasword -->
+        </form>
+    <!-- devo aggiungere uno spazio -->
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js" ></script>
+    <script src="edit_dati.js"></script>
+</body>
+</html>
