@@ -51,6 +51,22 @@ app.use((req, res, next) => {
     next();
 });
 
+// percorso di test per accesso a db
+app.get('/test', (req, res) => {
+    // db.insert({ tipo: 'user', username: 'alfredo', email: 'alfredo@pippo.com', password: 'inutile' }, 'alfredo@pippo.com');
+    // db.insert({ tipo: 'user', username: 'piero', email: 'pierpaolo@gugol.com', password: 'difficile' }, 'pierpaolo@gugol.com');
+    // db.insert({ tipo: 'user', username: 'alfredo', email: 'alfredo5@pippo.com', password: 'domani' }, 'alfredo5@pippo.com');
+    // db.insert({ tipo: 'scambio', _id: '12345a9876', user1: 'alfredo@pippo.com', user2: 'pierpaolo@gugol.com', oggetto1: 'ak47', oggetto2: 'un bottone' });
+    db.find({ 
+        selector: {
+            user1: 'alfredo@pippo.com'
+        },
+        fields: [ '_id' ]
+    }).then( (docs) => {
+        res.send(docs);
+    })
+})
+
 // get su / mostra home.html
 app.get('/', (req, res) => {
     res.render('home', {
