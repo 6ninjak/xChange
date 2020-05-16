@@ -1,10 +1,38 @@
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const nano = require('nano')('http://admin:admin@localhost:5984');
+const fs = require('fs');
+
+const db = nano.db.use('xchange');
+
+
+//funzioni helper per couchdb
+function updateDoc(id, info) {
+    db.get(id).then((res) => {
+        db.insert(Object.assign({ _id: id, _rev: res._rev }, info)).then((body) => {
+            console.log(body);
+        });
+    });
+}
+
+function updateAttachToDoc(id, path, fileName, contentType) {
+    fs.readFile(path, (err, data) => {
+        if (!err) {
+            const res = db.get(id);
+            db.attachment.insert(id, fileName, data, contentType, { rev: res._rev }).then((body) => {
+                console.log(body);
+            });
+        }
+    });
+}
+//esempi d'uso
+// updateDoc('test', {test: "quadrato"});
+// updateAttachToDoc('test', 'views/home.html', 'home.html', 'text/html');
 
 // creazione server
-var app = express();
-var some;
+const app = express();
+
 // imposta html come default per i file nelle views
 app.engine('html', require('ejs').renderFile);
 app.set('views', path.join(__dirname, 'views'));
@@ -17,40 +45,36 @@ app.use(bodyParser.json());
 // riconoscce il percorso public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// percorso home
+// log automatico delle richieste al server
+app.use((req, res, next) => {
+    console.log(req.method + ": " + req.path);
+    next();
+});
+
+// get su / mostra home.html
 app.get('/', (req, res) => {
-    console.log(req.method + ": " + req.path);
     res.render('home', {
-        title: 'xChange'
+        title: 'xChange - home'
     });
 });
 
+// get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {
-    console.log(req.method + ": " + req.path);
     res.render('Faq', {
-        title: 'Faq'
+        title: 'xChange - Faq'
+    });
+})
+
+// get su /login mostra login.html
+app.get('/login', (req, res) => {
+    res.render('login', {
+        title: 'xChange - login'
     });
 });
 
-app.get('/profilo', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    res.render('profilo', {
-        title: 'profilo'
-    });
-});
-
-app.post('/profilo', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    console.log(req.body.telefono);
-    res.redirect('/profilo');
-});
-
-app.get('/edit_dati', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    res.render('edit_dati', {
-        title: 'edit_dati'
-    });
-});
+// i percorsi da seguire facendo richieste su /users si trovano in routes/users
+const users = require('./routes/users');
+app.use('/users', users);
 
 
 // ascolto server
