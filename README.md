@@ -6,6 +6,9 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 - [repository github RC di Vitaletti](https://github.com/andreavitaletti/RC)
 - [documentazione couchdb 3.0.0](https://docs.couchdb.org/en/3.0.0/index.html)
 - [comandi git](https://www.instagram.com/p/B_mngFBAPJO/?igshid=1vzzdu5g38dpm)
+- [repository progetto RC e LTW per avere qualche aiuto in più](https://github.com/flaviamas/Let-s-Cook)
+- [playlist video sulla realizzazione di un server con nodejs + express](https://youtu.be/k_0ZzvHbNBQ)
+- [link alla repository con il progetto completo dello stesso video](https://github.com/bradtraversy/nodekb)
 
 ## Comandi utili git
 - `git fetch origin` aggiorna la repository locale
