@@ -2,3 +2,14 @@
     width: 100%;
     height: auto;
   }
+:root {
+  --NERO: #00120B;
+  --VERDE_SCURO: #35605A;
+  --GRIGIO_SCURO: #6B818C;
+  --GRIGIO_CHIARO: #D8E4FF;
+  --VERDE_CHIARO: #31E981;
+  
+}
+.be-light{
+  background-color: var(--NERO);
+}
