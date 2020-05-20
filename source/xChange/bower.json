@@ -1,0 +1,22 @@
+{
+  "name": "xchange",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "6ninjak <colizzicoin.1794538@studenti.uniroma1.it>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/6ninjak/xChange",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.5.1"
+  }
+}
