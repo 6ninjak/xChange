@@ -1,10 +1,39 @@
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const nano = require('nano')('http://admin:admin@localhost:5984');
+const fs = require('fs');
+
+const db = nano.db.use('xchange');
+
+
+function errHandler(err, res) {
+    if (err) console.log(err);
+    console.log(res);
+}
+
+//funzioni helper per couchdb
+db.insertOrUpdate = (docData, docId, callback) => {
+    db.get(docId, (err, res) => {
+        if (!err) docData._rev = res._rev;
+        db.insert(docData, docId, callback);
+    });
+}
+
+db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
+    fs.readFile(filePath, (err, data) => {
+        if (!err) {
+            db.attachment.insert(docId, fileName, data, contentType, callback);
+        }
+    });
+}
+//esempi d'uso
+// updateDoc('test', {test: "quadrato"});
+// updateAttachToDoc('test', 'views/home.html', 'home.html', 'text/html');
 
 // creazione server
-var app = express();
-var some;
+const app = express();
+
 // imposta html come default per i file nelle views
 app.engine('html', require('ejs').renderFile);
 app.set('views', path.join(__dirname, 'views'));
@@ -17,47 +46,49 @@ app.use(bodyParser.json());
 // riconoscce il percorso public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// percorso home
+// log automatico delle richieste al server
+app.use((req, res, next) => {
+    console.log(req.method + ": " + req.path);
+    next();
+});
+
+// percorso di test per accesso a db
+app.get('/test', (req, res) => {
+    db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo@pippo.com', password: 'inutile' }, 'alfredo@pippo.com', errHandler);
+    db.insertOrUpdate({ tipo: 'user', username: 'piero', email: 'pierpaolo@gugol.com', password: 'difficile' }, 'pierpaolo@gugol.com', errHandler);
+    db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo4@pippo.com', password: 'domani' }, 'alfredo4@pippo.com', errHandler);
+    db.insertOrUpdate({ tipo: 'scambio', user1: 'alfredo@pippo.com', user2: 'pierpaolo@gugol.com', oggetto1: 'ak47', oggetto2: 'un bottone' }, '12345a9876', errHandler);
+    db.list((err, body) => {
+        if (!err) {
+            res.send(body.rows);
+        }
+    });
+})
+
+// get su / mostra home.html
 app.get('/', (req, res) => {
-    console.log(req.method + ": " + req.path);
     res.render('home', {
-        title: 'xChange'
+        title: 'xChange - home'
     });
 });
 
+// get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {
-    console.log(req.method + ": " + req.path);
     res.render('Faq', {
-        title: 'Faq'
+        title: 'xChange - Faq'
+    });
+})
+
+// get su /login mostra login.html
+app.get('/login', (req, res) => {
+    res.render('login', {
+        title: 'xChange - login'
     });
 });
 
-app.get('/profilo', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    res.render('profilo', {
-        title: 'profilo'
-    });
-});
-
-app.post('/profilo', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    console.log(req.body.telefono);
-    res.redirect('/profilo');
-});
-
-app.get('/profilo_esterno', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    res.render('profilo_esterno', {
-        title: 'profilo'
-    });
-});
-
-app.get('/edit_dati', (req, res) => {
-    console.log(req.method + ": " + req.path);
-    res.render('edit_dati', {
-        title: 'edit_dati'
-    });
-});
+// i percorsi da seguire facendo richieste su /users si trovano in routes/users
+const users = require('./routes/users');
+app.use('/users', users);
 
 app.get('/ricerca', (req, res) => {
     console.log(req.method + ": " + req.path);
