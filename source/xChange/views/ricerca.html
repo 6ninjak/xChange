@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+    <!-- <link rel="stylesheet" href="../public/bower_components/bootstrap/dist/css/bootstrap.min.css"> -->
+=======
+    <!--<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity=""> -->
+    <link rel="stylesheet" href="../public/bower_components/bootstrap/dist/css/bootstrap.min.css">
+>>>>>>> fa64f9b27f397a0e92303f56bb8f4153d1ed01a1
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+    <title>ricerca</title>
+</head>
+<body data-spy="scroll" data-target="#navbarSupportedContent">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      
+        <!-- titolo -->
+        <a class="navbar-brand" href="#">Il mio profilo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <!-- home rimanda alla home-->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+                </li>
+
+                <!-- bottone generico -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="#profilo">Profilo</a>
+                </li>
+
+                 <!-- bottone generico -->
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#punti">Punti</a>
+                </li>
+
+                 <!-- bottone generico -->
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#recensioni">Recensioni</a>
+                </li>
+
+                <!-- bottone/form di ricerca -->
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+
+            </ul>
+            <nav class="nav navbar-expand-lg navbar-light bg-light">
+                <!-- il mio account -->
+               <li class="nav-item">
+                    <img src="https://source.unsplash.com/collection/190727/50x50" alt="" class="rounded-circle">
+               </li>
+               <li class="nav-item dropdown"> 
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Il mio account
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                        <a class="dropdown-item" href="#profilo">Profilo</a>
+                        <a class="dropdown-item" href="#punti">punti</a>
+                        <a class="dropdown-item" href="#recenzioni">recenzioni</a>
+                        <!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
+                    </div>
+                </li>
+            </nav>
+        </div>
+    </nav>
+    
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="container">
+        <h2>Risultato della ricerca:</h2>
+        <div id="app_vue">
+            <!--promo-->
+<<<<<<< HEAD
+            <div v-for="x in users">
+                <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                                        
+                                <img src= "https://source.unsplash.com/collection/190727/100x50" class="card-img" >
+                            
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                    
+                                <h5 class="card-title">{{x.name}}</h5>
+                                <p class="card-text">{{x.username}}</p>
+                                <p class="card-text"><small class="text-muted">{{x.email}}</small></p>
+                                
+=======
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <div v-for="x in primo">                 <!--copiare questo blochetto per usare l'immagine desiderata-->
+                            <img v-bind:src= "x.img" class="card-img" >
+                        </div>
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in primo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--secondo-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in secondo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--terzo-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in terzo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--quarto-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in quarto">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--quinto-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in quinto">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--sesto-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in sesto">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--settimo-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in settimo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--ottavo-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in ottavo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+>>>>>>> fa64f9b27f397a0e92303f56bb8f4153d1ed01a1
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<<<<<<< HEAD
+=======
+            <!--nono-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in nono">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--decimo-->
+            <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src= "https://source.unsplash.com/collection/190727/100x150" class="card-img" alt="">
+                    </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div v-for="x in decimo">
+                                    <h5 class="card-title">{{x.text}}</h5>
+                                    <p class="card-text">{{x.professione}}</p>
+                                   <p class="card-text"><small class="text-muted">{{x.punteggio}}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+>>>>>>> fa64f9b27f397a0e92303f56bb8f4153d1ed01a1
+        </div>
+    <!--da vedere ancora-->
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">2 
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+<<<<<<< HEAD
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        $('body').scrollspy({ target: '#navbar-example' });
+    </script>
+
+    <script>                                                       //script da spostare i file .js
+        var app = new Vue({
+        el: '#app_vue',
+        data: {
+            users: []
+        },
+        mounted: function() {
+            axios.get('search')
+                .then(response => {
+                    this.users = response.data;
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            }
+        })
+    </script>
+=======
+    <script type="text/javascript" src="ricerca.js"></script>
+   
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+    <script src="../public/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+    <script>
+        $('body').scrollspy({ target: '#navbar-example' });
+    </script>
+>>>>>>> fa64f9b27f397a0e92303f56bb8f4153d1ed01a1
+</body>
+</html>
