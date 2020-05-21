@@ -23,7 +23,9 @@ db.insertOrUpdate = (docData, docId, callback) => {
 db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
     fs.readFile(filePath, (err, data) => {
         if (!err) {
-            db.attachment.insert(docId, fileName, data, contentType, callback);
+            db.get(docId, (error, res) => {
+                if (!error) db.attachment.insert(docId, fileName, data, contentType, res._rev, callback);
+            })
         }
     });
 }
