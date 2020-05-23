@@ -12,12 +12,10 @@ router.post('/', (req, res) => {
     var body = req.body;
     db.insert({
         tipo: 'user',
-        dati: {
-            nome: body.nome,
-            cognome: body.cognome,
-            email: body.email,
-            pasword: body.password
-        }
+        nome: body.nome,
+        cognome: body.cognome,
+        email: body.email,
+        pasword: body.password
     }, body.email, (err, response) => {
         if (err && err.error == 'conflict') {
             res.render('registrazione', {
