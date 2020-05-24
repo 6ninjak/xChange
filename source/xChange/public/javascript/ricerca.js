@@ -4,7 +4,7 @@ var app = new Vue({
       users: []
     },
     mounted: function() {
-      axios.get('search') //nostro server
+      axios.post('/search') //nostro server
           .then(response => {
             this.users = response.data;
             console.log(response);
