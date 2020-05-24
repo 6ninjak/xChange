@@ -108,10 +108,7 @@ app.get('/ricerca', (req, res) => {
         title: 'edit_dati'
     });
 });
-app.post('/profilo_esterno', (req,res) =>{
-    res=req.body.utente;
-    console.log(req.body.utente);
-});
+
 /*
 app.get('/search', (req, res) => {
     res.json([{
