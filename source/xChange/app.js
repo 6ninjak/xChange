@@ -164,6 +164,15 @@ app.get('/profilo_esterno', (req, res) => {
     });
 })
 
+app.post('/profilo_esterno', (req, res) => {
+    res.json([{
+        "id": 1,
+        "nome": "Leanne Graham",
+        "cognome": "Bret",
+    }]);
+    console.log(res);
+})
+
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {
     res.render('Faq', {

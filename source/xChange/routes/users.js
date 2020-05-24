@@ -94,9 +94,7 @@ router.get('/:id', (req, res) => {
 router.get('/:id/edit_dati', (req, res) => {
     res.render('edit_dati');
 });
-router.get('/:id/params',(req,res) =>{
-    res.render('profilo_esterno');
-});
+
 
 // post su users/:id aggiorna i dati da db e reindirizza a /users/:id
 router.post('/:id', (req, res) => {
