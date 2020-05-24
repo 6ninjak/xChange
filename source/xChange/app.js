@@ -109,13 +109,8 @@ app.get('/ricerca', (req, res) => {
     });
 });
 app.post('/profilo_esterno', (req,res) =>{
-    req.body.json
-    res.json([{
-        "id": 1,
-        "nome": "Leanne Graham",
-        "cognome": "Bret",
-        "email": "Sincere@april.biz", 
-    }])
+    res=req.body.utente;
+    console.log(req.body.utente);
 });
 /*
 app.get('/search', (req, res) => {
