@@ -115,7 +115,6 @@ app.post('/profilo_esterno', (req,res) =>{
         "cognome": "Bret",
         "email": "Sincere@april.biz", 
     }])
-    console.log(res);
 });
 /*
 app.get('/search', (req, res) => {
