@@ -12,12 +12,10 @@ router.post('/', (req, res) => {
     var body = req.body;
     db.insert({
         tipo: 'user',
-        dati: {
-            nome: body.nome,
-            cognome: body.cognome,
-            email: body.email,
-            pasword: body.password
-        }
+        nome: body.nome,
+        cognome: body.cognome,
+        email: body.email,
+        pasword: body.password     
     }, body.email, (err, response) => {
         if (err && err.error == 'conflict') {
             res.render('registrazione', {
@@ -35,6 +33,53 @@ router.post('/', (req, res) => {
         }
     });
 });
+/*
+router.get('/profilo_esterno', (req, res) => {
+    var body =req.body
+    db.get
+});
+*/
+/*
+router.get('/home',(req, res) => {
+    var body = req.body;
+    db.fetch({nome:body})
+        .then(data => {
+        console.log(data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+});
+*/
+
+/*
+router.get('/home', (req, res) => {
+    var body = res.body;
+    db.get({
+        tipo: 'user',
+        dati: {
+            nome: body.nome,
+            cognome: body.cognome,
+            email: body.email,
+            pasword: body.password
+            }
+        },
+        body.nome==req.body, (err, response) => {
+            if (err){
+                res.render('home', {
+                    title: 'xChange - ricerca',
+                    error: err
+                });
+            }
+            else {
+                console.log(response);
+                res.redirect('/ricerca');
+            }
+        });
+    });
+*/
+
+
 
 router.post('/login', (req, res) => {
     res.redirect('../home');

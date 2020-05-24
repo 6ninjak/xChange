@@ -108,7 +108,16 @@ app.get('/ricerca', (req, res) => {
         title: 'edit_dati'
     });
 });
-
+app.post('/profilo_esterno', (req,res) =>{
+    res.json([{
+        "id": 1,
+        "nome": "Leanne Graham",
+        "cognome": "Bret",
+        "email": "Sincere@april.biz", 
+    }])
+    console.log(res);
+});
+/*
 app.get('/search', (req, res) => {
     res.json([{
         "id": 1,
@@ -120,11 +129,8 @@ app.get('/search', (req, res) => {
             "suite": "Apt. 556",
             "city": "Gwenborough",
             "zipcode": "92998-3874",
-            "geo": {
-                "lat": "-37.3159",
-                "lng": "81.1496"
             }
-        }
+        
     },
     {
         "id": 2,
@@ -136,14 +142,35 @@ app.get('/search', (req, res) => {
             "suite": "Suite 879",
             "city": "Wisokyburgh",
             "zipcode": "90566-7771",
-            "geo": {
-                "lat": "-43.9509",
-                "lng": "-34.4618"
-            }
         }
     }
 ]);
 });
+*/
+//giusto
+///////////////////////////////////////////////////////////////
+
+app.post('/ricerca', (req, res) => {
+    const q ={
+        selector:{
+            nome: req.body.sercio
+        },
+        fields: ["nome","cognome","email"]
+    }
+    console.log(req.body);
+    db.find(q).then((body) => {
+        res.json(body.docs);
+        console.log(body.docs);
+      })
+    });
+
+///////////////////////////////////////////////////////////////////
+
+app.get('/profilo_esterno', (req, res) => {
+    res.render('profilo_esterno',{
+        title: 'xChange - profilo_esterno'
+    });
+})
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {

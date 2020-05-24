@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <title>profilo</title>
 
@@ -12,12 +14,15 @@
             // verificare e publicare
             //aggiorna media 
         }
+        function caricaDati(){
+            
+        }
     </script>
 
 
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent">
+<body data-spy="scroll" data-target="#navbarSupportedContent" onload="return caricaDati();">
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       
         <!-- titolo -->
@@ -85,12 +90,15 @@
         <div id="profilo">
             <h2>Profilo</h2>
             <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
-        
-    
-        <ul class="list-group list-group-horizontal-sm">
-            <li class="list-group-item">Nome:</li>  
-            <li class="list-group-item">Cognome:</li>
-        </ul>
+            <div id="app_v">
+            <div v-for ="x in utente" >
+                <ul class="list-group list-group-horizontal-sm">
+                    <li class="list-group-item">{{x.nome}}:</li>  
+                    <li class="list-group-item">Cognome:</li>
+                </ul>
+            </div>
+            </div>
+
         <ul class="list-group">
             <li class="list-group-item disabled" aria-disabled="true">Email:</li>
             <li class="list-group-item">professione:</li>
@@ -161,5 +169,6 @@
     <script>
         $('body').scrollspy({ target: '#navbar-example' });
     </script>
+    
 </body>
 </html>
