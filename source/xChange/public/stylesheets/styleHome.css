@@ -1,0 +1,23 @@
+#ricerca.btn {
+  background-color: var(--VERDE_CHIARO);
+}
+#account.nav-link {
+  color: var(--GRIGIO_CHIARO);
+  padding: 13px 8px;
+}
+#account.nav-link:hover {
+  color: var(--VERDE_CHIARO);
+}
+li.show #account.nav-link {
+  color: var(--VERDE_CHIARO);
+}
+.dropdown-toggle::after {
+  vertical-align: middle;
+}
+.dropdown-item {
+  color: var(--GRIGIO_CHIARO);
+}
+.dropdown-item:hover {
+  color: var(--VERDE_CHIARO);
+  background-color: inherit;
+}
