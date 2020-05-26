@@ -6,7 +6,30 @@
         <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        
+        <script>
+            function daiDati(){
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.clear();
+                    var o= {
+                        "nome": "lorenzo",
+                        "cognome":"catini",
+                        "email":"ahdfas@sfbfk.it",
+                        "professione":"informatico",
+                        "competenze":"cassamortaro",
+                        "ricerca": ["cuoco","idraulico"],
+                        "punti": 25,
+                        "recensioni" : 7,
+                        "descrizione" : "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+                    }
+                    var a=JSON.stringify(o);
+                    localStorage.setItem("lastname", a);
+                    alert("successo DATI INVIATI");
+                    alert(users.x.nome);
+                } else {
+                    alert("errore nel local storage");
+                }
+            }
+        </script>
         <title>ricerca</title>
     </head>
     <body data-spy="scroll" data-target="#navbarSupportedContent">
@@ -63,6 +86,7 @@
                             <a class="dropdown-item" href="#recensioni">recensioni</a>
                             <!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
                         </div>
+
                 </li>
             </nav>
         </div>
@@ -81,17 +105,15 @@
                 <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            
                             <img src= "https://source.unsplash.com/collection/190727/100x50" class="card-img" >
-                            
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                
-                                <h5 class="card-title">{{x.nome}}</h5>
+                                <form method="POST" name="ut">
+                                <a class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}} </a>
                                 <p class="card-text">{{x.cognome}}</p>
                                 <p class="card-text"><small class="text-muted">{{x.email}}</small></p>
-                                
+                                </form>  
                             </div>
                         </div>
                     </div>
@@ -121,8 +143,6 @@
             </ul>
         </nav>
     </div>
-    
-    
     <script type="text/javascript" src="/javascript/ricerca.js"></script>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><!-- da cepire -->

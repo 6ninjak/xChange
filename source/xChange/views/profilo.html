@@ -13,8 +13,9 @@
             //aggiorna media 
         }
 
-        function cambiaImg(e){
-            return;
+        function cambiaImg(e){      // capire il pat
+            document.getElementById("img_profilo").src = "/path/to/images/" + e + ".jpg";
+            
         }
 
     </script>
@@ -86,7 +87,7 @@
     <br>
     <br>
 
-    <div class="container">
+    <div class="container" id="cont">
         <div id="profilo">
             <h2>Profilo</h2>
             <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
