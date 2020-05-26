@@ -13,3 +13,7 @@
 .be-light{
   background-color: var(--NERO);
 }
+
+.checked {
+  color: var(--VERDE_CHIARO)
+}

@@ -165,13 +165,24 @@ app.get('/profilo_esterno', (req, res) => {
 })
 
 app.post('/profilo_esterno', (req, res) => {
-    res.json([{
-        "id": 1,
-        "nome": "Leanne Graham",
-        "cognome": "Bret",
-    }]);
+    res.json(
+        {"email":"afsdfsò@sffs.it",
+        
+        
+        "recensioni":[{   
+            "sintesi": "soddisfacente",
+            "recensione":"mmmmm....bho non lo so non mi convince"},
+        {   
+            "sintesi": "malino",
+            "recensione":"no grattelli troppo forte fratelli"},
+        {   
+            "sintesi": "ottimo direi",
+            "recensione":"no fratelli chi si è salvato sto sito è diventato migliardario fratelli"
+        }]
+        });
     console.log(res);
-})
+   })
+
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {

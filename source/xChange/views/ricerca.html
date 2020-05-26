@@ -6,6 +6,30 @@
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function daiDati(){
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                var o= {
+                    "nome": "lorenzo",
+                    "cognome":"catini",
+                    "email":"ahdfas@sfbfk.it",
+                    "professione":"informatico",
+                    "competenze":"cassamortaro",
+                    "ricerca": ["cuoco","idraulico"],
+                    "punti": 25,
+                    "recensioni" : 7,
+                    "descrizione" : "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+                }
+                var a=JSON.stringify(o);
+                localStorage.setItem("lastname", a);
+                alert("successo DATI INVIATI");
+                alert(users.x.nome);
+            } else {
+                alert("errore nel local storage");
+            }
+        }
+    </script>
 
     <title>ricerca</title>
 </head>

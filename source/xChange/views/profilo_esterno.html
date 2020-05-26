@@ -4,25 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel = stylesheet href = "/stylesheets/stile.css">
+
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <title>profilo</title>
+    <!-- <script type="text/javascript" src="/javascript/profilo_esterno.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    
+
+   
 
     <script>
-        function pubblicaRecensione(e){
-            // verificare e publicare
-            //aggiorna media 
-        }
+       
         function caricaDati(){
-            
+             const oggetto=JSON.parse(localStorage.lastname);
+             var a=oggetto.punti;
+             var b= oggetto.recensioni;
+             var c= a % b;
+             
+             
+             document.getElementById("pt").value = c;
+             var stelleList =document.getElementsByName("stella")
+             for( var i=0;i<c;i++){
+                 stelleList[i].classList.add("checked");
+             }
+             alert("successo DATI CARICATI");
+             new Vue({
+                el: '#app_v',
+                data: {
+                   utente: [oggetto],
+                   recensioni:[]
+                },
+                mounted: function(){
+                    axios.post('profilo_esterno') //nostro server
+                        .then(response => {
+                            this.recensioni = response.data.recensioni;
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
+                
+              })
         }
     </script>
 
-
+    <title>profilo</title>
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent" onload="return caricaDati();">
+<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati()"  >
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       
         <!-- titolo -->
@@ -87,88 +121,85 @@
     <br>
 
     <div class="container">
-        <div id="profilo">
-            <h2>Profilo</h2>
-            <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
-            <div id="app_v">
-            <div v-for ="x in utente" >
-                <ul class="list-group list-group-horizontal-sm">
-                    <li class="list-group-item">{{x.nome}}:</li>  
-                    <li class="list-group-item">Cognome:</li>
-                </ul>
-            </div>
-            </div>
-
-        <ul class="list-group">
-            <li class="list-group-item disabled" aria-disabled="true">Email:</li>
-            <li class="list-group-item">professione:</li>
-            <li class="list-group-item" id="comp">
-                competenza:
-                <span id="comp" name="muratore">
-                    Muratore
-                </span>
-            </li>
-        </ul>
+        <div id="app_v">
+            <div id="profilo">
+                <h2>Profilo</h2>
+                <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
+                
+                <div v-for ="x in utente" >
+                    <ul class="list-group list-group-horizontal-sm">
+                        <li class="list-group-item">Nome: {{x.nome}}</li>  
+                        <li class="list-group-item">Cognome: {{x.cognome}}</li>
+                    </ul>             
+                    <ul class="list-group">
+                        <li class="list-group-item disabled" aria-disabled="true">Email: {{x.email}}</li>
+                        <li class="list-group-item">Professione: {{x.professione}}</li>
+                        <li class="list-group-item" id="comp">competenze: {{x.competenze}}</li>
+                        <li class="list-group-item" id="comp">ricerca: {{x.ricerca}}</li>
+                    </ul>
+                    <li class="list-group-item" id="ptt" value="x.punti"> {{x.punti}}</li>
+                    <li class="list-group-item" id="rec" value="{{x.recensioni}}"> {{x.recensioni}}</li>
+                </div>
+            
         contatti:
         //bottoni per facebbok twitter e instagram//
-        
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        </div>
-        <hr>
+        <br>
+        //descrizione:
+                <br>
+                <!-- descrizione utente -->
+                
+                <div v-for ="v in utente" >
+                    <h5>{{v.descrizione}}</h5>
+                </div>
+                <hr>
+                <hr>
+                <!-- punteggio creazione stelle e aggiornamento -->
+                <div id="punti">
+                    <h2>Punti</h2>  
+                    
+                    <input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
 
-        <hr>
-        <div id="punti">
-            <h2>Punti</h2>  <!-- parte sstatica che viene aggiornata da sola appenainserita una recensione -->
-            // gestire punteggio
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        </div>
-        <hr>
+                    <div id="stelle">
+                        <span id="stella" name="stella" class="fa fa-star "></span>
+                        <span id="stella" name="stella" class="fa fa-star "></span>
+                        <span id="stella" name="stella" class="fa fa-star "></span>
+                        <span id="stella" name="stella" class="fa fa-star "></span>
+                        <span id="stella" name="stella" class="fa fa-star "></span>
+                    </div>
 
-        <hr>
-        <div id="recensioni">
-            <h2>Recensioni</h2>
-            //gestire recensioni
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor non accusantium et natus fam?</p>
-        </div>
-
-        <hr>
-        <button type="button" class="btn btn-primary" onsubmit="return publicaRecensione();">Bottone_generico</button>
-        <hr>
+                </div>
+                <hr>
+                <hr>
+                <!-- recenzioni udente selezionato -->
+                <div id="recensioni">
+                    <h2>Recensioni</h2>
+                    <div v-for="a in recensioni">
+                        <div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
+                            <div class="card-header">{{a.sintesi}}</div>
+                            <div class="card-body">
+                                <p class="card-text">{{a.recensione}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <hr>
+            <br>
+            <h5>Chiedi competenza:</h5>
+            <br>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <div v-for="z in utente.ricerca">
+                    <button type="button" class="btn btn-secondary">{{z}}</button>
+                </div>
+            </div>
+            
+            <br>
+            <br>
+            
+            <br>
+            <br>
         </div>
     </div>
-
-    
-    <script type="text/javascript" src="/javascript/profilo_esterno.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script>
-        $('body').scrollspy({ target: '#navbar-example' });
-    </script>
-    
 </body>
 </html>
