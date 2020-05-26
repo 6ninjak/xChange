@@ -1,15 +1,38 @@
 .responsive {
-    width: 100%;
-    height: auto;
-  }
+  width: 100%;
+  height: auto;
+}
 :root {
   --NERO: #00120B;
   --VERDE_SCURO: #35605A;
   --GRIGIO_SCURO: #6B818C;
   --GRIGIO_CHIARO: #D8E4FF;
   --VERDE_CHIARO: #31E981;
-  
 }
-.be-light{
+.be-dark {
   background-color: var(--NERO);
+}
+.btn-outline-info {
+  color: var(--VERDE_SCURO);
+  border-color: var(--VERDE_SCURO);
+}
+.btn-outline-info:hover {
+  background-color: var(--VERDE_CHIARO);
+}
+.btn:hover {
+  background-position: right center;
+}
+.navbar-brand {
+  line-height: 50px;
+  padding-top: 0rem;
+}
+.footer {
+  min-height: 300px;
+  background: #333;
+}
+.form-control {
+  border-color: var(--VERDE_SCURO);
+}
+.form-control:focus {
+  border-color: var(--VERDE_SCURO);
 }

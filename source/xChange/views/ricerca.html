@@ -1,68 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <title>ricerca</title>
-</head>
-<body data-spy="scroll" data-target="#navbarSupportedContent">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      
-        <!-- titolo -->
-        <a class="navbar-brand" href="#">Il mio profilo</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <!-- home rimanda alla home-->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
-                </li>
-
-                <!-- bottone generico -->
-                <li class="nav-item">
-                    <a class="nav-link active" href="#profilo">Profilo</a>
-                </li>
-
-                 <!-- bottone generico -->
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#punti">Punti</a>
-                </li>
-
-                 <!-- bottone generico -->
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#recensioni">Recensioni</a>
-                </li>
-
-                <!-- bottone/form di ricerca -->
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-
-            </ul>
-            <nav class="nav navbar-expand-lg navbar-light bg-light">
-                <!-- il mio account -->
-               <li class="nav-item">
-                    <img src="https://source.unsplash.com/collection/190727/50x50" alt="" class="rounded-circle">
-               </li>
-               <li class="nav-item dropdown"> 
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Il mio account
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                        <a class="dropdown-item" href="#profilo">Profilo</a>
-                        <a class="dropdown-item" href="#punti">punti</a>
-                        <a class="dropdown-item" href="#recensioni">recensioni</a>
-                        <!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
-                    </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        
+        <title>ricerca</title>
+    </head>
+    <body data-spy="scroll" data-target="#navbarSupportedContent">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            
+            <!-- titolo -->
+            <a class="navbar-brand" href="#">Il mio profilo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- home rimanda alla home-->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    
+                    <!-- bottone generico -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#profilo">Profilo</a>
+                    </li>
+                    
+                    <!-- bottone generico -->
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#punti">Punti</a>
+                    </li>
+                    
+                    <!-- bottone generico -->
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#recensioni">Recensioni</a>
+                    </li>
+                    
+                    <!-- bottone/form di ricerca -->
+                    <form class="form-inline my-2 my-lg-0" >
+                        <input class="form-control mr-sm-2" name="input" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                    
+                </ul>
+                <nav class="nav navbar-expand-lg navbar-light bg-light">
+                    <!-- il mio account -->
+                    <li class="nav-item">
+                        <img src="https://source.unsplash.com/collection/190727/50x50" alt="" class="rounded-circle">
+                    </li>
+                    <li class="nav-item dropdown"> 
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Il mio account
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            
+                            <a class="dropdown-item" href="#profilo">Profilo</a>
+                            <a class="dropdown-item" href="#punti">punti</a>
+                            <a class="dropdown-item" href="#recensioni">recensioni</a>
+                            <!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
+                        </div>
                 </li>
             </nav>
         </div>
@@ -72,7 +72,7 @@
     <br>
     <br>
     <br>
-
+    
     <div class="container">
         <h2>Risultato della ricerca:</h2>
         <div id="app_vue">
@@ -81,15 +81,15 @@
                 <div  class="card mb-3" style="max-width: 540px;">   <!--da far diventare un bottone-->
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                                        
-                                <img src= "https://source.unsplash.com/collection/190727/100x50" class="card-img" >
+                            
+                            <img src= "https://source.unsplash.com/collection/190727/100x50" class="card-img" >
                             
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                    
-                                <h5 class="card-title">{{x.name}}</h5>
-                                <p class="card-text">{{x.username}}</p>
+                                
+                                <h5 class="card-title">{{x.nome}}</h5>
+                                <p class="card-text">{{x.cognome}}</p>
                                 <p class="card-text"><small class="text-muted">{{x.email}}</small></p>
                                 
                             </div>
@@ -98,7 +98,7 @@
                 </div>
             </div>
         </div>
-    <!--da vedere ancora-->
+        <!--da vedere ancora-->
         <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item disabled">
@@ -122,13 +122,13 @@
         </nav>
     </div>
     
+    
     <script type="text/javascript" src="/javascript/ricerca.js"></script>
-   
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script>
         $('body').scrollspy({ target: '#navbar-example' });
-    </script>
+        </script>
 </body>
 </html>
