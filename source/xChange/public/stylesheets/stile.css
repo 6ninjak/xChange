@@ -12,6 +12,10 @@
 .be-dark {
   background-color: var(--NERO);
 }
+
+.checked {
+  color: var(--VERDE_CHIARO)
+
 .btn-outline-info {
   color: var(--VERDE_SCURO);
   border-color: var(--VERDE_SCURO);

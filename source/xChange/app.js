@@ -134,6 +134,30 @@ app.get('/registrazione', (req, res) => {
 const users = require('./routes/users');
 app.use('/users', users);
 
+app.get('/profilo_esterno', (req, res) => {
+    res.render('profilo_esterno',{
+        title: 'xChange - profilo_esterno'
+    });
+})
+
+app.post('/profilo_esterno', (req, res) => {
+    res.json(
+        {"email":"afsdfsò@sffs.it",
+        
+        
+        "recensioni":[{   
+            "sintesi": "soddisfacente",
+            "recensione":"mmmmm....bho non lo so non mi convince"},
+        {   
+            "sintesi": "malino",
+            "recensione":"no grattelli troppo forte fratelli"},
+        {   
+            "sintesi": "ottimo direi",
+            "recensione":"no fratelli chi si è salvato sto sito è diventato migliardario fratelli"
+        }]
+        });
+    console.log(res);
+   })
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {
