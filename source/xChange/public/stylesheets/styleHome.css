@@ -1,5 +1,20 @@
+.form-inline {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+input[type='search'] {
+  margin-right: -1;
+  border-radius: 1.5rem;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
 #ricerca.btn {
+  border-radius: 1.5rem;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
   background-color: var(--VERDE_CHIARO);
+  border-color: var(--VERDE_SCURO);
 }
 #account.nav-link {
   color: var(--GRIGIO_CHIARO);

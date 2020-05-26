@@ -17,16 +17,16 @@
   border-color: var(--VERDE_SCURO);
 }
 .btn-outline-info:hover {
-  background-color: var(--VERDE_CHIARO); /* change the direction of the change here */
+  background-color: var(--VERDE_CHIARO);
 }
 .btn:hover {
-  background-position: right center; /* change the direction of the change here */
+  background-position: right center;
 }
 .navbar-brand {
   line-height: 50px;
   padding-top: 0rem;
 }
-.footer{
+.footer {
   min-height: 300px;
   background: #333;
 }
@@ -34,5 +34,5 @@
   border-color: var(--VERDE_SCURO);
 }
 .form-control:focus {
-  border-color: var(--VERDE_CHIARO);
+  border-color: var(--VERDE_SCURO);
 }
