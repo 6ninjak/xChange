@@ -42,7 +42,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 // middleware di body parser per riconoscere diversi tipi di url
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // riconoscce il percorso public
@@ -83,6 +83,37 @@ app.get('/home', (req, res) => {
     });
 });
 
+app.get('/ricerca', (req, res) => {
+    res.render('ricerca');
+});
+
+app.post('/ricerca', (req, res) => {
+    var q = {
+        selector: {
+            tipo: "user",
+            $or: []
+        },
+        fields: ["nome", "cognome", "email"],
+        limit: 10
+    };
+    if (req.query.input) {
+        var query = req.query.input.split(" ");
+        for (let i = 0; i < query.length; i++) {
+        
+            q.selector.$or.push(
+                { nome: { $regex: "(?i)" + query[i] } },
+                { cognome: { $regex: "(?i)" + query[i] } }
+            )
+        };
+    }
+    console.log(q);
+    console.log(query);
+    db.find(q, (err, body) => {
+        if (!err) res.json(body);
+        console.log(body);
+    });
+})
+
 // get su /login mostra login.html
 app.get('/login', (req, res) => {
     res.render('login', {
@@ -102,61 +133,6 @@ app.get('/registrazione', (req, res) => {
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');
 app.use('/users', users);
-
-app.get('/ricerca', (req, res) => {
-    res.render('ricerca', {
-        title: 'edit_dati'
-    });
-});
-
-/*
-app.get('/search', (req, res) => {
-    res.json([{
-        "id": 1,
-        "name": "Leanne Graham",
-        "username": "Bret",
-        "email": "Sincere@april.biz",
-        "address": {
-            "street": "Kulas Light",
-            "suite": "Apt. 556",
-            "city": "Gwenborough",
-            "zipcode": "92998-3874",
-            }
-        
-    },
-    {
-        "id": 2,
-        "name": "Ervin Howell",
-        "username": "Antonette",
-        "email": "Shanna@melissa.tv",
-        "address": {
-            "street": "Victor Plains",
-            "suite": "Suite 879",
-            "city": "Wisokyburgh",
-            "zipcode": "90566-7771",
-        }
-    }
-]);
-});
-*/
-//giusto
-///////////////////////////////////////////////////////////////
-
-app.post('/ricerca', (req, res) => {
-    const q ={
-        selector:{
-            nome: req.body.sercio
-        },
-        fields: ["nome","cognome","email"]
-    }
-    console.log(req.body);
-    db.find(q).then((body) => {
-        res.json(body.docs);
-        console.log(body.docs);
-      })
-    });
-
-///////////////////////////////////////////////////////////////////
 
 app.get('/profilo_esterno', (req, res) => {
     res.render('profilo_esterno',{
@@ -182,7 +158,6 @@ app.post('/profilo_esterno', (req, res) => {
         });
     console.log(res);
    })
-
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {

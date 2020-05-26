@@ -21,6 +21,9 @@ td {
     width: 340px;
     padding: 20px;
 }
+td.min {
+    min-width: 250px;
+}
 
 body {
   display: -ms-flexbox;
@@ -49,7 +52,7 @@ input.form-control.nomeBord{
   border-top-right-radius: 0.25rem;
 }
 
-input[name="inputPasswordVerifica"] {
+input[name="passwordVerifica"] {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
