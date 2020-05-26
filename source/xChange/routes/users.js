@@ -5,7 +5,7 @@ const db = nano.db.use('xchange');
 
 // percorso di prova /users
 router.get('/', (req, res) => {
-    res.send('percorso standard...');
+    res.cookie('user', 'giacomo').send('percorso standard...');
 });
 
 router.post('/', (req, res) => {
@@ -34,13 +34,16 @@ router.post('/', (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-    res.redirect('../home');
-});
-
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    res.render('profilo');
+    db.get(req.params.id + "@gmail.com", (err, doc) => {
+        console.log(err);
+        console.log(doc);
+        if (!err) res.render('profilo', {
+            doc
+        });
+        else res.render('profilo_esterno');
+    });
 });
 
 // get su /users/:id/edit_dati conduce a edit_dati.html di :id

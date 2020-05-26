@@ -106,8 +106,8 @@ app.post('/ricerca', (req, res) => {
             )
         };
     }
-    console.log(q);
-    console.log(query);
+    // console.log(q);
+    // console.log(query);
     db.find(q, (err, body) => {
         if (!err) res.json(body);
         console.log(body);
@@ -120,6 +120,10 @@ app.get('/login', (req, res) => {
         title: 'xChange - login'
     });
 });
+
+app.post('/login', (req, res) => {
+    res.redirect('/home');
+})
 
 // get su /registrazione mostra registrazione.html
 app.get('/registrazione', (req, res) => {
