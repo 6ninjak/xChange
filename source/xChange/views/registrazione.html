@@ -1,42 +1,61 @@
 <html>
-    <head>
-        <meta charset = UTF-8/>
-        <meta name = viewport content= "width=device-width, initial-scale= 1"/>
-        <title><%= title %></title>
-        <link rel = stylesheet href = "/bower_components/bootstrap/dist/css/bootstrap.min.css">
-        <link rel = stylesheet href = "/stylesheets/styleReg.css">
-        <script type= text/javascript lang= javascript src= /javascript/registrazione.js ></script>
-    </head>
-    <body class="text-center">
-        
-        <table align ="center">
-            <tr align ="center">
-                <td colspan=3 align ="center"><h1 class="font-weight-light text-center display-3">Registrati</h1>
-                <h3 class="font-weight-lighter text-center">Hai già un account xChange? <a href = "login">Accedi</a></h3><hr>
-                </td>
-            </tr>
-            <tr align ="center">
-                <td class = min><form action="users" class="" method="POST" name="registrazione" onSubmit="return validaForm()">
-                    <input type="text" name="nome" class="form-control nomeBord" placeholder="Nome" required autofocus/>
-                    <input type="text" name="cognome" class="form-control" placeholder="Cognome" required/>
-                    <input type="email" name="email" class="form-control" placeholder='Email <%= error %>' required/>
-                    <input type="password" name="password" class="form-control" placeholder="Password: min 8 caratteri" onChange= "return password()" required/>
-                    <input type="password" name="passwordVerifica" class="form-control" placeholder="Verifica Password" required/>
-                    <button class="btn btn-md btn-primary btn-block" name="regButton" type="submit">Registrati</button>
-                </form></td>
-                <td class = zero><table border = 1><tr><td class = zero></td></tr></table></td>
-                <td>
-                    <h3 class="font-weight-lighter">Altrimenti</h3>
-                    
-                    <button id= fb class= "btn mb-3"><ion-icon name="logo-facebook"></ion-icon> Iscriviti tramite Facebook</button>
-                    <button id= g class= "btn"><ion-icon name="logo-google"></ion-icon> Iscriviti tramite Google</button>         
-                </td>
-            </tr>
-            </table>
-        
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-        
-    </body>
+
+<head>
+	<meta charset=UTF-8 />
+	<meta name=viewport content="width=device-width, initial-scale= 1" />
+	<title><%= title %></title>
+	<link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel=stylesheet href="/stylesheets/styleReg.css">
+</head>
+
+<body class="text-center">
+
+	<table align="center">
+		<tr align="center">
+			<td colspan=3 align="center">
+				<h1 class="font-weight-light text-center display-3">Registrati</h1>
+				<h3 class="font-weight-lighter text-center">Hai già un account xChange? <a href="login">Accedi</a></h3>
+				<hr>
+			</td>
+		</tr>
+		<tr align="center">
+			<td class=min>
+				<form action="users" class="" method="POST" name="registrazione" onSubmit="return validaForm()">
+					<input type="text" name="nome" class="form-control nomeBord" placeholder="Nome" required autofocus />
+					<input type="text" name="cognome" class="form-control" placeholder="Cognome" required />
+					<input type="email" name="email" class="form-control" placeholder='Email <%= error %>' required />
+					<input type="password" name="password" class="form-control" placeholder="Password: min 8 caratteri"
+						onChange="return password()" required />
+					<input type="password" name="passwordVerifica" class="form-control" placeholder="Verifica Password"
+						required />
+					<button class="btn btn-md btn-primary btn-block" name="regButton" type="submit">Registrati</button>
+				</form>
+			</td>
+			<td class=zero>
+				<table border=1>
+					<tr>
+						<td class=zero></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<h3 class="font-weight-lighter">Altrimenti</h3>
+
+				<button id=fb class="btn mb-3">
+					<ion-icon name="logo-facebook"></ion-icon> Iscriviti tramite Facebook
+				</button>
+				<button id=g class="btn">
+					<ion-icon name="logo-google"></ion-icon> Iscriviti tramite Google
+				</button>
+			</td>
+		</tr>
+	</table>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+
+	<script type=text/javascript lang=javascript src=/javascript/registrazione.js></script>
+</body>
+
 </html>
