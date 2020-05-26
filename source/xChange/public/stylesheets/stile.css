@@ -15,7 +15,7 @@
 
 .checked {
   color: var(--VERDE_CHIARO)
-
+}
 .btn-outline-info {
   color: var(--VERDE_SCURO);
   border-color: var(--VERDE_SCURO);
@@ -39,4 +39,7 @@
 }
 .form-control:focus {
   border-color: var(--VERDE_SCURO);
+  outline: 0;
+  box-shadow: none;
+
 }
