@@ -1,16 +1,18 @@
-new Vue({
+var app = new Vue({
   el: '#app_vue',
   data: {
     users: []
   },
   mounted: function() {
-    axios.post(document.location.href) //nostro server
-        .then(response => {
-          this.users = response.data.docs;
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    var http = new XMLHttpRequest();
+    http.onreadystatechange = gestisciResponse;
+    http.open("POST", document.location.href, true);
+    http.responseType = "json";
+    http.send();
+    function gestisciResponse(e) {
+      if (e.target.readyState == 4 && e.target.status == 200) {
+        app.users = e.target.response.docs;
+      }
+    }
   }
 });

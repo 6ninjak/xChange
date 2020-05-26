@@ -54,22 +54,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// percorso di test per accesso a db
-app.get('/test', (req, res) => {
-    db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo@pippo.com', password: 'inutile' }, 'alfredo@pippo.com', errHandler);
-    db.insertOrUpdate({ tipo: 'user', username: 'piero', email: 'pierpaolo@gugol.com', password: 'difficile' }, 'pierpaolo@gugol.com', errHandler);
-    db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo4@pippo.com', password: 'domani' }, 'alfredo4@pippo.com', errHandler);
-    db.insertOrUpdate({ tipo: 'scambio', user1: 'alfredo@pippo.com', user2: 'pierpaolo@gugol.com', oggetto1: 'ak47', oggetto2: 'un bottone' }, '12345a9876', errHandler);
-    db.list((err, body) => {
-        if (!err) {
-            res.send(body.rows);
-        }
-    });
-})
-
-
-
-
 // get su / mostra home.html
 app.get('/', (req, res) => {
     res.render('homepage', {
@@ -103,11 +87,11 @@ app.post('/ricerca', (req, res) => {
             q.selector.$or.push(
                 { nome: { $regex: "(?i)" + query[i] } },
                 { cognome: { $regex: "(?i)" + query[i] } }
-            )
-        };
+            );
+        }
     }
-    console.log(q);
-    console.log(query);
+    // console.log(q);
+    // console.log(query);
     db.find(q, (err, body) => {
         if (!err) res.json(body);
         console.log(body);
@@ -120,6 +104,10 @@ app.get('/login', (req, res) => {
         title: 'xChange - login'
     });
 });
+
+app.post('/login', (req, res) => {
+    res.redirect('/home');
+})
 
 // get su /registrazione mostra registrazione.html
 app.get('/registrazione', (req, res) => {
@@ -134,6 +122,7 @@ app.get('/registrazione', (req, res) => {
 const users = require('./routes/users');
 app.use('/users', users);
 
+//questo va spostato su users/:id
 app.get('/profilo_esterno', (req, res) => {
     res.render('profilo_esterno',{
         title: 'xChange - profilo_esterno'

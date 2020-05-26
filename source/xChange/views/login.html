@@ -1,43 +1,60 @@
 <html>
-    <head>
-        <meta charset = UTF-8/>
-        <meta name = viewport content= "width=device-width, initial-scale= 1"/>
-        <title><%= title %></title>
-        <link rel = stylesheet href = "/bower_components/bootstrap/dist/css/bootstrap.min.css">
-        <link rel = stylesheet href = "/stylesheets/styleLog.css">
-    </head>
-    <body class="text-center">
-        
-        <table align ="center">
-            <tr align ="center">
-                <td colspan=3 align ="center"><h1 class="font-weight-light display-3">Accedi</h1><hr>
-                </td>
-            </tr>
-            <tr align ="center">
-                <td><form action="users/login" class="" method="POST" name="login" onSubmit="return validaForm()">
-                    <h3 align = left class="font-weight-lighter">Inserisci i tuoi dati:</h3>
-                    <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus/>
-                    <input type="password" name="password" class="form-control" placeholder="Password" required/>
-                    <div id="divRemember" class="checkbox mb-3">
-                        <input type="checkbox" name="remember"/>
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <button class="btn btn-md btn-primary btn-block" name="loginButton" type="submit">Accedi</button>
-                </form></td>
-                <td class = zero><table border = 1><tr><td class = zero></td></tr></table></td>
-                <td>
-                    <h3 class="font-weight-lighter">Altrimenti</h3>
-                    
-                    <button id= fb class= "btn mb-3"><ion-icon name="logo-facebook"></ion-icon> Accedi tramite Facebook</button>
-                    <button id= g class= "btn"><ion-icon name="logo-google"></ion-icon> Accedi tramite Google</button>         
-                </td>
-            </tr>
-            </table>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-        <script>
-            
-        </script>
-    </body>
+
+<head>
+	<meta charset=UTF-8 />
+	<meta name=viewport content="width=device-width, initial-scale= 1" />
+	<title><%= title %></title>
+	<link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel=stylesheet href="/stylesheets/styleLog.css">
+</head>
+
+<body class="text-center">
+
+	<table align="center">
+		<tr align="center">
+			<td colspan=3 align="center">
+				<h1 class="font-weight-light display-3">Accedi</h1>
+				<hr>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<form action="login" class="" method="POST" name="login" onSubmit="return validaForm()">
+					<h3 align=left class="font-weight-lighter">Inserisci i tuoi dati:</h3>
+					<input type="email" name="email" class="form-control" placeholder="Email address" required autofocus />
+					<input type="password" name="password" class="form-control" placeholder="Password" required />
+					<div id="divRemember" class="checkbox mb-3">
+						<input type="checkbox" name="remember" />
+						<label for="remember">Remember me</label>
+					</div>
+					<button class="btn btn-md btn-primary btn-block" name="loginButton" type="submit">Accedi</button>
+				</form>
+			</td>
+			<td class=zero>
+				<table border=1>
+					<tr>
+						<td class=zero></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<h3 class="font-weight-lighter">Altrimenti</h3>
+
+				<button id=fb class="btn mb-3">
+					<ion-icon name="logo-facebook"></ion-icon> Accedi tramite Facebook
+				</button>
+				<button id=g class="btn">
+					<ion-icon name="logo-google"></ion-icon> Accedi tramite Google
+				</button>
+			</td>
+		</tr>
+	</table>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+	<script>
+
+	</script>
+</body>
+
 </html>

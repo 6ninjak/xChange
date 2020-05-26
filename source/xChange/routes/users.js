@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
         nome: body.nome,
         cognome: body.cognome,
         email: body.email,
-        pasword: body.password     
+        pasword: body.password
     }, body.email, (err, response) => {
         if (err && err.error == 'conflict') {
             res.render('registrazione', {
@@ -33,68 +33,23 @@ router.post('/', (req, res) => {
         }
     });
 });
-/*
-router.get('/profilo_esterno', (req, res) => {
-    var body =req.body
-    db.get
-});
-*/
-/*
-router.get('/home',(req, res) => {
-    var body = req.body;
-    db.fetch({nome:body})
-        .then(data => {
-        console.log(data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-});
-*/
-
-/*
-router.get('/home', (req, res) => {
-    var body = res.body;
-    db.get({
-        tipo: 'user',
-        dati: {
-            nome: body.nome,
-            cognome: body.cognome,
-            email: body.email,
-            pasword: body.password
-            }
-        },
-        body.nome==req.body, (err, response) => {
-            if (err){
-                res.render('home', {
-                    title: 'xChange - ricerca',
-                    error: err
-                });
-            }
-            else {
-                console.log(response);
-                res.redirect('/ricerca');
-            }
-        });
-    });
-*/
-
-
-
-router.post('/login', (req, res) => {
-    res.redirect('../home');
-});
 
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    res.render('profilo');
+    db.get(req.params.id + "@gmail.com", (err, doc) => {
+        console.log(err);
+        console.log(doc);
+        if (!err) res.render('profilo', {
+            doc
+        });
+        else res.render('profilo_esterno');
+    });
 });
 
-// get su /users/:id/edit_dati conduce a edit_dati.html di :id
-router.get('/:id/edit_dati', (req, res) => {
+// get su /users/:id/edit conduce a edit_dati.html di :id
+router.get('/:id/edit', (req, res) => {
     res.render('edit_dati');
 });
-
 
 // post su users/:id aggiorna i dati da db e reindirizza a /users/:id
 router.post('/:id', (req, res) => {
