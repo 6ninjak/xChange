@@ -4,15 +4,10 @@ const bodyParser = require('body-parser');
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const fs = require('fs');
 
-const db = nano.db.use('xchange');
+const dbName = 'xchange';
+const db = nano.use(dbName);
 
-
-function errHandler(err, res) {
-    if (err) console.log(err);
-    console.log(res);
-}
-
-//funzioni helper per couchdb
+// const db = nano.db.use('xchange');
 db.insertOrUpdate = (docData, docId, callback) => {
     db.get(docId, (err, res) => {
         if (!err) docData._rev = res._rev;
@@ -20,15 +15,34 @@ db.insertOrUpdate = (docData, docId, callback) => {
     });
 }
 
+db.updateFields = (docFields, docId, callback) => {
+    db.get(docId, (err, res) => {
+        if (!err) db.insert(Object.assign(res, docFields), docId, callback);
+    });
+}
+
 db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
     fs.readFile(filePath, (err, data) => {
         if (!err) {
             db.get(docId, (error, res) => {
-                if (!error) db.attachment.insert(docId, fileName, data, contentType, res._rev, callback);
+                if (!error) db.attachment.insert(docId, fileName, data, contentType, { rev:res._rev }, callback);
             })
         }
     });
 }
+
+db.removeAttachment = (docId, fileName, callback) => {
+    db.get(docId, (error, res) => {
+        if (!error) db.attachment.destroy(docId, fileName, { rev:res._rev }, callback);
+    })
+}
+
+
+function errHandler(err, res) {
+    if (err) console.log(err);
+    console.log(res);
+}
+
 //esempi d'uso
 // updateDoc('test', {test: "quadrato"});
 // updateAttachToDoc('test', 'views/home.html', 'home.html', 'text/html');
@@ -54,16 +68,16 @@ app.use((req, res, next) => {
     next();
 });    
 
+app.get('/test', (req, res) => {
+    db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {
+        res.end(body);
+    });
+})
+
 // get su / mostra home.html
 app.get('/', (req, res) => {
     res.render('homepage', {
         title: 'xChange'
-    });    
-});    
-
-app.get('/home', (req, res) => {
-    res.render('home', {
-        title: 'xChange - Home'
     });    
 });    
 
@@ -85,6 +99,12 @@ app.get('/registrazione', (req, res) => {
         error: ''
     });
 });
+
+app.get('/home', (req, res) => {
+    res.render('home', {
+        title: 'xChange - Home'
+    });    
+});    
 
 app.get('/ricerca', (req, res) => {
     res.render('ricerca');
