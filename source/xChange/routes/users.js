@@ -1,7 +1,11 @@
 const express = require('express');
+const session = require('express-session');
 const router = express.Router();
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const db = nano.db.use('xchange');
+const crypto = require('crypto');
+
+
 
 // percorso di prova /users
 router.get('/', (req, res) => {
@@ -10,12 +14,15 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     var body = req.body;
+    let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
     db.insert({
         tipo: 'user',
+        
         nome: body.nome,
         cognome: body.cognome,
         email: body.email,
-        pasword: body.password
+        password: encPwd
+        
     }, body.email, (err, response) => {
         if (err && err.error == 'conflict') {
             res.render('registrazione', {
@@ -40,7 +47,7 @@ router.get('/:id', (req, res) => {
         console.log(err);
         console.log(doc);
         if (!err) res.render('profilo', {
-            doc
+            utente: doc.nome
         });
         else res.render('profilo_esterno');
     });
