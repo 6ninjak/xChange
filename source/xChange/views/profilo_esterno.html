@@ -37,12 +37,13 @@
 				el: '#app_v',
 				data: {
 					utente: [oggetto],
+					ricerca:oggetto.ricerca,
 					recensioni: []
 				},
 				mounted: function () {
 					axios.post('profilo_esterno') //nostro server
 						.then(response => {
-							this.recensioni = response.data.recensioni;
+							this.recensioni = response.data;
 							console.log(data);
 						})
 						.catch(error => {
@@ -174,7 +175,7 @@
 				<hr>
 				<hr>
 				<!-- recenzioni udente selezionato -->
-				<div id="recensioni">
+				<div id="rec">
 					<h2>Recensioni</h2>
 					<div v-for="a in recensioni">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
@@ -191,11 +192,9 @@
 			<br>
 			<h5>Chiedi competenza:</h5>
 			<br>
-			<div class="btn-group" role="group" aria-label="Basic example">
-				<div v-for="z in utente.ricerca">
-					<button type="button" class="btn btn-secondary">{{z}}</button>
-				</div>
-			</div>
+			<span v-for="z in ricerca">
+			      <button type="button" class="btn btn-dark mr-3">{{z.ric}}</button>
+			</span>
 
 			<br>
 			<br>

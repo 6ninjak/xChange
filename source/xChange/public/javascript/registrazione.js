@@ -1,5 +1,11 @@
 function validaForm(){
-    if(passwordIdentiche()){
+    if(password()){
+        if(passwordIdentiche()){
+        
+        }
+        else{
+            return false;
+        }
     }
     else{
         return false;
@@ -9,6 +15,7 @@ function validaForm(){
 function passwordIdentiche(){
     if(document.registrazione.passwordVerifica.value.toString()!= document.registrazione.password.value.toString()){
         alert("Le due password devono essere identiche");
+        // alert();
         return false;
     }
     return true;
