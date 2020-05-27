@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel=stylesheet href="/stylesheets/stile.css">
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	
 	<title>profilo</title>
-
-
+	<script>
+		function caricaDati(){    
+		    var stelleList = document.getElementsByName("stella")
+			for (var i = 0; i < app.punteggioArr; i++) {
+				stelleList[i].classList.add("checked");
+			}
+		}
+    </script>
 
 </head>
 
@@ -79,121 +90,117 @@
 	<br>
 
 	<div class="container" id="cont">
-		<div id="profilo">
-			<h2>Profilo</h2>
-			<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
-			<form>
-				<div class="form-group" name="prof">
-					<input type="file" class="form-control-file" id="exampleFormControlFile1" onchange="cambiaImg();">
-					<!-- capire inserimento -->
+        <div id="app_ve">
+		    <div id="profilo">
+			
+				<h2>Profilo</h2>
+				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
+				<form>
+					<div class="form-group" name="prof">
+						<input type="file" class="form-control-file" id="exampleFormControlFile1" onchange="cambiaImg();">
+						<!-- capire inserimento -->
+					</div>
+				</form>
+                <div v-for="n in utente">
+					<ul class="list-group list-group-horizontal-sm">
+						<li class="list-group-item">Nome: {{n.nome}}</li>
+						<li class="list-group-item">Cognome: {{n.cognome}}</li>
+					</ul>
+					<ul class="list-group">
+						<li class="list-group-item disabled" aria-disabled="true">Email: {{n.email}}</li>
+						<li class="list-group-item">professione: {{n.professione}}</li>
+						<li class="list-group-item">competenza: {{n.competenze}}</li>
+					</ul>
+					contatti:
+					//bottoni per facebbok twitter e instagram//
+	
+					<h5>{{n.descrizione}}</h5>
+					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
+						non accusantium et natus fam?</p>
+					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
+						non accusantium et natus fam?</p>
+					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
+						non accusantium et natus fam?</p>
+					
+                </div>
+				<a href="1/edit" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Modifica</a>
+			
+				<hr>
+
+				<hr>
+				<div id="punti">
+					<h2>Punti</h2> <!-- parte sstatica che viene aggiornata da sola appenainserita una recensione -->
+					// gestire punteggio
+					<input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
+
+					<div id="stelle"  >
+		
+						<span  id="stella" name="stella" class="fa fa-star"></span>
+						<span  id="stella" name="stella" class="fa fa-star"></span>
+						<span  id="stella" name="stella" class="fa fa-star"></span>
+						<span  id="stella" name="stella" class="fa fa-star"></span>
+						<span  id="stella" name="stella" class="fa fa-star"></span>
+						
+					</div>
 				</div>
-			</form>
+				<hr>
 
-			<ul class="list-group list-group-horizontal-sm">
-				<li class="list-group-item">Nome:</li>
-				<li class="list-group-item">Cognome:</li>
-			</ul>
-			<ul class="list-group">
-				<li class="list-group-item disabled" aria-disabled="true">Email:</li>
-				<li class="list-group-item">professione:</li>
-				<li class="list-group-item" id="comp">
-					competenza:
-					<span id="comp" name="muratore">
-						Muratore
-					</span>
-				</li>
-			</ul>
-			contatti:
-			//bottoni per facebbok twitter e instagram//
+				<hr>
+				<div id="recensioni">
+					<h2>Recensioni</h2>
+					//gestire recensioni
+					<div v-for="a in recensioni">
+						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
+							<div class="card-header">{{a.sintesi}}</div>
+							<div class="card-body">
+								<p class="card-text">{{a.recensione}}</p>
+							</div>
+						</div>
+					</div>
 
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<a href="1/edit" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Modifica</a>
-		</div>
-		<hr>
 
-		<hr>
-		<div id="punti">
-			<h2>Punti</h2> <!-- parte sstatica che viene aggiornata da sola appenainserita una recensione -->
-			// gestire punteggio
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-		</div>
-		<hr>
 
-		<hr>
-		<div id="recensioni">
-			<h2>Recensioni</h2>
-			//gestire recensioni
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
-				non accusantium et natus fam?</p>
-		</div>
+				</div>
 
+				<hr>
+				<hr>
+				<h2>Richieste di scambio:</h2>
+				<div class="row row-cols-1 row-cols-md-2">	
+					<div v-for="x in richieste" :key="x.utente_richiedente">
+						<div class="accordion" id="accordionExample">
+							<div class="card">
+								<div class="card-header" id="headingOne">
+									<h2 class="mb-0">
+									<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										richiesta : {{x.utente_richiedente}}
+									</button>
+									</h2>
+								</div>
+							
+								<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+									<div class="card-body">
+									Richiesta da parte di {{x.utente_richiedente}} per la sua competenza 
+									<br>
+									IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
+									<br>
+										<form id="clik" value="">
+											<button type="button"  name="SI" class="btn btn-success" onclick="settaSI('si')">Accetta</button>
+											<button type="button"  name="NO" class="btn btn-dark" onclick="settaNO('no')">Declina</button>
+										</fomr>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>	
 		<hr>
-		<button type="button" class="btn btn-primary" onsubmit="return publicaRecensione();">Bottone_generico</button>
 		<hr>
 	</div>
 
-
-
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/javascript/profilo.js"></script>
 	<script>
-		function publicaRecensione(e) {
-			// verificare e publicare
-			//aggiorna media 
-		}
 
 		function cambiaImg(e) {      // capire il pat
 			document.getElementById("img_profilo").src = "/path/to/images/" + e + ".jpg";
@@ -202,8 +209,20 @@
 
 	</script>
 	<script>
+		
+		function settaSI(e){
+			document.getElementById("clik").value= e;
+			alert("sto nel si");
+			
+		}
+		function settaNO(e){
+			document.getElementById("clik").value= e;
+			alert("sto nel no");
+			
+		}
+	</script>
+	<script>
 		$('body').scrollspy({ target: '#navbar-example' });
 		</script>
 </body>
-
 </html>
