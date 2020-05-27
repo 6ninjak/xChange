@@ -44,7 +44,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 // middleware di body parser per riconoscere diversi tipi di url
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // riconoscce il percorso public
@@ -56,6 +56,7 @@ app.use((req, res, next) => {
     next();
 });
 
+
 //giacomino controlla se è giusto
 app.use((req, res, next) => {
     
@@ -63,7 +64,6 @@ app.use((req, res, next) => {
         
         res.redirect('/login');
     }
-    
     else if(req.cookies.cookieUtente != undefined){
         db.get(req.cookies.cookieUtente.id, (err, response) => {
             if (!err && req.cookies.cookieUtente.password == response.password){
@@ -87,7 +87,6 @@ app.use((req, res, next) => {
     }
 });
 
-
 // percorso di test per accesso a db
 app.get('/test', (req, res) => {
     db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo@pippo.com', password: 'inutile' }, 'alfredo@pippo.com', errHandler);
@@ -100,10 +99,6 @@ app.get('/test', (req, res) => {
         }
     });
 })
-
-
-
-
 
 // get su / mostra home.html
 app.get('/', (req, res) => {
@@ -124,6 +119,37 @@ app.get('/home', (req, res) => {
     });
    
 });
+
+app.get('/ricerca', (req, res) => {
+    res.render('ricerca');
+});
+
+app.post('/ricerca', (req, res) => {
+    var q = {
+        selector: {
+            tipo: "user",
+            $or: []
+        },
+        fields: ["nome", "cognome", "email"],
+        limit: 10
+    };
+    if (req.query.input) {
+        var query = req.query.input.split(" ");
+        for (let i = 0; i < query.length; i++) {
+        
+            q.selector.$or.push(
+                { nome: { $regex: "(?i)" + query[i] } },
+                { cognome: { $regex: "(?i)" + query[i] } }
+            );
+        }
+    }
+    // console.log(q);
+    // console.log(query);
+    db.find(q, (err, body) => {
+        if (!err) res.json(body);
+        console.log(body);
+    });
+})
 
 // get su /login mostra login.html
 app.get('/login', (req, res) => {
@@ -181,7 +207,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-
 // get su /registrazione mostra registrazione.html
 app.get('/registrazione', (req, res) => {
     
@@ -194,13 +219,6 @@ app.get('/registrazione', (req, res) => {
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');
 app.use('/users', users);
-
-
-app.get('/ricerca', (req, res) => {
-    res.render('ricerca', {
-        title: 'edit_dati'
-    });
-});
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {

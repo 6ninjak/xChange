@@ -41,17 +41,20 @@ router.post('/', (req, res) => {
     });
 });
 
-
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    res.render('profilo',{
-        title: 'xChange - Profilo',
-        utente: req.cookies.cookieUtente.nome
+    db.get(req.params.id + "@gmail.com", (err, doc) => {
+        console.log(err);
+        console.log(doc);
+        if (!err) res.render('profilo', {
+            utente: doc.nome
+        });
+        else res.render('profilo_esterno');
     });
 });
 
-// get su /users/:id/edit_dati conduce a edit_dati.html di :id
-router.get('/:id/edit_dati', (req, res) => {
+// get su /users/:id/edit conduce a edit_dati.html di :id
+router.get('/:id/edit', (req, res) => {
     res.render('edit_dati');
 });
 
