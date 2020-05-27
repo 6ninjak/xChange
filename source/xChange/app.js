@@ -52,51 +52,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     console.log(req.method + ": " + req.path);
     next();
-});
+});    
 
 // get su / mostra home.html
 app.get('/', (req, res) => {
     res.render('homepage', {
         title: 'xChange'
-    });
-});
+    });    
+});    
 
 app.get('/home', (req, res) => {
     res.render('home', {
         title: 'xChange - Home'
-    });
-});
-
-app.get('/ricerca', (req, res) => {
-    res.render('ricerca');
-});
-
-app.post('/ricerca', (req, res) => {
-    var q = {
-        selector: {
-            tipo: "user",
-            $or: []
-        },
-        fields: ["nome", "cognome", "email"],
-        limit: 10
-    };
-    if (req.query.input) {
-        var query = req.query.input.split(" ");
-        for (let i = 0; i < query.length; i++) {
-        
-            q.selector.$or.push(
-                { nome: { $regex: "(?i)" + query[i] } },
-                { cognome: { $regex: "(?i)" + query[i] } }
-            );
-        }
-    }
-    // console.log(q);
-    // console.log(query);
-    db.find(q, (err, body) => {
-        if (!err) res.json(body);
-        console.log(body);
-    });
-})
+    });    
+});    
 
 // get su /login mostra login.html
 app.get('/login', (req, res) => {
@@ -116,6 +85,37 @@ app.get('/registrazione', (req, res) => {
         error: ''
     });
 });
+
+app.get('/ricerca', (req, res) => {
+    res.render('ricerca');
+});    
+
+app.post('/ricerca', (req, res) => {
+    var q = {
+        selector: {
+            tipo: "user",
+            $or: []
+        },    
+        fields: ["nome", "cognome", "email"],
+        limit: 10
+    };    
+    if (req.query.input) {
+        var query = req.query.input.split(" ");
+        for (let i = 0; i < query.length; i++) {
+        
+            q.selector.$or.push(
+                { nome: { $regex: "(?i)" + query[i] } },
+                { cognome: { $regex: "(?i)" + query[i] } }
+            );    
+        }    
+    }    
+    // console.log(q);
+    // console.log(query);
+    db.find(q, (err, body) => {
+        if (!err) res.json(body);
+        console.log(body);
+    });    
+})    
 
 
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
