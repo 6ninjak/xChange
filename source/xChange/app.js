@@ -129,22 +129,24 @@ app.get('/profilo_esterno', (req, res) => {
     });
 })
 
+// invio recensioni
 app.post('/profilo_esterno', (req, res) => {
     res.json(
-        {"email":"afsdfsò@sffs.it",
-        
-        
-        "recensioni":[{   
-            "sintesi": "soddisfacente",
-            "recensione":"mmmmm....bho non lo so non mi convince"},
-        {   
-            "sintesi": "malino",
-            "recensione":"no grattelli troppo forte fratelli"},
-        {   
-            "sintesi": "ottimo direi",
-            "recensione":"no fratelli chi si è salvato sto sito è diventato migliardario fratelli"
-        }]
-        });
+      [{"username":"maramuuuu",
+        "recensore":"francomat",
+        "recensito":"maramuuu",
+        "tipo":"recensione",
+        "sintesi":"molto buono",
+        "recensione":"fratm ingiustament recensito"
+        },
+        {"username":"maramuuuu",
+        "recensore":"pizzaman",
+        "recensito":"maramuuu",
+        "tipo":"recensione",
+        "sintesi":"una merda",
+        "recensione":"fratm ingiustament recensito"
+        }
+    ]);
     console.log(res);
    })
 
@@ -154,7 +156,71 @@ app.get('/Faq', (req, res) => {
         title: 'xChange - Faq'
     });
 })
+//modificato da lorenzo------------------------------------------------------------------------
+app.get('/profilo', (req, res) => {
+    res.render('profilo', {
+        title: 'xChange - Faq'
+    });
+})
+//do alla paggina profilo tutte le richieste per scambi di lavori
+app.post('/profilo', (req, res) => {
+    res.json(
+        [{"utente_richiedente":"francofort",
+          "utente_ricevente":"lorenzo",
+          "richiesta":"",
+          "offerta":"",
+          "accettato":""
+        },
+        {"utente_richiedente":"maramuuuu",
+        "utente_ricevente":"lorenzo",
+        "accettato":""
+        },
+        {"utente_richiedente":"pastafrolla",
+        "utente_ricevente":"lorenzo",
+        "accettato":""
+        }
+    ])
+        console.log(res);
+});
+// do alla paggina profilo tutti i dati relativi alla persona 
+app.post('/profilo1', (req, res) => {
+    res.json([{
+        "nome": "lorenzo",
+        "cognome": "catini",
+        "email": "ahdfas@sfbfk.it",
+        "professione": "informatico",
+        "competenze": "cassamortaro",
+        "username":"maramuuuu",
+        "ricerca": [{"ric":"cuoco"},
+                    {"ric":"idraulico"}],
+        "punti": 25,
+        "recensioni": 7,
+        "descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+    }]);
+});
+//do alla paggina profilo le recensioni dell'utente
+app.post('/profilo2', (req, res) => {
+    res.json([
+        {"username":"maramuuuu",
+        "recensore":"francomat",
+        "recensito":"maramuuu",
+        "tipo":"recensione",
+        "sintesi":"molto buono",
+        "recensione":"fratm ingiustament recensito"
+        },
+        {"username":"maramuuuu",
+        "recensore":"pizzaman",
+        "recensito":"maramuuu",
+        "tipo":"recensione",
+        "sintesi":"una merda",
+        "recensione":"fratm ingiustament recensito"
+        }
+        
+    ]);
+});
 
+
+//------------------------------------------------------------------------------------------------------------------------
 
 // ascolto server
 app.listen(3000, () => {
