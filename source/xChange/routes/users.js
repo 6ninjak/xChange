@@ -1,7 +1,11 @@
 const express = require('express');
+const session = require('express-session');
 const router = express.Router();
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const db = nano.db.use('xchange');
+const crypto = require('crypto');
+
+
 
 // percorso di prova /users
 router.get('/', (req, res) => {
@@ -10,13 +14,14 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     var body = req.body;
+    let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
     db.insert({
         tipo: 'user',
         
         nome: body.nome,
         cognome: body.cognome,
         email: body.email,
-        pasword: body.password
+        password: encPwd
         
     }, body.email, (err, response) => {
         if (err && err.error == 'conflict') {
@@ -36,25 +41,13 @@ router.post('/', (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-    var bodyreq = req.body;
-    
-    // db.get(bodyreq.email).then((body) => {
-    //     console.log(body.dati.email);
-    // });
-    db.list({include_docs: true }).then((body) => {
-        
-        body.rows.forEach((doc) => {
-          console.log(doc);
-        });
-    });
-    
-    res.redirect('../home');
-});
 
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    res.render('profilo');
+    res.render('profilo',{
+        title: 'xChange - Profilo',
+        utente: req.cookies.cookieUtente.nome
+    });
 });
 
 // get su /users/:id/edit_dati conduce a edit_dati.html di :id

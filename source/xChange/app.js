@@ -3,8 +3,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const fs = require('fs');
-
 const db = nano.db.use('xchange');
+const cookieParser = require('cookie-parser');
+const crypto = require('crypto');
 
 
 function errHandler(err, res) {
@@ -35,6 +36,7 @@ db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
 
 // creazione server
 const app = express();
+app.use(cookieParser());
 
 // imposta html come default per i file nelle views
 app.engine('html', require('ejs').renderFile);
@@ -54,6 +56,38 @@ app.use((req, res, next) => {
     next();
 });
 
+//giacomino controlla se è giusto
+app.use((req, res, next) => {
+    
+    if (req.cookies.cookieUtente == undefined && (!(["/login", "/registrazione", "/"].includes(req.path) || (req.path == '/users' && req.method == 'POST')))){
+        
+        res.redirect('/login');
+    }
+    
+    else if(req.cookies.cookieUtente != undefined){
+        db.get(req.cookies.cookieUtente.id, (err, response) => {
+            if (!err && req.cookies.cookieUtente.password == response.password){
+                // per non dover modificare le get di login e registrazione e verificare se è già loggato
+                if(["/login", "/registrazione", "/"].includes(req.path)){
+                    res.redirect('/home');
+                }
+                else{
+                    next();
+                }
+            }
+            else{
+                //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
+                res.clearCookie('cookieUtente');
+                res.redirect('/login');
+            }
+        });
+    }
+    else{
+        next();
+    }
+});
+
+
 // percorso di test per accesso a db
 app.get('/test', (req, res) => {
     db.insertOrUpdate({ tipo: 'user', username: 'alfredo', email: 'alfredo@pippo.com', password: 'inutile' }, 'alfredo@pippo.com', errHandler);
@@ -70,80 +104,103 @@ app.get('/test', (req, res) => {
 
 
 
+
 // get su / mostra home.html
 app.get('/', (req, res) => {
-    res.render('homepage', {
+    
+    
+        res.render('homepage', {
         title: 'xChange'
-    });
+        });
+    
 });
 
 app.get('/home', (req, res) => {
+    // console.log(req.cookies.cookieProva);
+    
     res.render('home', {
-        title: 'xChange - Home'
+        title: 'xChange - Home',
+        utente: req.cookies.cookieUtente.nome
     });
+   
 });
 
 // get su /login mostra login.html
 app.get('/login', (req, res) => {
     res.render('login', {
-        title: 'xChange - login'
+        title: 'xChange - login',
+        error: '',
+        pass: ''
     });
 });
 
+app.get('/logout', (req, res) => {
+    if(req.cookies.cookieUtente != undefined){
+        res.clearCookie("cookieUtente");
+        res.redirect('/');
+    }
+    else{
+        res.redirect('/');
+    }
+});
+
+app.post('/login', (req, res) => {
+    
+    db.get(req.body.email, (err, response) => {
+        if (err && err.error == 'not_found') {
+            res.render('login', {
+                title: 'xChange - login',
+                error: 'Utente inesistente',
+                pass: ''
+            });
+        } else if (err) {
+            res.render('login', {
+                title: 'xChange - login',
+                error: err,
+                pass: ''
+            });
+        } else {
+            let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
+            if(encPwd == response.password){
+                res.cookie("cookieUtente", utente = {
+                    id: response._id,
+                    password: response.password,
+                    nome: response.nome
+                });
+                res.redirect('/home');
+            }
+            else{
+                res.render('login', {
+                    title: 'xChange - login',
+                    error: '',
+                    pass: 'errata'
+                });
+            }
+            
+        }
+    });
+});
+
+
 // get su /registrazione mostra registrazione.html
 app.get('/registrazione', (req, res) => {
+    
     res.render('registrazione', {
         title: 'xChange - registrazione',
         error: ''
     });
 });
 
-
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');
 app.use('/users', users);
+
 
 app.get('/ricerca', (req, res) => {
     res.render('ricerca', {
         title: 'edit_dati'
     });
 });
-
-// app.post('/search', (req, res) => {
-//     res.json([{
-//         "id": 1,
-//         "nome": "Leanne Graham",
-//         "cognome": "Bret",
-//         "email": "Sincere@april.biz",
-//         "address": {
-//             "street": "Kulas Light",
-//             "suite": "Apt. 556",
-//             "city": "Gwenborough",
-//             "zipcode": "92998-3874",
-//             "geo": {
-//                 "lat": "-37.3159",
-//                 "lng": "81.1496"
-//             }
-//         }
-//     },
-//     {
-//         "id": 2,
-//         "nome": "Ervin Howell",
-//         "cognome": "Antonette",
-//         "email": "Shanna@melissa.tv",
-//         "address": {
-//             "street": "Victor Plains",
-//             "suite": "Suite 879",
-//             "city": "Wisokyburgh",
-//             "zipcode": "90566-7771",
-//             "geo": {
-//                 "lat": "-43.9509",
-//                 "lng": "-34.4618"
-//             }
-//         }
-//     }
-// ]);
-// });
 
 // get su /Faq mostra Faq.html
 app.get('/Faq', (req, res) => {

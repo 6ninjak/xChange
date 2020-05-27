@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
     <link rel="stylesheet" href="/stylesheets/stile.css" integrity="">
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type= text/javascript lang= javascript src= /javascript/home.js ></script>
+
     <title><%= title %></title>
 </head>
 <body>
@@ -49,13 +52,14 @@
                </li>
                <li class="nav-item dropdown"> 
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Il mio account
+                    Ciao, <%= utente %>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
                         <a class="dropdown-item" href="users/1">Profilo</a>
                         <a class="dropdown-item" href="users/1" name="punti">punti</a>
                         <a class="dropdown-item" href="#">recensioni</a>
+                        <a class="dropdown-item" href="logout">Log out</a>
                         <!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
                     </div>
                 </li>
@@ -74,10 +78,11 @@
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt sapiente a.</label></p>
     
     </div>
-    <a href="Faq" class="btn btn-outline-info btn-sm" role="button" aria-pressed="true">Faq</a>
+    <a href="/Faq" class="btn btn-outline-info btn-sm" role="button" aria-pressed="true">Faq</a>
     <a href="users/1" class="btn btn-outline-info btn-sm" role="button" aria-pressed="true">Privacy</a>
     <a href="users/1" class="btn btn-outline-info btn-sm" role="button" aria-pressed="true">Contattaci</a>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+        
+    </script>
 </body>
 </html>

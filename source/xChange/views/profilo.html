@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 
-    <title>profilo</title>
+    <title><%= title%></title>
 
     <script>
         function publicaRecensione(e){
@@ -88,8 +88,8 @@
 
     <div class="container">
         <div id="profilo">
-            <h2>Profilo</h2>
-            <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
+            <h2 class="mb-3"><%= utente%></h2>
+            <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="mb-3 rounded-circle" id="img_profilo">
         <form>
             <div class="form-group" name="prof">
                <input type="file" class="form-control-file" id="exampleFormControlFile1" onchange="cambiaImg();">   <!-- capire inserimento -->
