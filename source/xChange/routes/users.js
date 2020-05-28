@@ -50,7 +50,9 @@ router.get('/:id', (req, res) => {
     //     });
     //     else res.render('profilo_esterno');
     // });
-    res.render('profilo');
+    res.render('profilo_esterno', {
+        utente: ''
+    });
 });
 
 // get su /users/:id/edit conduce a edit_dati.html di :id

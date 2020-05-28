@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel=stylesheet href="/stylesheets/stile.css">
+	<link rel=stylesheet href="/stylesheets/styleHome.css">
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -59,10 +60,8 @@
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati()">
-	<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-
-		<!-- titolo -->
-		<a class="navbar-brand" href="#">xChange</a>
+	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
+		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -71,64 +70,55 @@
 		<!-- home rimanda alla home-->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
-				</li>
-
 				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link active" href="#profilo">Profilo</a>
+				<li>
+					<a class="nav-link" href="../">Home</a>
 				</li>
-
 				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link disabled" href="#punti">Punti</a>
+				<li>
+					<a class="nav-link" href="#profilo">Profilo</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#punti">Punti</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#recensioni">Recensioni</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#competenze">Competenze</a>
 				</li>
-
-				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link disabled" href="#recensioni">Recensioni</a>
-				</li>
-
-				<!-- bottone/form di ricerca -->
-				<form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-				</form>
-
 			</ul>
-			<nav class="nav navbar-expand-lg navbar-light bg-light">
-				<!-- il mio account -->
+			<ul class="navbar-nav">
+				<!-- bottone/form di ricerca -->
+				<div class="nav-item">
+					<form class="form-inline" action="ricerca" method="GET">
+						<input class="form-control" name="input" type="search" placeholder="Cerca" aria-label="Cerca">
+						<button id=ricerca class="btn btn-success mr-3" type="submit">Cerca</button>
+					</form>
+				</div>
 				<li class="nav-item">
-					<img src="https://source.unsplash.com/collection/190727/50x50" alt="" class="rounded-circle">
+					<img src="https://source.unsplash.com/collection/190727/50x50" class="rounded-circle">
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false">
-						Il mio account
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-						<a class="dropdown-item" href="#profilo">Profilo</a>
-						<a class="dropdown-item" href="#punti">punti</a>
-						<a class="dropdown-item" href="#recenzioni">recenzioni</a>
+					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente%></a>
+					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="users/1">Profilo</a>
+						<a class="dropdown-item" href="users/1" name="punti">punti</a>
+						<a class="dropdown-item" href="#">recensioni</a>
+                        <a class="dropdown-item" href="logout">Log out</a>
 						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
 					</div>
-				</li>
-			</nav>
+				</li>		
+			</ul>
 		</div>
 	</nav>
 
-	<br>
-	<br>
-	<br>
-	<br>
-
 	<div class="container">
 		<div id="app_v">
-			<div id="profilo">
+			<div id="profilo" class = "big-padding">
 				<h2>Profilo</h2>
-				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
+				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle mb-3" id="img_profilo">
 
 				<div v-for="x in utente">
 					<ul class="list-group list-group-horizontal-sm">
@@ -158,7 +148,7 @@
 				<hr>
 				<hr>
 				<!-- punteggio creazione stelle e aggiornamento -->
-				<div id="punti">
+				<div id="punti" class = "big-padding">
 					<h2>Punti</h2>
 
 					<input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
@@ -175,7 +165,7 @@
 				<hr>
 				<hr>
 				<!-- recenzioni udente selezionato -->
-				<div id="rec">
+				<div id="recensioni" class = "big-padding">
 					<h2>Recensioni</h2>
 					<div v-for="a in recensioni">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
@@ -190,12 +180,13 @@
 			<hr>
 			<hr>
 			<br>
-			<h5>Chiedi competenza:</h5>
-			<br>
-			<span v-for="z in ricerca">
-			      <button type="button" class="btn btn-dark mr-3">{{z.ric}}</button>
-			</span>
-
+			<div id = competenze class = "big-padding">
+				<h5>Chiedi competenza:</h5>
+				<br>
+				<span v-for="z in ricerca">
+					<button type="button" class="btn btn-dark mr-3">{{z.ric}}</button>
+				</span>
+			</div>
 			<br>
 			<br>
 
@@ -203,6 +194,19 @@
 			<br>
 		</div>
 	</div>
-</body>
+	<script>
+        $('body').scrollspy({ target: '#navbarSupportedContent' });
+        
+        $(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
+            target = this.hash;
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: $(this.hash).offset().top
+            }, 600, function () {
+                window.location.hash = target;
+            });
+        });
+	</script>
+	</body>
 
 </html>
