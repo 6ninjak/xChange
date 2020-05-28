@@ -75,9 +75,11 @@ app.use((req, res, next) => {
 
 //giacomino controlla se è giusto
 app.use((req, res, next) => {
-    
-    if (req.cookies.cookieUtente == undefined && (!(["/login", "/registrazione", "/"].includes(req.path) || (req.path == '/users' && req.method == 'POST')))){
-        
+    if (req.cookies.cookieUtente == undefined && 
+            (!(["/login", "/registrazione", "/"].includes(req.path) 
+                || (req.path == '/users' && req.method == 'POST')
+            ))
+        ){
         res.redirect('/login');
     }
     else if(req.cookies.cookieUtente != undefined){
@@ -110,12 +112,7 @@ app.get('/test', (req, res) => {
 
 // get su / mostra home.html
 app.get('/', (req, res) => {
-    
-    
-    res.render('homepage', {
-        title: 'xChange'
-        });
-    
+    res.render('homepage');
 });
 
 // get su /login mostra login.html
@@ -128,7 +125,38 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    res.redirect('/home');
+    db.get(req.body.username, (err, response) => {
+        if (err && err.error == 'not_found') {
+            res.render('login', {
+                title: 'xChange - login',
+                error: 'Utente inesistente',
+                pass: ''
+            });
+        } else if (err) {
+            res.render('login', {
+                title: 'xChange - login',
+                error: err,
+                pass: ''
+            });
+        } else {
+            let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
+            if(encPwd == response.password){
+                res.cookie("cookieUtente", utente = {
+                    id: response._id,
+                    password: response.password,
+                    username: response.username
+                });
+                res.redirect('/home');
+            }
+            else{
+                res.render('login', {
+                    title: 'xChange - login',
+                    error: '',
+                    pass: 'errata'
+                });
+            }     
+        }
+    });
 });
 
 app.get('/logout', (req, res) => {
@@ -154,7 +182,7 @@ app.get('/home', (req, res) => {
     
     res.render('home', {
         title: 'xChange - Home',
-        utente: req.cookies.cookieUtente.nome
+        utente: req.cookies.cookieUtente
     });
 });
 
@@ -189,40 +217,7 @@ app.post('/ricerca', (req, res) => {
     });
 })
 
-app.post('/login', (req, res) => {
-    db.get(req.body.email, (err, response) => {
-        if (err && err.error == 'not_found') {
-            res.render('login', {
-                title: 'xChange - login',
-                error: 'Utente inesistente',
-                pass: ''
-            });
-        } else if (err) {
-            res.render('login', {
-                title: 'xChange - login',
-                error: err,
-                pass: ''
-            });
-        } else {
-            let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
-            if(encPwd == response.password){
-                res.cookie("cookieUtente", utente = {
-                    id: response._id,
-                    password: response.password,
-                    nome: response.nome
-                });
-                res.redirect('/home');
-            }
-            else{
-                res.render('login', {
-                    title: 'xChange - login',
-                    error: '',
-                    pass: 'errata'
-                });
-            }     
-        }
-    });
-});
+
 
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');

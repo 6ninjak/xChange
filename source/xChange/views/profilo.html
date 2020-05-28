@@ -93,7 +93,7 @@
         <div id="app_ve">
 		    <div id="profilo">
 			
-				<h2>Profilo</h2>
+				<h2><%= utente.nome %></h2>
 				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
 				<form>
 					<div class="form-group" name="prof">
@@ -123,7 +123,7 @@
 						non accusantium et natus fam?</p>
 					
                 </div>
-				<a href="1/edit" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Modifica</a>
+				<a href="<%= utente.username %>/edit" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Modifica</a>
 			
 				<hr>
 
