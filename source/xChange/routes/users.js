@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const router = express.Router();
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const db = nano.db.use('xchange');
