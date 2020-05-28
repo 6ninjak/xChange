@@ -50,6 +50,8 @@ router.get('/:id', (req, res) => {
             utente: doc.nome
         });
         else res.render('profilo_esterno');
+
+    
     });
 });
 
