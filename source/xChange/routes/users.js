@@ -42,16 +42,14 @@ router.post('/', (req, res) => {
 
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    // db.get(req.params.id + "@gmail.com", (err, doc) => {
-    //     console.log(err);
-    //     console.log(doc);
-    //     if (!err) res.render('profilo', {
-    //         utente: doc.nome
-    //     });
-    //     else res.render('profilo_esterno');
-    // });
-    res.render('profilo_esterno', {
-        utente: ''
+    db.get(req.params.id + "@gmail.com", (err, doc) => {
+        console.log(err);
+        console.log(doc);
+        if (!err) res.render('profilo', {
+            utente: doc.nome
+        });
+        else res.render('profilo_esterno');
+
     });
 });
 

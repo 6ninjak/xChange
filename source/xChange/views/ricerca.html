@@ -63,47 +63,27 @@
 		<div id="app_vue">
 			<!--promo-->
 			<div v-for="x in users">
-				<div class="card mb-3" style="max-width: 540px;">
-					<!--da far diventare un bottone-->
-					<div class="row no-gutters">
-						<div class="col-md-4">
-							<img src="https://source.unsplash.com/collection/190727/100x50" class="card-img">
-						</div>
-						<div class="col-md-8">
-							<div class="card-body">
-								<form method="POST" name="ut">
-									<a class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}} </a>
-									<p class="card-text">{{x.cognome}}</p>
-									<p class="card-text"><small class="text-muted">{{x.email}}</small></p>
-								</form>
+					<div class="card mb-3" style="max-width: 540px;">
+						<!--da far diventare un bottone-->
+						<div class="row no-gutters">
+							<div class="col-md-4">
+								<img src="https://source.unsplash.com/collection/190727/100x50" class="card-img">
+							</div>
+							<div class="col-md-8">
+								<div class="card-body">
+									<form method="POST" name="ut">
+										<a class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}} </a>
+										<p class="card-text">{{x.cognome}}</p>
+										<p class="card-text"><small class="text-muted">{{x.email}}</small></p>
+									</form>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 			</div>
 		</div>
 		<!--da vedere ancora-->
-		<nav aria-label="...">
-			<ul class="pagination">
-				<li class="page-item disabled">
-					<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="#">1</a>
-				</li>
-				<li class="page-item active" aria-current="page">
-					<a class="page-link" href="#">2
-						<span class="sr-only">(current)</span>
-					</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="#">3</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="#">Next</a>
-				</li>
-			</ul>
-		</nav>
+		
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
