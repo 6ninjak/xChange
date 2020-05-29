@@ -24,11 +24,11 @@
 			<ul class="navbar-nav mr-auto">
 				<!-- bottone generico -->
 				<li>
-					<a class="nav-link" href="#">Bottone_generico</a>
+					<a class="nav-link" href="#nuovi">Nuovi</a>
 				</li>
 				<!-- bottone generico -->
 				<li>
-					<a class="nav-link" href="#">Bottone_generico</a>
+					<a class="nav-link" href="#i_piu_recensiti">Top</a>
 				</li>
 			</ul>
 			<ul class="navbar-nav">
@@ -44,12 +44,12 @@
 				</li>
 				<li class="nav-item dropdown">
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Il mio account</a>
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente%></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="users/1">Profilo</a>
 						<a class="dropdown-item" href="users/1" name="punti">punti</a>
 						<a class="dropdown-item" href="#">recensioni</a>
-            <a class="dropdown-item" href="logout">Log out</a>
+                        <a class="dropdown-item" href="logout">Log out</a>
 						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
 					</div>
 				</li>
@@ -57,7 +57,34 @@
 		</div>
 	</nav>
 
-	<div class="container font-weight-light" id=row>
+    <div id = nuovi class="container font-weight-light big-padding">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+    </div>
+	<div id = i_piu_recensiti class="container font-weight-light big-padding">
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
+			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
+			sapiente a.</label></p>
+
+    </div>
+    
+    <div id = ciao class="container font-weight-light big-padding">
 		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
 			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
 			sapiente a.</label></p>
@@ -84,7 +111,22 @@
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type= text/javascript lang= javascript src= /javascript/home.js ></script>
+    <script type= text/javascript lang= javascript src= /javascript/home.js ></script>
+
+    <script>
+        $('body').scrollspy({ target: '#navbarSupportedContent' });
+    
+        $(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
+          target = this.hash;
+          e.preventDefault();
+          $('html,body').animate({
+            scrollTop: $(this.hash).offset().top
+          }, 600, function () {
+            window.location.hash = target;
+          });
+        });
+    
+      </script>
 </body>
 
 </html>

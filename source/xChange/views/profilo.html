@@ -5,7 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel=stylesheet href="/stylesheets/stile.css">
+    <link rel=stylesheet href="/stylesheets/stile.css">
+    <link rel=stylesheet href="/stylesheets/styleHome.css">
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -24,77 +25,55 @@
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent">
-	<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-
-		<!-- titolo -->
-		<a class="navbar-brand" href="#">Il mio profilo</a>
+	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
+		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-		aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<!-- home rimanda alla home-->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
-				</li>
-
 				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link active" href="#profilo">Profilo</a>
+				<li>
+					<a class="nav-link" href="../">Home</a>
 				</li>
-
 				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link disabled" href="#punti">Punti</a>
+				<li>
+					<a class="nav-link" href="#profilo">Profilo</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#punti">Punti</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#recensioni">Recensioni</a>
+                </li>
+                <li>
+					<a class="nav-link" href="#richieste">Richieste</a>
 				</li>
-
-				<!-- bottone generico -->
-				<li class="nav-item">
-					<a class="nav-link disabled" href="#recensioni">Recensioni</a>
-				</li>
-
-				<!-- bottone/form di ricerca -->
-				<form class="form-inline my-2 my-lg-0" action="../ricerca" method="GET">
-					<input class="form-control mr-sm-2" name="input" type="search" placeholder="Search" aria-label="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-				</form>
-
 			</ul>
-			<nav class="nav navbar-expand-lg navbar-light bg-light">
-				<!-- il mio account -->
-				<li class="nav-item">
-					<img src="https://source.unsplash.com/collection/190727/50x50" alt="" class="rounded-circle">
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false">
-						Il mio account
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-						<a class="dropdown-item" href="#profilo">Profilo</a>
-						<a class="dropdown-item" href="#punti">punti</a>
-						<a class="dropdown-item" href="#recensioni">recensioni</a>
-						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
-					</div>
-				</li>
-			</nav>
+			<ul class="navbar-nav">
+				<!-- bottone/form di ricerca -->
+				<div class="nav-item">
+					<form class="form-inline" action="ricerca" method="GET">
+						<input class="form-control" name="input" type="search" placeholder="Cerca" aria-label="Cerca">
+						<button id=ricerca class="btn btn-success mr-3" type="submit">Cerca</button>
+					</form>
+				</div>
+				
+                <button class="btn btn-danger btn-lg" href="logout">Log out</button>
+						
+			</ul>
 		</div>
 	</nav>
 
-	<br>
-	<br>
-	<br>
-	<br>
-
 	<div class="container" id="cont">
         <div id="app_ve">
-		    <div id="profilo">
+		    <div id="profilo" class = "big-padding">
 			
 				<h2>Profilo</h2>
-				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle" id="img_profilo">
+				    <img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle mb-3" id="img_profilo">
 				<form>
 					<div class="form-group" name="prof">
 						<input type="file" class="form-control-file" id="exampleFormControlFile1" onchange="cambiaImg();">
@@ -107,12 +86,10 @@
 						<li class="list-group-item">Cognome: {{n.cognome}}</li>
 					</ul>
 					<ul class="list-group">
-						<li class="list-group-item disabled" aria-disabled="true">Email: {{n.email}}</li>
+						<li class="list-group-item" aria-disabled="true">Email: {{n.email}}</li>
 						<li class="list-group-item">professione: {{n.professione}}</li>
 						<li class="list-group-item">competenza: {{n.competenze}}</li>
 					</ul>
-					contatti:
-					//bottoni per facebbok twitter e instagram//
 	
 					<h5>{{n.descrizione}}</h5>
 					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum dolor
@@ -128,9 +105,9 @@
 				<hr>
 
 				<hr>
-				<div id="punti">
+				<div id="punti" class = "big-padding">
 					<h2>Punti</h2> <!-- parte sstatica che viene aggiornata da sola appenainserita una recensione -->
-					// gestire punteggio
+					<!-- gestire punteggio -->
 					<input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
 
 					<div id="stelle"  >
@@ -146,9 +123,9 @@
 				<hr>
 
 				<hr>
-				<div id="recensioni">
+				<div id="recensioni" class = "big-padding">
 					<h2>Recensioni</h2>
-					//gestire recensioni
+					<!-- gestire recensioni -->
 					<div v-for="a in recensioni">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
 							<div class="card-header">{{a.sintesi}}</div>
@@ -157,42 +134,41 @@
 							</div>
 						</div>
 					</div>
-
-
-
 				</div>
 
 				<hr>
-				<hr>
-				<h2>Richieste di scambio:</h2>
-				<div class="row row-cols-1 row-cols-md-2">	
-					<div v-for="x in richieste" :key="x.utente_richiedente">
-						<div class="accordion" id="accordionExample">
-							<div class="card">
-								<div class="card-header" id="headingOne">
-									<h2 class="mb-0">
-									<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-										richiesta : {{x.utente_richiedente}}
-									</button>
-									</h2>
-								</div>
-							
-								<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-									<div class="card-body">
-									Richiesta da parte di {{x.utente_richiedente}} per la sua competenza 
-									<br>
-									IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
-									<br>
-										<form id="clik" value="">
-											<button type="button"  name="SI" class="btn btn-success" onclick="settaSI('si')">Accetta</button>
-											<button type="button"  name="NO" class="btn btn-dark" onclick="settaNO('no')">Declina</button>
-										</fomr>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+                <hr>
+                <div id = richieste class = "big-padding">
+                    <h2>Richieste di scambio:</h2>
+                    <div class="row row-cols-1 row-cols-md-2">	
+                        <div v-for="x in richieste" :key="x.utente_richiedente">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            richiesta : {{x.utente_richiedente}}
+                                        </button>
+                                        </h2>
+                                    </div>
+                                
+                                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            Richiesta da parte di {{x.utente_richiedente}} per la sua competenza 
+                                            <br>
+                                            IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
+                                            <br>
+                                            <form id="clik" value="">
+                                                <button type="button"  name="SI" class="btn btn-success" onclick="settaSI('si')">Accetta</button>
+                                                <button type="button"  name="NO" class="btn btn-dark" onclick="settaNO('no')">Declina</button>
+                                            </fomr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</div>
         </div>	
 		<hr>
@@ -222,7 +198,17 @@
 		}
 	</script>
 	<script>
-		$('body').scrollspy({ target: '#navbar-example' });
-		</script>
-</body>
+        $('body').scrollspy({ target: '#navbarSupportedContent' });
+        
+        $(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
+            target = this.hash;
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: $(this.hash).offset().top
+            }, 600, function () {
+                window.location.hash = target;
+            });
+        });
+    </script>
+    </body>
 </html>

@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const router = express.Router();
 const nano = require('nano')('http://admin:admin@localhost:5984');
 const db = nano.db.use('xchange');
@@ -43,13 +42,16 @@ router.post('/', (req, res) => {
 
 // get su /users/:id conduce a profilo.html di :id
 router.get('/:id', (req, res) => {
-    db.get(req.params.id + "@gmail.com", (err, doc) => {
-        console.log(err);
-        console.log(doc);
-        if (!err) res.render('profilo', {
-            utente: doc.nome
-        });
-        else res.render('profilo_esterno');
+    // db.get(req.params.id + "@gmail.com", (err, doc) => {
+    //     console.log(err);
+    //     console.log(doc);
+    //     if (!err) res.render('profilo', {
+    //         utente: doc.nome
+    //     });
+    //     else res.render('profilo_esterno');
+    // });
+    res.render('profilo_esterno', {
+        utente: ''
     });
 });
 
