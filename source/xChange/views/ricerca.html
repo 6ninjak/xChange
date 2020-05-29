@@ -88,7 +88,7 @@
 						<div class="col-md-8">
 							<div class="card-body">
 								<form method="POST" name="ut">
-									<a class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}} </a>
+									<a class="card-title btn" href="users/6ninjak" onclick="daiDati();">{{x.nome}} </a>
 									<p class="card-text">{{x.cognome}}</p>
 									<p class="card-text"><small class="text-muted">{{x.email}}</small></p>
 								</form>
@@ -135,20 +135,19 @@
 					"cognome": "catini",
 					"email": "ahdfas@sfbfk.it",
 					"professione": "informatico",
-					"competenze": "cassamortaro",
+					"competenze": ["cassamortaro"],
 					"username":"maramuuuu",
-					"ricerca": [{"ric":"cuoco"},
-					            {"ric":"idraulico"}],
+					"ricerca": ["cuoco", "idraulico"],
 					"punti": 25,
 					"recensioni": 7,
 					"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
 				}
 				var a = JSON.stringify(o);
 				localStorage.setItem("lastname", a);
-				alert("successo DATI INVIATI");
-				alert(users.x.nome);
+				// alert("successo DATI INVIATI");
+				// alert(users.x.nome);
 			} else {
-				alert("errore nel local storage");
+				// alert("errore nel local storage");
 			}
 		}
 	</script>

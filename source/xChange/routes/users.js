@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const nano = require('nano')('http://admin:admin@localhost:5984');
-const db = nano.db.use('xchange');
+const db = require('../public/helper/dbHelper.js')
 const crypto = require('crypto');
 
 
@@ -15,8 +14,11 @@ router.post('/', (req, res) => {
         nome: body.nome,
         cognome: body.cognome,
         email: body.email,
-        password: encPwd
-        
+        password: encPwd,
+        punti: 0,
+        media: 0,
+        recensioni: 0
+
     }, body.username, (err, response) => {
         if (err && err.error == 'conflict') {
             res.render('registrazione', {
@@ -36,28 +38,204 @@ router.post('/', (req, res) => {
 });
 
 // get su /users/:id conduce a profilo.html di :id
-router.get('/:id', (req, res) => {
-    console.log(req.cookies.cookieUtente)
+router.get('/:id', (req, res, next) => {
+    // console.log(req.cookies.cookieUtente)
     db.get(req.params.id, (err, doc) => {
         // console.log(err);
         // console.log(doc);
-        if (!err && req.cookies.username == doc.username && req.cookies.password == doc.password) res.render('profilo', {
-            utente: doc
-        });
-        else res.send('Questa pagina non esiste');
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            delete doc.password;
+            res.render('profilo', {
+                utente: doc
+            });
+        } else if (!err) {
+            delete doc.password;
+            res.render('profilo_esterno', {
+                utente: doc
+            });
+        } else next();
     });
 });
 
 // get su /users/:id/edit conduce a edit_dati.html di :id
 router.get('/:id/edit', (req, res) => {
-    res.render('edit_dati');
+    db.get(req.params.id, (err, doc) => {
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            delete doc.password;
+            res.render('edit_dati', {
+                utente: doc
+            });
+        } else if (!err) {
+            res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+        } else next();
+    });
 });
 
 // post su users/:id aggiorna i dati da db e reindirizza a /users/:id
 router.post('/:id', (req, res) => {
-    console.log(req.body);
-    res.redirect('.');
+    db.get(req.params.id, (err, doc) => {
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            // inserisci dati su db
+            res.redirect('.');
+        } else if (!err) {
+            res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+        } else res.redirect('/invalid');
+    });
 });
+
+// questa post serve a fare richieste di scambio con l'utente con username id
+// la form deve contenere due campi: "competenza", "messaggio"
+// la competenza deve rientrare tra quelle offerte dall'utente
+// se qualche parametro non è corretto si viene reindirizzati alla pagina di errore. 
+// Un utente non può chiedere uno scambio a se stesso
+// se uno scambio con il medesimo id esiste già si riceve un messaggio di errore
+// non si può fare una richiesta alla stessa persona per la stessa competenza se esiste già una precedente richiesta ancora in attesa
+// l'id di una recensione è una combinazione dell'username dell'utente richiesto, di quello del richiedente e della competenza richiesta
+// quando la richiesta viene declinata o accettata all'id viene aggiunto il timestamp dell'accettazione
+router.post('/:id/scambi', (req, res) => {
+    db.get(req.params.id, (err, doc) => {
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+        } else if (!err) {
+            if (!doc.competenze.includes(req.body.competenza)) res.send('la competenza richiesta non fa parte di quelle offerte!');
+            else {
+                let d = new Date();
+                var documento = {
+                    tipo: 'scambio',
+
+                    richiesto: req.params.id,
+                    richiedente: req.cookies.cookieUtente.username,
+                    competenza: req.body.competenza,
+                    messaggio: req.body.messaggio,
+                    stato: 'attesa',
+                    data: Date.now() //"" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+                }
+                db.insert(documento, documento.richiesto + ':' + documento.richiedente + ':' + documento.competenza, (err, response) => {
+                    if (err && err.error == 'conflict') {
+                        res.send('esiste già uno scambio con questo id')
+                    } else {
+                        console.log(response);
+                        res.json(documento);
+                    }
+                });
+            }
+        } else res.redirect('/invalid');
+    });
+})
+
+// questa put serve ad accettare o rifiutare una richiesta di scambio ricevuta
+// un utente non può modificare solo richieste che ha ricevuto
+// l'id di scambio fornito nella richiesta deve essere corretto (deve esistere uno scambio in attesa con lo stesso id)
+// la richiesta deve passare un parametro: "stato"
+// il parametro di stato può essere solo "accettato" o "rifiutato"
+// viene inserito un nuovo documento per lo scambio che include nell'id il timestamp di conferma
+// viene eliminato il documento con la richiesta in attesa, rendendo possibile effettuare un'altra richiesta
+router.put('/:id_user/scambio/:id_scambio', (req, res) => {
+    let arrayScambio = req.params.id_scambio.split(':');
+    if (arrayScambio.length != 3) 
+        res.send("l'id di scambio fornito non è corretto");
+    else if (!(req.body.stato && ["accettato", "rifiutato"].includes(req.body.stato))) 
+        res.send('parametro di stato non presente o scorretto!');
+    else {
+        db.get(req.params.id_user, (err, doc) => {
+            if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password && doc.username == array_scambio[0]) {
+                db.get(req.params.id_scambio, (err, document) => {
+                    if (err) res.send("l'id di scambio fornito non è corretto");
+                    else {
+                        document.stato = req.body.stato;
+                        let rev = document._rev;
+                        delete document._rev;
+                        delete document._id;
+                        // aggiungere campo dei contatti da fornire al richiedente
+                        db.insert(document, req.params.id_scambio + ':' + Date.now(), (err, response) => {
+                            if (!err) {
+                                console.log(response);
+                                res.json(document);
+                                db.destroy(req.params.id_scambio, rev).then((body) => {
+                                    console.log(body);
+                                });
+                            } else console.log(err);
+                        });
+                    }
+                })
+            } else if (!err) {
+                res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+            } else res.redirect('/invalid');
+        });
+    }
+})
+
+// questa post serve a pubblicare recensioni. 
+// deve essere fornito nell'url come query l'id dello scambio associato, nella forma "?scambio=<id_scambio>"
+// la richiesta deve avere tre parametri: "sintesi", "recensione", "voto"
+// se qualche parametro non è corretto si riceve un messaggio di errore. 
+// Un utente non può recensire se stesso
+// se una recensione con il medesimo id esiste già si riceve un messaggio di errore
+// l'id di una recensione è semplicemente l'id dello scambio associato combinato al tag "recensione"
+router.post('/:id/recensioni', (req, res) => {
+    db.get(req.params.id, (err, doc) => {
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+        } else if (!err) {
+            if (req.body.voto > 5 || req.body.voto < 0) res.send('voto non valido');
+            else {
+                var documento = {
+                    tipo: 'recensione',
+
+                    recensito: req.params.id,
+                    recensore: req.cookies.cookieUtente.username,
+                    sintesi: req.body.sintesi,
+                    recensione: req.body.recensione,
+                    voto: req.body.voto,
+                    data: Date.now()
+                }
+                db.get(req.query.scambio, (err, doc) => {
+                    if (!err && doc.stato == "accettato")
+                        db.insert(documento, req.query.scambio + ':recensione', (err, response) => {
+                            if (err && err.error == 'conflict') {
+                                res.send('esiste già una recensione con questo id')
+                            } else {
+                                console.log(response);
+                                res.json(documento);
+                                // aggiornare media, punti e recensioni del utente recensito
+                            }
+                        });
+                    else if (!err) res.send('lo stato dello scambio non è valido');
+                    else res.send('id dello scambio errato');
+                });
+            }
+        } else res.redirect('/invalid');
+    });
+})
+
+// questa get serve ad ottenere le 6 recensioni più recenti fatte all'utente con username id
+// se l'id non è valido si viene reindirizzati alla pagina di errore
+// la risposta contiene una chiave "docs" che contiene un'array di recensioni (array di oggetti json)
+//  e una chiave bookmark finalizzata alla paginazione
+router.get('/:id/recensioni', (req, res) => {
+    var q = {
+        selector: {
+            tipo: "recensione",
+            recensito: req.params.id,
+        },
+        sort: [{ data: "desc"}],
+        fields: ["recensore", "sintesi", "recensione", "voto"],
+        limit: 6
+    };
+    db.get(req.params.id, (err, doc) => {
+        if (!err) {
+            db.find(q, (err, body) => {
+                if (!err) res.json(body);
+                console.log(body);
+            });
+        } else res.redirect('/invalid');
+    });
+})
+
+// URL non valido, reindirizza a pagina d'errore
+router.get('*', (req, res) => {
+    res.status(404).send('pagina non trovata');
+})
 
 module.exports = router;
 

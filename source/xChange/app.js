@@ -1,54 +1,15 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const nano = require('nano')('http://admin:admin@localhost:5984');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
-
-const dbName = 'xchange';
-const db = nano.use(dbName);
-
-
-// const db = nano.db.use('xchange');
-db.insertOrUpdate = (docData, docId, callback) => {
-    db.get(docId, (err, res) => {
-        if (!err) docData._rev = res._rev;
-        db.insert(docData, docId, callback);
-    });
-}
-
-db.updateFields = (docFields, docId, callback) => {
-    db.get(docId, (err, res) => {
-        if (!err) db.insert(Object.assign(res, docFields), docId, callback);
-    });
-}
-
-db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
-    fs.readFile(filePath, (err, data) => {
-        if (!err) {
-            db.get(docId, (error, res) => {
-                if (!error) db.attachment.insert(docId, fileName, data, contentType, { rev:res._rev }, callback);
-            })
-        }
-    });
-}
-
-db.removeAttachment = (docId, fileName, callback) => {
-    db.get(docId, (error, res) => {
-        if (!error) db.attachment.destroy(docId, fileName, { rev:res._rev }, callback);
-    })
-}
-
+const db = require('./public/helper/dbHelper.js')
 
 function errHandler(err, res) {
     if (err) console.log(err);
     console.log(res);
 }
-
-//esempi d'uso
-// updateDoc('test', {test: "quadrato"});
-// updateAttachToDoc('test', 'views/home.html', 'home.html', 'text/html');
 
 // creazione server
 const app = express();
@@ -66,14 +27,13 @@ app.use(bodyParser.json());
 // riconoscce il percorso public
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // log automatico delle richieste al server
 app.use((req, res, next) => {
     console.log(req.method + ": " + req.path);
     next();
-});    
+});
 
-
-//giacomino controlla se è giusto
 app.use((req, res, next) => {
     if (req.cookies.cookieUtente == undefined && 
             (!(["/login", "/registrazione", "/"].includes(req.path) 
@@ -89,9 +49,7 @@ app.use((req, res, next) => {
                 if(["/login", "/registrazione", "/"].includes(req.path)){
                     res.redirect('/home');
                 }
-                else{
-                    next();
-                }
+                else next();
             }
             else{
                 //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
@@ -104,7 +62,7 @@ app.use((req, res, next) => {
         next();
     }
 });
-app.get('/test', (req, res) => {
+app.get('/file', (req, res) => {
     db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {
         res.end(body);
     });
@@ -186,17 +144,34 @@ app.get('/home', (req, res) => {
     });
 });
 
+app.post('/migliori', (req, res) => {
+    var q = {
+        selector: {
+            tipo: 'user',
+            media: { $gte: 4 }
+        },
+        sort: [{ media:"desc" }, { recensioni: "desc" }],
+        fields: ["username", "nome", "media"],
+        limit: 5
+    };
+    db.find(q, (err, body) => {
+        if (!err) res.json(body);
+        console.log(body);
+    });
+});
+
 app.get('/ricerca', (req, res) => {
     res.render('ricerca');
-});    
+});
 
 app.post('/ricerca', (req, res) => {
     var q = {
         selector: {
             tipo: "user",
             $or: []
-        },    
-        fields: ["nome", "cognome", "email"],
+        },
+        sort: [{ media: "desc" }, { recensioni: "desc" }],
+        fields: ["username", "nome", "media"],
         limit: 10
     };    
     if (req.query.input) {
@@ -205,7 +180,8 @@ app.post('/ricerca', (req, res) => {
         
             q.selector.$or.push(
                 { nome: { $regex: "(?i)" + query[i] } },
-                { cognome: { $regex: "(?i)" + query[i] } }
+                { cognome: { $regex: "(?i)" + query[i] } },
+                { competenze: { $elemMatch: { $regex: "(?i)" + query[i] } } }
             );    
         }    
     }    
@@ -286,11 +262,18 @@ app.post('/profilo2', (req, res) => {
         "recensito":"maramuuu",
         "tipo":"recensione",
         "sintesi":"una merda",
-        "recensione":"fratm ingiustament recensito"
+        "recensione":"fratm ingiustament recensito",
+        "voto": 4
         }
         
     ]);
 });
+
+
+// URL non valido, reindirizza a pagina d'errore
+app.get('*', (req, res) => {
+    res.status(404).send('pagina non trovata');
+})
 
 
 //------------------------------------------------------------------------------------------------------------------------

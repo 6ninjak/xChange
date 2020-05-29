@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel=stylesheet href="/stylesheets/stile.css">
+	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -14,7 +14,7 @@
 	<title>profilo</title>
 	<script>
 		function caricaDati(){    
-		    var stelleList = document.getElementsByName("stella")
+		  var stelleList = document.getElementsByName("stella")
 			for (var i = 0; i < app.punteggioArr; i++) {
 				stelleList[i].classList.add("checked");
 			}
@@ -186,7 +186,7 @@
 										<form id="clik" value="">
 											<button type="button"  name="SI" class="btn btn-success" onclick="settaSI('si')">Accetta</button>
 											<button type="button"  name="NO" class="btn btn-dark" onclick="settaNO('no')">Declina</button>
-										</fomr>
+										</form>
 									</div>
 								</div>
 							</div>
