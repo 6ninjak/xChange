@@ -241,7 +241,8 @@ app.post('/profilo', (req, res) => {
           "utente_ricevente":"lorenzo",
           "richiesta":"",
           "offerta":"",
-          "accettato":""
+          "accettato":"",
+          "info":123456789
         },
         {"utente_richiedente":"maramuuuu",
         "utente_ricevente":"lorenzo",
@@ -318,3 +319,8 @@ app.post('/home', (req, res) => {
 app.listen(3000, () => {
     console.log('Server in ascolto sulla porta 3000...');
 });
+
+
+
+
+

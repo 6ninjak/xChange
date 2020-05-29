@@ -137,34 +137,87 @@
 				</div>
 
 				<hr>
-                <hr>
+				<hr>
+				
+				<div id = notifiche class = "big-padding">
+                    <h2>Notifiche:</h2>
+                    <div class="row row-cols-1 row-cols-md-2">	
+                        <div v-for="n in richieste" >
+							<div class="card" id="'carta">
+								<div class="card-header">
+								        accetato da : {{n.utente_ricevente}}
+								</div>
+								<div class="card-body">
+									<h5 class="card-title">Richiesta da parte di {{n.utente_richiedente}} per la sua competenza </h5>
+									<p class="card-text">IL signor {{n.utente_ricevente}} ha accettato la sua competenza di "cassamortaro"</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+										
+				<hr>
+				<hr>
                 <div id = richieste class = "big-padding">
                     <h2>Richieste di scambio:</h2>
                     <div class="row row-cols-1 row-cols-md-2">	
-                        <div v-for="x in richieste" :key="x.utente_richiedente">
-                            <div class="accordion" id="accordionExample">
-                                <div class="card">
-                                    <div class="card-header" id="headingOne">
-                                        <h2 class="mb-0">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            richiesta : {{x.utente_richiedente}}
-                                        </button>
-                                        </h2>
-                                    </div>
-                                
-                                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            Richiesta da parte di {{x.utente_richiedente}} per la sua competenza 
-                                            <br>
-                                            IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
-                                            <br>
-                                            <form id="clik" value="">
-                                                <button type="button"  name="SI" class="btn btn-success" onclick="settaSI('si')">Accetta</button>
-                                                <button type="button"  name="NO" class="btn btn-dark" onclick="settaNO('no')">Declina</button>
-                                            </fomr>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div v-for="(x, index) in richieste" >
+							<!-- si -->
+							<div v-if="x.accettato=='si'">   <!-- da verificare  -->
+								<div class="card" :id="'carta'+index">
+									<div class="card-header">
+										richiesta : {{x.utente_richiedente}}
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta da parte di {{x.utente_richiedente}} per la sua competenza </h5>
+										<p class="card-text">IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"</p>
+										<div>
+											<div class="custom-control custom-switch nascondi" :id="'swich'+index" >
+												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)" >
+												<label class="custom-control-label" :for="index">scambio completato</label>
+											</div>
+										</div>
+										<div :id="'form'+index" class="form_nascosta">
+											<form action="" >
+												<br>
+												<span>Lascia una recensione: </span>
+												<button type="submit" class="btn btn-primary">Primary</button>
+												<br>
+												<textarea name="" :id="index" cols="60" rows="5"></textarea>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+                            <div v-else>  <!-- undefined -->
+								<div class="card" :id="'carta'+index">
+									<div class="card-header">
+										richiesta : {{x.utente_richiedente}}
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta da parte di {{x.utente_richiedente}} per la sua competenza </h5>
+										<p class="card-text">IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"</p>
+										<div :id="'bottoni'+index">
+											<button type="button" :id="index" name="SI" class="btn btn-success" onclick="settaSI(id)">Accetta</button>
+											<button type="button" :id="index"  name="NO" class="btn btn-dark" onclick="settaNO(id)">Declina</button>
+										</div>
+										<div>
+											<div class="custom-control custom-switch nascondi" :id="'swich'+index" >
+												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)" >
+												<label class="custom-control-label" :for="index">scambio completato</label>
+											</div>
+										</div>
+										<div :id="'form'+index" class="form_nascosta">
+											<form action="" >
+												<br>
+												<span>Lascia una recensione: </span>
+												<button type="submit" class="btn btn-primary">Primary</button>
+												<br>
+												<textarea name="" :id="index" cols="60" rows="5"></textarea>
+											</form>
+										</div>
+									</div>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -187,14 +240,23 @@
 	<script>
 		
 		function settaSI(e){
-			document.getElementById("clik").value= e;
-			alert("sto nel si");
 			
+			alert("sto nel si"+e);
+			
+			$('#bottoni'+e).remove()
+			$('#swich'+e).css("display","block")
+
 		}
 		function settaNO(e){
-			document.getElementById("clik").value= e;
-			alert("sto nel no");
 			
+			alert("sto nel no");
+			$('#carta'+e).remove()
+			
+		}
+
+		function mostraForm(e){
+			alert("mostro la form"+e);
+			$('#form'+e).css("display","block")
 		}
 	</script>
 	<script>

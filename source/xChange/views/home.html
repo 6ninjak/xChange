@@ -129,7 +129,7 @@
 						<div class="card" >
 						<img src="https://source.unsplash.com/collection/190727/800x200" class="card-img-top" alt="...">
 						<div class="card-body">
-							<h5 class="card-title">{{x.nome}}</h5>
+							<h5 class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}}</h5>
 							<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						</div>
 						<div class="card-footer">
@@ -241,6 +241,32 @@
         });
       });
   </script>
+  <script>
+	function daiDati() {
+		if (typeof (Storage) !== "undefined") {
+			localStorage.clear();
+			var o = {
+				"nome": "lorenzo",
+				"cognome": "catini",
+				"email": "ahdfas@sfbfk.it",
+				"professione": "informatico",
+				"competenze": "cassamortaro",
+				"username":"maramuuuu",
+				"ricerca": [{"ric":"cuoco"},
+							{"ric":"idraulico"}],
+				"punti": 25,
+				"recensioni": 7,
+				"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+			}
+			var a = JSON.stringify(o);
+			localStorage.setItem("lastname", a);
+			alert("successo DATI INVIATI");
+			alert(users.x.nome);
+		} else {
+			alert("errore nel local storage");
+		}
+	}
+</script>
 </body>
 
 </html>
