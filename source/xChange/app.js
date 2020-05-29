@@ -121,7 +121,9 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/ricerca', (req, res) => {
-    res.render('ricerca');
+    res.render('ricerca', {
+        utente: ''
+    });
 });    
 
 app.post('/ricerca', (req, res) => {
