@@ -43,3 +43,15 @@
   box-shadow: none;
 
 }
+.indigo_new{
+  background-color: var(--VERDE_SCURO);
+}
+.mio_testo{
+  color: var(--NERO)
+}
+.nascondi{
+  display: none;
+}
+.form_nascosta{
+  display: none;
+}
