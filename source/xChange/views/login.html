@@ -1,4 +1,5 @@
 <html>
+
 <head>
 	<meta charset=UTF-8 />
 	<meta name=viewport content="width=device-width, initial-scale= 1" />
@@ -6,6 +7,7 @@
 	<link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel=stylesheet href="/stylesheets/styleLog.css">
 </head>
+
 <body class="text-center">
 	<table align="center">
 		<tr align="center">
@@ -18,7 +20,7 @@
 			<td>
 				<form action="login" class="" method="POST" name="login" onSubmit="return validaForm()">
 					<h3 align=left class="font-weight-lighter">Inserisci i tuoi dati:</h3>
-					<input type="email" name="email" class="form-control" placeholder="Email address" required autofocus />
+					<input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
 					<input type="password" name="password" class="form-control" placeholder="Password" required />
 					<div id="divRemember" class="checkbox mb-3">
 						<input type="checkbox" name="remember" />
@@ -53,4 +55,5 @@
 
 	</script>
 </body>
+
 </html>

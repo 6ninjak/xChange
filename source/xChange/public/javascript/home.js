@@ -5,9 +5,9 @@ new Vue({
     },
     mounted: 
     function() {
-      axios.post('home') //nostro server
+      axios.post('migliori') //nostro server
           .then(response => {
-            this.scelti = response.data;
+            this.scelti = response.data.docs;
             console.log(data);
           })
           .catch(error => {
