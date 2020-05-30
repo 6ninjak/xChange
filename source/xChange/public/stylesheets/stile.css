@@ -49,3 +49,9 @@
 .mio_testo{
   color: var(--NERO)
 }
+.nascondi{
+  display: none;
+}
+.form_nascosta{
+  display: none;
+}
