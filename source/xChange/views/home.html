@@ -7,10 +7,9 @@
 	<title><%= title %></title>
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-<!-- Google Fonts -->
+	<!-- Google Fonts -->
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -51,12 +50,10 @@
 				</li>
 				<li class="nav-item dropdown">
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente%></a>
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente.username %></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="users/<%= utente.username %>">Profilo</a>
-						<a class="dropdown-item" href="users/<%= utente.username %>" name="punti">punti</a>
-						<a class="dropdown-item" href="#">recensioni</a>
-                        <a class="dropdown-item" href="logout">Log out</a>
+						<a class="dropdown-item" href="logout">Log out</a>
 						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
 					</div>
 				</li>
@@ -65,40 +62,40 @@
 	</nav>
 
 	<!-- carosello ----------------------------------------------------------------------------------------------------->
-	
-        
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-			<div class="carousel-inner">
-			  <div class="carousel-item active">
-				  <img src="https://source.unsplash.com/collection/190727/1600x400" class="d-block w-100" alt="...">
-				  <div class="carousel-caption">
-                     <h5 class="mio_testo">Inizia registrandoti....</h5>
-				  </div>
-				  
-			  </div>
-			  <div class="carousel-item">
+
+
+	<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img src="https://source.unsplash.com/collection/190727/1600x400" class="d-block w-100" alt="...">
+				<div class="carousel-caption">
+					<h5 class="mio_testo">Inizia registrandoti....</h5>
+				</div>
+
+			</div>
+			<div class="carousel-item">
 				<img src="https://source.unsplash.com/collection/190727/1600x400" class="d-block w-100" alt="...">
 				<div class="carousel-caption">
 					<h5 class="mio_testo"> ricerca un servizio desiderato....</h5>
 				</div>
-			  </div>
-			  <div class="carousel-item">
+			</div>
+			<div class="carousel-item">
 				<img src="https://source.unsplash.com/collection/190727/1600x400" class="d-block w-100" alt="...">
 				<div class="carousel-caption">
 					<h5 class="mio_testo"> aspetta che l'utente accetti la tua richiesta e contattalo!</h5>
 				</div>
-			  </div>
 			</div>
-			<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-			  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-			  <span class="sr-only">Previous</span>
-			</a>
-			<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-			  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-			  <span class="sr-only">Next</span>
-			</a>
 		</div>
-		  
+		<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+
 
 	<div class="container font-weight-light" id=row>
 		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
@@ -119,27 +116,28 @@
 		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
 			dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
 			sapiente a.</label></p>
-	<!-- i piu votati ------------------------------------------------------------------------------------->
-	    <div id="i_piu_recensiti">
+		<!-- i piu votati ------------------------------------------------------------------------------------->
+		<div class="big-padding" id="i_piu_recensiti">
 			<h5>I piu recensiti:</h5>
 			<span class="card-group">
-			     <div id="app_v"> 
-			         <span v-for="x in scelti">
-					<!-- mettere il v-for -->
-						<div class="card" >
-						<img src="https://source.unsplash.com/collection/190727/800x200" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}}</h5>
-							<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+				<div id="app_v">
+					<span v-for="x in scelti">
+						<!-- mettere il v-for -->
+						<div class="card">
+							<img src="https://source.unsplash.com/collection/190727/800x200" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5><a class="card-title btn" v-bind:href="'/users/'+x.username">{{x.nome}}</a></h5>
+								<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+									content. This content is a little bit longer.</p>
+							</div>
+							<div class="card-footer">
+								<small class="text-muted">Last updated 3 mins ago</small>
+							</div>
 						</div>
-						<div class="card-footer">
-							<small class="text-muted">Last updated 3 mins ago</small>
-						</div>
-						</div>
-			        </span>
-			    </div> 
+					</span>
+				</div>
 			</span>
-	    </div>
+		</div>
 
 
 
@@ -147,126 +145,124 @@
 	<br>
 	<!-- footer-------------------------------------------------------------------------------------------->
 	<!-- Footer -->
-<footer class="page-footer font-small indigo_new">
+	<footer class="page-footer font-small indigo_new">
 
-	<!-- Footer Links -->
-	<div class="container text-center text-md-left">
-  
-	  <!-- Grid row -->
-	  <div class="row">
-  
-		<!-- Grid column -->
-		<div class="col-md-3 mx-auto">
-  
-		  <!-- Links -->
-		  <h5 class="font-weight-bold text-uppercase mt-3 mb-4">Link utili </h5>
-  
-		  <ul class="list-unstyled">
-			<li>
-				<a href="Faq" class="bottone_nero" role="button" aria-pressed="true">Faq</a>
-			</li>
-			<li>
-				<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Privacy</a>
-			</li>
-			<li>
-				<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Contattaci</a>
-			</li>
-		  </ul>
-  
-		</div>
-		<!-- Grid column -->
-  
-		<hr class="clearfix w-100 d-md-none">
-  
-		<!-- Grid column -->
-		<div class="col-md-9 mx-auto">
-  
-		  <!-- Links -->
-		  <h5 class="font-weight-bold text-uppercase mt-3 mb-4">Seguici su</h5>
-  
-		  <ul class="list-unstyled">
-			 <!-- Facebook -->
-			  <a class="fb-ic">
-				<i class="fab fa-facebook-f fa-lg white-text mr-md-5 mr-3 fa-2x">Facebook</i>
-			  </a>
-			  <!-- Twitter -->
-			  <a class="tw-ic">
-				<i class="fab fa-twitter fa-lg white-text mr-md-5 mr-3 fa-2x">Twitter </i>
-			  </a>
-			  <!-- Google +-->
-			  <a class="gplus-ic">
-				<i class="fab fa-google-plus-g fa-lg white-text mr-md-5 mr-3 fa-2x"> Google</i>
-			  </a>
-			  <!--Instagram-->
-			  <a class="ins-ic">
-				<i class="fab fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x">Instagram</i>
-			  </a>
-			  
-		  </ul>
-  
-		</div>
-		<div class="col-md-3 mx-auto"></div>
-		<!-- Grid column -->
-	  </div>
-	  <!-- Grid row -->
-	</div>
-	<!-- Footer Links -->
+		<!-- Footer Links -->
+		<div class="container text-center text-md-left">
 
-	<!-- Copyright -->
-	<div class="footer-copyright text-center py-3" >© 2020 Copyright:
-	  <a class="bottone_nostro" href="/"> xChange.com</a>
-	</div>
-	<!-- Copyright -->
-  
-  </footer>
-  <!-- Footer -->
-	
-  
+			<!-- Grid row -->
+			<div class="row">
+
+				<!-- Grid column -->
+				<div class="col-md-3 mx-auto">
+
+					<!-- Links -->
+					<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Link utili </h5>
+
+					<ul class="list-unstyled">
+						<li>
+							<a href="Faq" class="bottone_nero" role="button" aria-pressed="true">Faq</a>
+						</li>
+						<li>
+							<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Privacy</a>
+						</li>
+						<li>
+							<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Contattaci</a>
+						</li>
+					</ul>
+
+				</div>
+				<!-- Grid column -->
+
+				<hr class="clearfix w-100 d-md-none">
+
+				<!-- Grid column -->
+				<div class="col-md-9 mx-auto">
+
+					<!-- Links -->
+					<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Seguici su</h5>
+
+					<ul class="list-unstyled">
+						<!-- Facebook -->
+						<a class="fb-ic">
+							<i class="fab fa-facebook-f fa-lg white-text mr-md-5 mr-3 fa-2x">Facebook</i>
+						</a>
+						<!-- Twitter -->
+						<a class="tw-ic">
+							<i class="fab fa-twitter fa-lg white-text mr-md-5 mr-3 fa-2x">Twitter </i>
+						</a>
+						<!-- Google +-->
+						<a class="gplus-ic">
+							<i class="fab fa-google-plus-g fa-lg white-text mr-md-5 mr-3 fa-2x"> Google</i>
+						</a>
+						<!--Instagram-->
+						<a class="ins-ic">
+							<i class="fab fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x">Instagram</i>
+						</a>
+
+					</ul>
+
+				</div>
+				<div class="col-md-3 mx-auto"></div>
+				<!-- Grid column -->
+			</div>
+			<!-- Grid row -->
+		</div>
+		<!-- Footer Links -->
+
+		<!-- Copyright -->
+		<div class="footer-copyright text-center py-3">© 2020 Copyright:
+			<a class="bottone_nostro" href="/"> xChange.com</a>
+		</div>
+		<!-- Copyright -->
+
+	</footer>
+	<!-- Footer -->
+
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-  <script type= text/javascript lang= javascript src= /javascript/home.js ></script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<script type=text/javascript lang=javascript src=/javascript/home.js></script>
 
-  <script>
-      $('body').scrollspy({ target: '#navbarSupportedContent' });
+	<script>
+		$('body').scrollspy({ target: '#navbarSupportedContent' });
 
-      $(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
-        target = this.hash;
-        e.preventDefault();
-        $('html,body').animate({
-          scrollTop: $(this.hash).offset().top
-        }, 600, function () {
-          window.location.hash = target;
-        });
-      });
-  </script>
-  <script>
-	function daiDati() {
-		if (typeof (Storage) !== "undefined") {
-			localStorage.clear();
-			var o = {
-				"nome": "lorenzo",
-				"cognome": "catini",
-				"email": "ahdfas@sfbfk.it",
-				"professione": "informatico",
-				"competenze": "cassamortaro",
-				"username":"maramuuuu",
-				"ricerca": [{"ric":"cuoco"},
-							{"ric":"idraulico"}],
-				"punti": 25,
-				"recensioni": 7,
-				"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
-			}
-			var a = JSON.stringify(o);
-			localStorage.setItem("lastname", a);
-			alert("successo DATI INVIATI");
-			alert(users.x.nome);
-		} else {
-			alert("errore nel local storage");
+		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
+			target = this.hash;
+			e.preventDefault();
+			$('html,body').animate({
+				scrollTop: $(this.hash).offset().top
+			}, 600, function () {
+				window.location.hash = target;
+			});
+		});
+	</script>
+	<script>
+		function daiDati() {
+			// if (typeof (Storage) !== "undefined") {
+			// 	localStorage.clear();
+			// 	var o = {
+			// 		"nome": "lorenzo",
+			// 		"cognome": "catini",
+			// 		"email": "ahdfas@sfbfk.it",
+			// 		"professione": "informatico",
+			// 		"competenze": "cassamortaro",
+			// 		"username": "maramuuuu",
+			// 		"ricerca": [{ "ric": "cuoco" },
+			// 		{ "ric": "idraulico" }],
+			// 		"punti": 25,
+			// 		"recensioni": 7,
+			// 		"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+			// 	}
+			// 	var a = JSON.stringify(o);
+			// 	localStorage.setItem("lastname", a);
+			// } else {
+			// }
+
 		}
-	}
-</script>
+	</script>
 </body>
 
 </html>

@@ -103,6 +103,8 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     db.get(req.body.username, (err, response) => {
+        console.log(err);
+        console.log(response);
         if (err && err.error == 'not_found') {
             res.render('login', {
                 title: 'xChange - login',
