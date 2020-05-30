@@ -232,6 +232,26 @@ app.get('*', (req, res) => {
 
 
 //------------------------------------------------------------------------------------------------------------------------
+//seconda modifica per prova---------------------------------da fare la quary che restituisce queusto---------------
+app.post('/home', (req, res) => {
+    res.json([
+        {
+            "nome": "lorenzo",
+            "cognome": "catini",
+            "email": "ahdfas@sfbfk.it",
+            "professione": "informatico",
+            "competenze": "cassamortaro",
+            "username":"maramuuuu",
+            "ricerca": [{"ric":"cuoco"},
+                        {"ric":"idraulico"}],
+            "punti": 25,
+            "recensioni": 7,
+            "descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+        }
+        
+    ]);
+});
+
 
 // ascolto server
 app.listen(3000, () => {

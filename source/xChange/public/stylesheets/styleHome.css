@@ -17,7 +17,7 @@ input[type='search'] {
   border-color: var(--VERDE_SCURO);
 }
 #account.nav-link {
-  color: var(--GRIGIO_CHIARO);
+  color: white;
   padding: 13px 8px;
 }
 #account.nav-link:hover {
@@ -35,4 +35,8 @@ li.show #account.nav-link {
 .dropdown-item:hover {
   color: var(--VERDE_CHIARO);
   background-color: inherit;
+}
+
+.big-padding{
+  padding-top: 100px;
 }
