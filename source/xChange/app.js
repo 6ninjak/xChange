@@ -6,6 +6,24 @@ const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const db = require('./public/helper/dbHelper.js')
 
+// indice necessario per fare query ordinate in base al punteggio
+const indexClassifica = {
+    index: { fields: ['media', 'recensioni'] },
+    name: 'classifica'
+  };
+  db.createIndex(indexClassifica).then((result) => {
+    console.log(result);
+  })
+  
+  // indice necessario per ordinare i documenti per data, se hanno questo campo
+  const indexData = {
+    index: { fields: ['data'] },
+    name: 'data'
+  };
+  db.createIndex(indexData).then((result) => {
+    console.log(result);
+  })
+
 function errHandler(err, res) {
     if (err) console.log(err);
     console.log(res);
@@ -62,6 +80,7 @@ app.use((req, res, next) => {
         next();
     }
 });
+
 app.get('/file', (req, res) => {
     db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {
         res.end(body);
@@ -151,7 +170,7 @@ app.post('/migliori', (req, res) => {
             media: { $gte: 4 }
         },
         sort: [{ media:"desc" }, { recensioni: "desc" }],
-        fields: ["username", "nome", "media"],
+        fields: ["username", "nome", "media", "competenze"],
         limit: 5
     };
     db.find(q, (err, body) => {
@@ -171,7 +190,7 @@ app.post('/ricerca', (req, res) => {
             $or: []
         },
         sort: [{ media: "desc" }, { recensioni: "desc" }],
-        fields: ["username", "nome", "media"],
+        fields: ["username", "nome", "media", "competenze"],
         limit: 10
     };    
     if (req.query.input) {
@@ -205,70 +224,6 @@ app.get('/Faq', (req, res) => {
         title: 'xChange - Faq'
     });
 })
-//modificato da lorenzo------------------------------------------------------------------------
-app.get('/profilo', (req, res) => {
-    res.render('profilo', {
-        title: 'xChange - Faq'
-    });
-})
-//do alla paggina profilo tutte le richieste per scambi di lavori
-app.post('/profilo', (req, res) => {
-    res.json(
-        [{"utente_richiedente":"francofort",
-          "utente_ricevente":"lorenzo",
-          "richiesta":"",
-          "offerta":"",
-          "accettato":""
-        },
-        {"utente_richiedente":"maramuuuu",
-        "utente_ricevente":"lorenzo",
-        "accettato":""
-        },
-        {"utente_richiedente":"pastafrolla",
-        "utente_ricevente":"lorenzo",
-        "accettato":""
-        }
-    ])
-        console.log(res);
-});
-// do alla paggina profilo tutti i dati relativi alla persona 
-app.post('/profilo1', (req, res) => {
-    res.json([{
-        "nome": "lorenzo",
-        "cognome": "catini",
-        "email": "ahdfas@sfbfk.it",
-        "professione": "informatico",
-        "competenze": "cassamortaro",
-        "username":"maramuuuu",
-        "ricerca": [{"ric":"cuoco"},
-                    {"ric":"idraulico"}],
-        "punti": 25,
-        "recensioni": 7,
-        "descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
-    }]);
-});
-//do alla paggina profilo le recensioni dell'utente
-app.post('/profilo2', (req, res) => {
-    res.json([
-        {"username":"maramuuuu",
-        "recensore":"francomat",
-        "recensito":"maramuuu",
-        "tipo":"recensione",
-        "sintesi":"molto buono",
-        "recensione":"fratm ingiustament recensito"
-        },
-        {"username":"maramuuuu",
-        "recensore":"pizzaman",
-        "recensito":"maramuuu",
-        "tipo":"recensione",
-        "sintesi":"una merda",
-        "recensione":"fratm ingiustament recensito",
-        "voto": 4
-        }
-        
-    ]);
-});
-
 
 // URL non valido, reindirizza a pagina d'errore
 app.get('*', (req, res) => {

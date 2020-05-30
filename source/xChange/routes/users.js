@@ -7,34 +7,49 @@ const crypto = require('crypto');
 router.post('/', (req, res) => {
     var body = req.body;
     let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
-    db.insert({
-        tipo: 'user',
-        
-        username: body.username,
-        nome: body.nome,
-        cognome: body.cognome,
-        email: body.email,
-        password: encPwd,
-        punti: 0,
-        media: 0,
-        recensioni: 0
-
-    }, body.username, (err, response) => {
-        if (err && err.error == 'conflict') {
-            res.render('registrazione', {
-                title: 'xChange - registrazione',
-                error: 'esiste già un utente con questo username'
-            });
-        } else if (err) {
-            res.render('registrazione', {
-                title: 'xChange - registrazione',
-                error: err
+    var q = {
+        selector: {
+            tipo: 'user',
+            email: body.email
+        }
+    };
+    db.find(q, (err, response) => {
+        if(!err && response.docs.length==0) {
+            db.insert({
+                tipo: 'user',
+                
+                username: body.username,
+                nome: body.nome,
+                cognome: body.cognome,
+                email: body.email,
+                password: encPwd,
+                punti: 0,
+                media: 0,
+                recensioni: 0
+                
+            }, body.username, (err, response) => {
+                if (err && err.error == 'conflict') {
+                    res.render('registrazione', {
+                        title: 'xChange - registrazione',
+                        error: 'esiste già un utente con questo username'
+                    });
+                } else if (err) {
+                    res.render('registrazione', {
+                        title: 'xChange - registrazione',
+                        error: err
+                    });
+                } else {
+                    console.log(response);
+                    res.redirect('/login');
+                }
             });
         } else {
-            console.log(response);
-            res.redirect('/login');
+            res.render('registrazione', {
+                title: 'xChange - registrazione',
+                error: 'esiste già un utente con questa email'
+            });
         }
-    });
+    })
 });
 
 // get su /users/:id conduce a profilo.html di :id
@@ -50,6 +65,7 @@ router.get('/:id', (req, res, next) => {
             });
         } else if (!err) {
             delete doc.password;
+            delete doc.email;
             res.render('profilo_esterno', {
                 utente: doc
             });
@@ -108,7 +124,7 @@ router.get('/:id/ricevute', (req, res) => {
             stato: { $ne: 'rifiutato' }
         },
         sort: [{ data: "desc"}],
-        fields: ["richiedente", "competenza", "messaggio", "stato"]
+        fields: ["data", "richiedente", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -132,7 +148,7 @@ router.get('/:id/effettuate', (req, res) => {
             richiedente: req.params.id,
         },
         sort: [{ data: "desc"}],
-        fields: ["richiesto", "competenza", "messaggio", "stato"]
+        fields: ["data", "richiesto", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -170,7 +186,7 @@ router.post('/:id/scambi', (req, res) => {
                     competenza: req.body.competenza,
                     messaggio: req.body.messaggio,
                     stato: 'attesa',
-                    data: Date.now() //"" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+                    data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                 }
                 db.insert(documento, documento.richiesto + ':' + documento.richiedente + ':' + documento.competenza, (err, response) => {
                     if (err && err.error == 'conflict') {
@@ -204,13 +220,15 @@ router.put('/:id_user/scambio/:id_scambio', (req, res) => {
                 db.get(req.params.id_scambio, (err, document) => {
                     if (err) res.send("l'id di scambio fornito non è corretto");
                     else {
+                        let d = new Date();
                         document.stato = req.body.stato;
                         let rev = document._rev;
                         delete document._rev;
                         delete document._id;
+                        document.data = "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                         document.info = 'email: ' + doc.email;
                         // aggiungere campo del telefono da fornire
-                        db.insert(document, req.params.id_scambio + ':' + Date.now(), (err, response) => {
+                        db.insert(document, req.params.id_scambio + ':' + document.data, (err, response) => {
                             if (!err) {
                                 console.log(response);
                                 res.json(document);
@@ -239,8 +257,7 @@ router.get('/:id/recensioni', (req, res) => {
             recensito: req.params.id,
         },
         sort: [{ data: "desc"}],
-        fields: ["recensore", "sintesi", "recensione", "voto"],
-        limit: 6
+        fields: ["recensore", "sintesi", "recensione", "voto"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err) {
@@ -267,6 +284,7 @@ router.post('/:id/recensioni', (req, res) => {
         } else if (!err) {
             if (req.body.voto > 5 || req.body.voto < 0) res.send('voto non valido');
             else {
+                let d = new Date();
                 var documento = {
                     tipo: 'recensione',
 
@@ -275,10 +293,10 @@ router.post('/:id/recensioni', (req, res) => {
                     sintesi: req.body.sintesi,
                     recensione: req.body.recensione,
                     voto: req.body.voto,
-                    data: Date.now()
+                    data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                 }
                 db.get(req.query.scambio, (err, document) => {
-                    if (!err && document.stato == "accettato")
+                    if (!err && document.stato == "concluso") // cambiare sugli scambi!!
                         db.insert(documento, req.query.scambio + ':recensione', (err, response) => {
                             if (err && err.error == 'conflict') {
                                 res.send('esiste già una recensione con questo id')

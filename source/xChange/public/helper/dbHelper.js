@@ -31,22 +31,4 @@ db.removeAttachment = (docId, fileName, callback) => {
   })
 }
 
-// indice necessario per fare query ordinate in base al punteggio
-const indexClassifica = {
-  index: { fields: ['media', 'recensioni'] },
-  name: 'classifica'
-};
-db.createIndex(indexClassifica).then((result) => {
-  console.log(result);
-})
-
-// indice necessario per ordinare i documenti per data, se hanno questo campo
-const indexData = {
-  index: { fields: ['data'] },
-  name: 'data'
-};
-db.createIndex(indexData).then((result) => {
-  console.log(result);
-})
-
 module.exports = db;
