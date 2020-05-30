@@ -1,4 +1,5 @@
 const nano = require('nano')('http://admin:admin@localhost:5984');
+const fs = require('fs');
 const db = nano.db.use('xchange');
 
 db.insertOrUpdate = (docData, docId, callback) => {

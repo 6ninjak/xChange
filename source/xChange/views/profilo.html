@@ -17,15 +17,18 @@
 	<script>
 		function caricaDati() {
 			var stelleList = document.getElementsByName("stella")
-			for (var i = 0; i < app.punteggioArr; i++) {
-				stelleList[i].classList.add("checked");
+			var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
+			for (var i = 1; i <= mediaRound; i++) {
+				var id = '#stella' + i;
+				alert(id);
+				$(id).addClass('checked');
 			}
 		}
 	</script>
 
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent">
+<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati();">
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -74,12 +77,12 @@
 			<div id="profilo" class="big-padding">
 
 				<h2>Profilo</h2>
-				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle mb-3"
-					id="img_profilo">
-				<form>
+				<img v-bind:src="'../file?docName='+utente[0].username+'&attName=immagine_profilo'" alt=""
+					class="rounded-circle mb-3" id="img_profilo">
+				<form v-bind:action="'/users/'+utente[0].username+'/image'" method="POST">
 					<div class="form-group" name="prof">
-						<input type="file" class="form-control-file" id="exampleFormControlFile1" onchange="cambiaImg();">
-						<!-- capire inserimento -->
+						<input name=file type="file" class="form-control-file" id="exampleFormControlFile1">
+						<button type="submit">Conferma</button>
 					</div>
 				</form>
 				<div v-for="n in utente">
@@ -90,20 +93,11 @@
 					<ul class="list-group">
 						<li class="list-group-item" aria-disabled="true">Email: {{n.email}}</li>
 						<li class="list-group-item">professione: {{n.professione}}</li>
-						<li class="list-group-item">competenza: {{n.competenze}}</li>
+						<li class="list-group-item">competenze:
+							<span v-for="c in n.competenze">{{c}} </span>
+						</li>
 					</ul>
-
-					<h5>{{n.descrizione}}</h5>
-					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum
-						dolor
-						non accusantium et natus fam?</p>
-					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum
-						dolor
-						non accusantium et natus fam?</p>
-					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ex distinctio, enim praesentium illum
-						dolor
-						non accusantium et natus fam?</p>
-
+					<h3>{{n.descrizione}}</h3>
 				</div>
 				<a href="<%= utente.username %>/edit" class="btn btn-primary btn-lg active" role="button"
 					aria-pressed="true">Modifica</a>
@@ -118,11 +112,11 @@
 
 					<div id="stelle">
 
-						<span id="stella" name="stella" class="fa fa-star"></span>
-						<span id="stella" name="stella" class="fa fa-star"></span>
-						<span id="stella" name="stella" class="fa fa-star"></span>
-						<span id="stella" name="stella" class="fa fa-star"></span>
-						<span id="stella" name="stella" class="fa fa-star"></span>
+						<span id="stella1" name="stella" class="fa fa-star"></span>
+						<span id="stella2" name="stella" class="fa fa-star"></span>
+						<span id="stella3" name="stella" class="fa fa-star"></span>
+						<span id="stella4" name="stella" class="fa fa-star"></span>
+						<span id="stella5" name="stella" class="fa fa-star"></span>
 
 					</div>
 				</div>
@@ -132,10 +126,11 @@
 				<div id="recensioni" class="big-padding">
 					<h2>Recensioni</h2>
 					<!-- gestire recensioni -->
-					<div v-for="a in recensioni">
+					<div v-for="a in recensioni.docs">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
-							<div class="card-header">{{a.sintesi}}</div>
+							<div class="card-header">recensione di {{a.recensore}} </div>
 							<div class="card-body">
+								<p class="card-text">{{a.sintesi}}</p>
 								<p class="card-text">{{a.recensione}}</p>
 							</div>
 						</div>
@@ -148,15 +143,16 @@
 				<div id=notifiche class="big-padding">
 					<h2>Notifiche:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
-						<div v-for="n in richieste">
+						<div v-for="n in notifiche.docs">
 							<div class="card" id="'carta">
 								<div class="card-header">
-									accetato da : {{n.utente_ricevente}}
+									Inviata a {{n.richiesto}}
+									<button class="btn btn-danger pull-right">Elimina</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">Richiesta da parte di {{n.utente_richiedente}} per la sua competenza </h5>
-									<p class="card-text">IL signor {{n.utente_ricevente}} ha accettato la sua competenza di "cassamortaro"
-									</p>
+									<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
+									<p class="card-text">{{n.messaggio}}</p>
+									<p class="card-text">{{n.info}}</p>
 								</div>
 							</div>
 						</div>
@@ -168,31 +164,34 @@
 				<div id=richieste class="big-padding">
 					<h2>Richieste di scambio:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
-						<div v-for="(x, index) in richieste">
+						<div v-for="(x, index) in richieste.docs">
 							<!-- si -->
-							<div v-if="x.accettato=='si'">
+							<div v-if="x.stato=='accettato'">
 								<!-- da verificare  -->
 								<div class="card" :id="'carta'+index">
 									<div class="card-header">
-										richiesta : {{x.utente_richiedente}}
+										Richiesta per {{x.richiedente}}
 									</div>
 									<div class="card-body">
-										<h5 class="card-title">Richiesta da parte di {{x.utente_richiedente}} per la sua competenza </h5>
-										<p class="card-text">IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
+										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la tua competenza:
+											{{x.competenza}} </h5>
+										<p class="card-text">{{x.messaggio}}
 										</p>
 										<div>
-											<div class="custom-control custom-switch nascondi" :id="'swich'+index">
+											<div class="custom-control custom-switch" :id="'swich'+index">
 												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)">
 												<label class="custom-control-label" :for="index">scambio completato</label>
 											</div>
 										</div>
 										<div :id="'form'+index" class="form_nascosta">
-											<form action="">
+											<form v-bind:action="'./'+x.richiedente+'/recensioni?scambio='+x._id" method="POST">
 												<br>
 												<span>Lascia una recensione: </span>
+												<input type="text" name="sintesi">
+												<input type="number" name="voto">
 												<button type="submit" class="btn btn-primary">Primary</button>
 												<br>
-												<textarea name="" :id="index" cols="60" rows="5"></textarea>
+												<textarea name="recensione" :id="index" cols="60" rows="5"></textarea>
 											</form>
 										</div>
 									</div>
@@ -202,17 +201,17 @@
 								<!-- undefined -->
 								<div class="card" :id="'carta'+index">
 									<div class="card-header">
-										richiesta : {{x.utente_richiedente}}
+										Richiesta da {{x.richiedente}}
 									</div>
 									<div class="card-body">
-										<h5 class="card-title">Richiesta da parte di {{x.utente_richiedente}} per la sua competenza </h5>
-										<p class="card-text">IL signor {{x.utente_richiedente}} offre la sua competenza di "cassamortaro"
+										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la sua competenza </h5>
+										<p class="card-text">{{x.messaggio}}
 										</p>
 										<div :id="'bottoni'+index">
-											<button type="button" :id="index" name="SI" class="btn btn-success"
-												onclick="settaSI(id)">Accetta</button>
-											<button type="button" :id="index" name="NO" class="btn btn-dark"
-												onclick="settaNO(id)">Declina</button>
+											<button type="button" :id="index" :name="x._id" class="btn btn-success"
+												onclick="settaSI(id, name)">Accetta</button>
+											<button type="button" :id="index" :name="x._id" class="btn btn-dark"
+												onclick="settaNO(id, name)">Declina</button>
 										</div>
 										<div>
 											<div class="custom-control custom-switch nascondi" :id="'swich'+index">
@@ -244,35 +243,32 @@
 	<script type="text/javascript" src="/javascript/profilo.js"></script>
 	<script>
 
-		function cambiaImg(e) {      // capire il pat
-			document.getElementById("img_profilo").src = "/path/to/images/" + e + ".jpg";
-
+		function cambiaImg(url) {      // capire il pat
+			$("#img_profilo").removeAttr("src").attr("src", url);
 		}
 
 	</script>
 	<script>
 
-		function settaSI(e) {
+		function settaSI(e, scambio) {
 
-			alert("sto nel si" + e);
 
 			$('#bottoni' + e).remove()
 			$('#swich' + e).css("display", "block")
-
+			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
 		}
-		function settaNO(e) {
+		function settaNO(e, scambio) {
 
-			alert("sto nel no");
 			$('#carta' + e).remove()
-
+			$.post(document.location.href + '/scambio/' + scambio, { stato: 'rifiutato' })
 		}
-
 		function mostraForm(e) {
-			alert("mostro la form" + e);
 			$('#form' + e).css("display", "block")
 		}
 	</script>
 	<script>
+
+
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
 
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {

@@ -81,6 +81,11 @@ app.use((req, res, next) => {
     }
 });
 
+// app.get('/test', (req, res) => {
+//     db.removeAttachment('6ninjak', 'immagine_profilo', errHandler);
+//     res.send('ok');
+// })
+
 app.get('/file', (req, res) => {
     db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {
         res.end(body);
@@ -182,7 +187,9 @@ app.post('/migliori', (req, res) => {
 });
 
 app.get('/ricerca', (req, res) => {
-    res.render('ricerca');
+    res.render('ricerca', {
+        utente: req.cookies.cookieUtente
+    });
 });
 
 app.post('/ricerca', (req, res) => {
@@ -200,6 +207,7 @@ app.post('/ricerca', (req, res) => {
         for (let i = 0; i < query.length; i++) {
         
             q.selector.$or.push(
+                { username: { $regex: "(?i)" + query[i] } },
                 { nome: { $regex: "(?i)" + query[i] } },
                 { cognome: { $regex: "(?i)" + query[i] } },
                 { competenze: { $elemMatch: { $regex: "(?i)" + query[i] } } }
@@ -229,7 +237,7 @@ app.get('/Faq', (req, res) => {
 
 // URL non valido, reindirizza a pagina d'errore
 app.get('*', (req, res) => {
-    res.status(404).send('pagina non trovata');
+    res.status(404).render('404');
 })
 
 

@@ -23,7 +23,7 @@
 			<ul class="navbar-nav mr-auto">
 				<!-- bottone generico -->
 				<li>
-					<a class="nav-link" href="../">Home</a>
+					<a class="nav-link" href="/home">Home</a>
 				</li>
 
 			</ul>
@@ -36,15 +36,13 @@
 					</form>
 				</div>
 				<li class="nav-item">
-					<img src="https://source.unsplash.com/collection/190727/50x50" class="rounded-circle">
+					<img src="/file?docName=<%= utente.username %>&attName=immagine_profilo" class="rounded-circle">
 				</li>
 				<li class="nav-item dropdown">
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente%></a>
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente.username %></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="users/1">Profilo</a>
-						<a class="dropdown-item" href="users/1" name="punti">punti</a>
-						<a class="dropdown-item" href="#">recensioni</a>
+						<a class="dropdown-item" href="users/<%= utente.username %>">Profilo</a>
 						<a class="dropdown-item" href="logout">Log out</a>
 						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
 					</div>
@@ -67,14 +65,14 @@
 					<!--da far diventare un bottone-->
 					<div class="row no-gutters">
 						<div class="col-md-4">
-							<img src="https://source.unsplash.com/collection/190727/100x50" class="card-img">
+							<img v-bind:src="'/file?docName='+x.username+'&attName=immagine_profilo'" class="card-img">
 						</div>
 						<div class="col-md-8">
 							<div class="card-body">
 								<form method="POST" name="ut">
-									<a class="card-title btn" href="profilo_esterno" onclick="daiDati();">{{x.nome}} </a>
-									<p class="card-text">{{x.cognome}}</p>
-									<p class="card-text"><small class="text-muted">{{x.email}}</small></p>
+									<a class="card-title btn" v-bind:href="'/users/'+x.username" onclick="daiDati();">{{x.nome}}</a>
+									<p class="card-text">{{x.username}}</p>
+									<p class="card-text"><small class="text-muted">{{x.media}}</small></p>
 								</form>
 							</div>
 						</div>
@@ -92,27 +90,27 @@
 	<script type="text/javascript" src="/javascript/ricerca.js"></script>
 	<script>
 		function daiDati() {
-			if (typeof (Storage) !== "undefined") {
-				localStorage.clear();
-				var o = {
-					"nome": "lorenzo",
-					"cognome": "catini",
-					"email": "ahdfas@sfbfk.it",
-					"professione": "informatico",
-					"competenze": ["cassamortaro"],
-					"username": "maramuuuu",
-					"ricerca": ["cuoco", "idraulico"],
-					"punti": 25,
-					"recensioni": 7,
-					"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
-				}
-				var a = JSON.stringify(o);
-				localStorage.setItem("lastname", a);
-				// alert("successo DATI INVIATI");
-				// alert(users.x.nome);
-			} else {
-				// alert("errore nel local storage");
-			}
+			// if (typeof (Storage) !== "undefined") {
+			// 	localStorage.clear();
+			// 	var o = {
+			// 		"nome": "lorenzo",
+			// 		"cognome": "catini",
+			// 		"email": "ahdfas@sfbfk.it",
+			// 		"professione": "informatico",
+			// 		"competenze": ["cassamortaro"],
+			// 		"username": "maramuuuu",
+			// 		"ricerca": ["cuoco", "idraulico"],
+			// 		"punti": 25,
+			// 		"recensioni": 7,
+			// 		"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
+			// 	}
+			// 	var a = JSON.stringify(o);
+			// 	localStorage.setItem("lastname", a);
+			// 	// alert("successo DATI INVIATI");
+			// 	// alert(users.x.nome);
+			// } else {
+			// 	// alert("errore nel local storage");
+			// }
 		}
 	</script>
 	<script>

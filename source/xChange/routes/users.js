@@ -73,6 +73,23 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
+router.get('/:id/dati', (req, res, next) => {
+    // console.log(req.cookies.cookieUtente)
+    db.get(req.params.id, (err, doc) => {
+        // console.log(err);
+        // console.log(doc);
+        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+            delete doc.password;
+            console.log(doc);
+            res.json(doc);
+        } else if (!err) {
+            delete doc.password;
+            delete doc.email;
+            res.json(doc);
+        } else next();
+    });
+});
+
 // get su /users/:id/edit conduce a edit_dati.html di :id
 router.get('/:id/edit', (req, res) => {
     db.get(req.params.id, (err, doc) => {
@@ -99,12 +116,15 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// questa put serve ad aggiornare l'immagine profilo dell'utente id
+// questa post serve ad aggiornare l'immagine profilo dell'utente id
 // un utente può aggiornare solo la propria pagina profilo
-router.put('/:id/image', (req, res) => {
+router.post('/:id/image', (req, res) => {
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            // inserisci file su db
+            console.log(req.body.file.type);
+            // db.addAttachment(req.params.id, req.body., 'immagine_profilo', req.body.file.type, (err, response) => {
+            //     if (!err) console.log(response);
+            // });
             res.redirect('.');
         } else if (!err) {
             res.send('Non puoi accedere a questa pagina, non fare il furbo!');
@@ -121,10 +141,13 @@ router.get('/:id/ricevute', (req, res) => {
         selector: {
             tipo: "scambio",
             richiesto: req.params.id,
-            stato: { $ne: 'rifiutato' }
+            stato: { $and: [
+                { $ne: 'rifiutato' },
+                { $ne: 'concluso' }]
+            }
         },
         sort: [{ data: "desc"}],
-        fields: ["data", "richiedente", "competenza", "messaggio", "stato"]
+        fields: ["_id", "data", "richiedente", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -148,7 +171,7 @@ router.get('/:id/effettuate', (req, res) => {
             richiedente: req.params.id,
         },
         sort: [{ data: "desc"}],
-        fields: ["data", "richiesto", "competenza", "messaggio", "stato"]
+        fields: ["_id", "data", "richiesto", "competenza", "messaggio", "stato", "info"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -201,14 +224,14 @@ router.post('/:id/scambi', (req, res) => {
     });
 })
 
-// questa put serve ad accettare o rifiutare una richiesta di scambio ricevuta
+// questa post serve ad accettare o rifiutare una richiesta di scambio ricevuta
 // un utente non può modificare solo richieste che ha ricevuto
 // l'id di scambio fornito nella richiesta deve essere corretto (deve esistere uno scambio in attesa con lo stesso id)
 // la richiesta deve passare un parametro: "stato"
 // il parametro di stato può essere solo "accettato" o "rifiutato"
 // viene inserito un nuovo documento per lo scambio con le informazioni di contatto che include nell'id il timestamp di conferma
 // viene eliminato il documento con la richiesta in attesa, rendendo possibile effettuare un'altra richiesta
-router.put('/:id_user/scambio/:id_scambio', (req, res) => {
+router.post('/:id_user/scambio/:id_scambio', (req, res) => {
     let arrayScambio = req.params.id_scambio.split(':');
     if (arrayScambio.length != 3) 
         res.send("l'id di scambio fornito non è corretto");
@@ -296,14 +319,13 @@ router.post('/:id/recensioni', (req, res) => {
                     data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                 }
                 db.get(req.query.scambio, (err, document) => {
-                    if (!err && document.stato == "concluso") // cambiare sugli scambi!!
+                    if (!err && document.stato == "accettato")
                         db.insert(documento, req.query.scambio + ':recensione', (err, response) => {
                             if (err && err.error == 'conflict') {
                                 res.send('esiste già una recensione con questo id')
                             } else {
                                 console.log(response);
-                                res.json(documento);
-                                let new_punti = doc.punti + documento.voto;
+                                let new_punti = parseInt(doc.punti) + parseInt(documento.voto);
                                 let new_recensioni = doc.recensioni + 1;
                                 let new_media = new_punti/new_recensioni;
                                 db.updateFields({
@@ -313,6 +335,12 @@ router.post('/:id/recensioni', (req, res) => {
                                 }, doc.username, (err, res) => {
                                     if (!err) console.log(res)
                                 });
+                                db.updateFields({
+                                    stato: 'concluso'
+                                }, req.query.scambio, (err, res) => {
+                                    if (!err) console.log(res)
+                                });
+                                res.redirect('../' + documento.recensore);
                             }
                         });
                     else if (!err) res.send('lo stato dello scambio non è valido');
@@ -325,7 +353,7 @@ router.post('/:id/recensioni', (req, res) => {
 
 // URL non valido, reindirizza a pagina d'errore
 router.get('*', (req, res) => {
-    res.status(404).send('pagina non trovata');
+    res.status(404).render('404');
 })
 
 module.exports = router;
