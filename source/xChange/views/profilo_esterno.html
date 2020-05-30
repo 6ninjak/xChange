@@ -25,7 +25,7 @@
 			const oggetto = JSON.parse(localStorage.lastname);
 			var a = oggetto.punti;
 			var b = oggetto.recensioni;
-			var c = a % b;
+			var c = a / b;
 
 
 			document.getElementById("pt").value = c;
@@ -33,12 +33,11 @@
 			for (var i = 0; i < c; i++) {
 				stelleList[i].classList.add("checked");
 			}
-			alert("successo DATI CARICATI");
 			new Vue({
 				el: '#app_v',
 				data: {
 					utente: [oggetto],
-					ricerca:oggetto.ricerca,
+					ricerca: oggetto.ricerca,
 					recensioni: []
 				},
 				mounted: function () {
@@ -128,8 +127,14 @@
 					<ul class="list-group">
 						<li class="list-group-item disabled" aria-disabled="true">Email: {{x.email}}</li>
 						<li class="list-group-item">Professione: {{x.professione}}</li>
-						<li class="list-group-item" id="comp">competenze: {{x.competenze}}</li>
-						<li class="list-group-item" id="comp">ricerca: {{x.ricerca}}</li>
+						<li class="list-group-item" id="comp">
+							<span>competenze: </span>
+							<span v-for="c in x.competenze">{{ c }}</span>
+						</li>
+						<li class="list-group-item" id="comp">
+							<span>in cerca di: </span>
+							<span v-for="r in x.ricerca">{{ r }} </span>
+						</li>
 					</ul>
 					<li class="list-group-item" id="ptt" value="x.punti"> {{x.punti}}</li>
 					<li class="list-group-item" id="rec" value="{{x.recensioni}}"> {{x.recensioni}}</li>

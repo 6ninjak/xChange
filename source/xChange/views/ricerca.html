@@ -99,20 +99,19 @@
 					"cognome": "catini",
 					"email": "ahdfas@sfbfk.it",
 					"professione": "informatico",
-					"competenze": "cassamortaro",
+					"competenze": ["cassamortaro"],
 					"username":"maramuuuu",
-					"ricerca": [{"ric":"cuoco"},
-					            {"ric":"idraulico"}],
+					"ricerca": ["cuoco", "idraulico"],
 					"punti": 25,
 					"recensioni": 7,
 					"descrizione": "sjabvbfvbfjsbkdvbsidfbbvebdbsjkdhskhlaiskfahskdfjhaslkvbeibviaebvraevbraiebvsubva"
 				}
 				var a = JSON.stringify(o);
 				localStorage.setItem("lastname", a);
-				alert("successo DATI INVIATI");
-				alert(users.x.nome);
+				// alert("successo DATI INVIATI");
+				// alert(users.x.nome);
 			} else {
-				alert("errore nel local storage");
+				// alert("errore nel local storage");
 			}
 		}
 	</script>
