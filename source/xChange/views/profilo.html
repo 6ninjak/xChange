@@ -56,6 +56,9 @@
 					<a class="nav-link" href="#recensioni">Recensioni</a>
 				</li>
 				<li>
+					<a class="nav-link" href="#notifiche">Notifiche</a>
+				</li>
+				<li>
 					<a class="nav-link" href="#richieste">Richieste</a>
 				</li>
 			</ul>
@@ -83,8 +86,8 @@
 					class="rounded-circle mb-3" id="img_profilo">
 				<form v-bind:action="'/users/'+utente[0].username+'/image'" method="POST">
 					<div class="form-group" name="prof">
-						<input name=file type="file" class="form-control-file" id="exampleFormControlFile1">
-						<button type="submit">Conferma</button>
+						<input name=file type="file" class="form-control-file mb-3" id="exampleFormControlFile1">
+						<button type="submit" class = "btn btn-primary">Conferma</button>
 					</div>
 				</form>
 				<div v-for="n in utente">
@@ -108,8 +111,8 @@
 				<hr>
 				<!-- sezione stelle-punteggio -->
 				<div id="punti" class="big-padding">
-					<h2>Punti</h2> 
-					<input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
+					<h2>Punti</h2>
+
 					<div id="stelle">
 						<span id="stella1" name="stella" class="fa fa-star"></span>
 						<span id="stella2" name="stella" class="fa fa-star"></span>
@@ -122,6 +125,7 @@
 				<hr>
                 <!-- sezione recensioni -->
 				<div id="recensioni" class="big-padding">
+
 					<h2>Recensioni</h2>
 					<div v-for="a in recensioni.docs">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">

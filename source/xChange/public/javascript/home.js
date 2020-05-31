@@ -1,3 +1,4 @@
+// visualizza sulla home i profili con i voti migliori
 new Vue({
     el: '#app_v',
     data: {
@@ -14,5 +15,4 @@ new Vue({
             console.log(error);
           });
     }
-
 })

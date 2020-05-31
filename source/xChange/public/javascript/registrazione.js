@@ -1,9 +1,9 @@
+// controlle se i valori inseriti nella form della registrazione corrispondono alle nostre richieste
+// controlla se la password ha una lunghezza almeno pari a 8 caratteri
+// controlla se la prima password inserita è identica alla seconda
 function validaForm(){
     if(password()){
-        if(passwordIdentiche()){
-        
-        }
-        else{
+        if(!passwordIdentiche()){
             return false;
         }
     }

@@ -1,3 +1,6 @@
+// inserisce all'interno dell'array tutti i profili che combaciano con il valore inserito all'interno
+// della barra di ricerca e viene spedito al file ricerca.html
+
 var app = new Vue({
   el: '#app_vue',
   data: {
