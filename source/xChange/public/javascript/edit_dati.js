@@ -1,16 +1,7 @@
-
+// controlla se i valori passati dalla form del file edit_dati.html sono giusti
 function verificaForm(){
-    var v= parseInt(document.getElementById("ID_telefono").value);
-    if(isNaN(v)){
-         alert("il campo accetta solo numeri");
-         return false;
-    }
-    if(document.getElementById("ID_professione")==""){
-         alert("la professione è gia inserita");
-         return false;
-    }
-    if(document.getElementById("ID_email")==""){
-        alert("e-mail gia inserita");
+    if(document.getElementById("telefono").value.length < 9){
+        alert("Il numero di telefono è troppo corto");
         return false;
     }  
     alert("successo")  

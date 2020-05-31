@@ -4,64 +4,69 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+	<!-- <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity=""> -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 	<title>xChange - account</title>
 </head>
 
 <body>
-	<div class="container border">
+	<div class="container border mt-3">
 		<form action="." method="POST" name="aggiornamento" onSubmit="return verificaForm();">
-			<div class="form-row">
+			<div class="form-row mt-3">
 				<div class="col-md-4 mb-3">
 					<label for="ID_nome">Nome:</label>
-					<input type="text" readonly class="form-control" id="ID_nome" value="Mark" required>
+					<input type="text" readonly class="form-control" id="ID_nome" value="Simone" required>
 					<!-- prendere i dati da scrivre in value -->
 				</div>
 				<div class="col-md-4 mb-3">
-					<label for="ID_Cognome">Cognome</label>
-					<input type="text" readonly class="form-control" id="ID_Cognome" value="Otto" required>
+					<label for="ID_Cognome">Cognome:</label>
+					<input type="text" readonly class="form-control" id="ID_Cognome" value="Mastrocola" required>
 					<!-- prendere i dati da scrivere in value -->
 				</div>
 				<div class="col-md-4 mb-3">
-					<label for="ID_user">Username</label>
-					<input type="text" readonly class="form-control" id="ID_user" value="pastrafrolla" required>
+					<label for="ID_user">Username:</label>
+					<input type="text" readonly class="form-control" id="ID_user" value="strike96" required>
 					<!-- prendere i dati da scrivere in value -->
 				</div>
 			</div>
 
 			<div class="form-row">
-				<div class="col-md-3 mb-3">
+				<!-- <div class="col-md-3 mb-3">
 					<label for="ID_citta">città</label>
 					<input type="text" class="form-control" id="ID_citta" value="roma" required>
-					<!-- verificare sia una citta valida -->
-				</div>
-				<div class="col-md-3 mb-3">
-					<label for="validationDefault04">Aggiungi competenza</label>
-					<select class="custom-select" id="validationDefault04" required>
-						<option selected disabled value="">Choose...</option>
-						<option>...</option>
+					
+				</div> -->
+				<div class="col-md-4 mb-3">
+					<label for="competenze">Aggiungi competenza:</label>
+					<select class="selectpicker" multiple id="competenze" placeholder = "Scegli" required>
+						<option value="cassamortaro">cassamortaro</option>
+						<option value="falegname">falegname</option>
+						<option value="idraulico">idraulico</option>
+						<option value="ingegnere">ingegnere</option>
+						<option value="meccanico">meccanico</option>
+						<option value="sarto">sarto</option>
 					</select>
 				</div>
-				<div class="col-md-3 mb-3">
-					<label for="ID_telefono">telefono</label>
-					<input type="text" class="form-control" id="ID_telefono" name="telefono" value="123456789" required>
+				<div class="col-md-4 mb-3">
+					<label for="professione">Professione:</label>
+					<select class="select" id="professione" placeholder = "Scegli" required>
+						<option selected disabled value="">...</option>
+						<option value="cassamortaro">cassamortaro</option>
+						<option value="falegname">falegname</option>
+						<option value="idraulico">idraulico</option>
+						<option value="ingegnere">ingegnere</option>
+						<option value="meccanico">meccanico</option>
+						<option value="sarto">sarto</option>
+					</select>
 				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-md-3 mb-3">
-					<label for="ID_professione">Professione</label>
-					<input type="text" class="form-control" id="ID_professione" value="pizzaiolo" required>
-					<!-- prendere i dati da scrivere in value -->
+				<div class="col-md-4 mb-3">
+					<label for="ID_telefono">Telefono:</label>
+					<input type="number" class="form-control" id="telefono" name="telefono" required>
 				</div>
-				<div class="col-md-6 mb-3">
-					<label for="ID_email">aggiungi E-mail</label>
-					<input type="email" class="form-control" id="ID_email" value="" required>
-					<!-- prendere i dati da scrivere in value -->
-				</div>
-				<!-- aggiungere campi ipotetici -->
 			</div>
 
-			<button class="btn btn-primary" type="submit">Aggiorna</button> <!-- invia informazioni al server e aggiorna -->
+			<button class="btn btn-primary mb-3" type="submit">Aggiorna</button> <!-- invia informazioni al server e aggiorna -->
 			<!-- all'invio verifica ala pasword -->
 		</form>
 		<!-- devo aggiungere uno spazio -->
@@ -69,8 +74,14 @@
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
-	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 	<script src="/javascript/edit_dati.js"></script>
+
+	<script>
+		$('select').selectpicker();
+	</script>
 </body>
 
 </html>
