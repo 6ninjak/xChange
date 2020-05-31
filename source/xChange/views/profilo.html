@@ -15,7 +15,7 @@
 
 	<title>profilo</title>
 	<script>
-		function caricaDati() {
+		function caricaDati() { //colora le stelle in base al punteggio
 			var stelleList = document.getElementsByName("stella")
 			var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
 			for (var i = 1; i <= mediaRound; i++) {
@@ -23,12 +23,16 @@
 				alert(id);
 				$(id).addClass('checked');
 			}
-		}
+			$(document).ready(function(){
+			   
+			   });
+			}
 	</script>
 
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati();">
+	<!-- navbar ------------------------------------------------------------------------------------------>
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -36,14 +40,12 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<!-- home rimanda alla home-->
+		<!-- navigare all'interno del profilo-->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<!-- bottone generico -->
 				<li>
 					<a class="nav-link" href="../">Home</a>
 				</li>
-				<!-- bottone generico -->
 				<li>
 					<a class="nav-link" href="#profilo">Profilo</a>
 				</li>
@@ -74,11 +76,11 @@
 			</ul>
 		</div>
 	</nav>
-
+    <!-- campi account utente  ---------------------------------------------------------->
 	<div class="container" id="cont">
 		<div id="app_ve">
 			<div id="profilo" class="big-padding">
-
+                 <!-- dati personalli -->
 				<h2>Profilo</h2>
 				<img v-bind:src="'../file?docName='+utente[0].username+'&attName=immagine_profilo'" alt=""
 					class="rounded-circle mb-3" id="img_profilo">
@@ -106,28 +108,25 @@
 					aria-pressed="true">Modifica</a>
 
 				<hr>
-
 				<hr>
+				<!-- sezione stelle-punteggio -->
 				<div id="punti" class="big-padding">
-					<h2>Punti</h2> <!-- parte sstatica che viene aggiornata da sola appenainserita una recensione -->
-					<!-- gestire punteggio -->
+					<h2>Punti</h2>
 
 					<div id="stelle">
-
 						<span id="stella1" name="stella" class="fa fa-star"></span>
 						<span id="stella2" name="stella" class="fa fa-star"></span>
 						<span id="stella3" name="stella" class="fa fa-star"></span>
 						<span id="stella4" name="stella" class="fa fa-star"></span>
 						<span id="stella5" name="stella" class="fa fa-star"></span>
-
 					</div>
 				</div>
 				<hr>
-
 				<hr>
+                <!-- sezione recensioni -->
 				<div id="recensioni" class="big-padding">
-					<h2>Recensioni:</h2>
-					<!-- gestire recensioni -->
+
+					<h2>Recensioni</h2>
 					<div v-for="a in recensioni.docs">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
 							<div class="card-header">recensione di {{a.recensore}} </div>
@@ -141,20 +140,61 @@
 
 				<hr>
 				<hr>
-
+                <!-- sezione notifiche -->
 				<div id=notifiche class="big-padding">
 					<h2>Notifiche:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
 						<div v-for="n in notifiche.docs">
-							<div class="card" id="'carta">
-								<div class="card-header">
-									Inviata a {{n.richiesto}}
-									<button class="btn btn-danger pull-right">Elimina</button>
+							<div v-if="n.stato=='accettato'">   <!-- accettate -->
+								<div class="card bg-success" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
 								</div>
-								<div class="card-body">
-									<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
-									<p class="card-text">{{n.messaggio}}</p>
-									<p class="card-text">{{n.info}}</p>
+							</div>
+							<div v-else-if="n.stato=='rifiutato'">    <!-- rifiutate -->
+								<div class="card bg-danger" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
+								</div>
+							</div>
+							<div v-else-if="n.stato=='attesa'">     <!-- attesa -->
+								<div class="card bg-warning" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
+								</div>
+							</div>
+							<div v-else>                <!-- finite -->
+								<div class="card bg-success" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -163,13 +203,12 @@
 
 				<hr>
 				<hr>
+				<!-- sezione richieste -->
 				<div id=richieste class="big-padding">
 					<h2>Richieste di scambio:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
 						<div v-for="(x, index) in richieste.docs">
-							<!-- si -->
-							<div v-if="x.stato=='accettato'">
-								<!-- da verificare  -->
+							<div v-if="x.stato=='accettato'">    <!-- accettate -->
 								<div class="card" :id="'carta'+index">
 									<div class="card-header">
 										Richiesta per {{x.richiedente}}
@@ -177,8 +216,7 @@
 									<div class="card-body">
 										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la tua competenza:
 											{{x.competenza}} </h5>
-										<p class="card-text">{{x.messaggio}}
-										</p>
+										<p class="card-text">{{x.messaggio}}</p>
 										<div>
 											<div class="custom-control custom-switch" :id="'swich'+index">
 												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)">
@@ -199,8 +237,7 @@
 									</div>
 								</div>
 							</div>
-							<div v-else>
-								<!-- undefined -->
+							<div v-else>   <!-- in attesa -->
 								<div class="card" :id="'carta'+index">
 									<div class="card-header">
 										Richiesta da {{x.richiedente}}
@@ -244,33 +281,30 @@
 
 	<script type="text/javascript" src="/javascript/profilo.js"></script>
 	<script>
-
-		function cambiaImg(url) {      // capire il pat
+		function cambiaImg(url) {  
 			$("#img_profilo").removeAttr("src").attr("src", url);
 		}
-
 	</script>
-	<script>
+	<script>  // imposta lo stato dello scambio
 
 		function settaSI(e, scambio) {
-
-
 			$('#bottoni' + e).remove()
 			$('#swich' + e).css("display", "block")
 			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
 		}
-		function settaNO(e, scambio) {
 
+		function settaNO(e, scambio) {
 			$('#carta' + e).remove()
 			$.post(document.location.href + '/scambio/' + scambio, { stato: 'rifiutato' })
 		}
+
 		function mostraForm(e) {
 			$('#form' + e).css("display", "block")
 		}
+
 	</script>
-	<script>
 
-
+	<script> //scrollpy
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
 
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
