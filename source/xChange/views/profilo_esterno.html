@@ -22,26 +22,25 @@
 	<script>
 
 		function caricaDati() {
-			const oggetto = JSON.parse(localStorage.lastname);
-			var a = oggetto.punti;
-			var b = oggetto.recensioni;
-			var c = a / b;
 
-
-			document.getElementById("pt").value = c;
-			var stelleList = document.getElementsByName("stella")
-			for (var i = 0; i < c; i++) {
-				stelleList[i].classList.add("checked");
-			}
 			new Vue({
 				el: '#app_v',
 				data: {
-					utente: [oggetto],
-					ricerca: oggetto.ricerca,
+					utente: [],
+					ricerca: [],
 					recensioni: []
 				},
 				mounted: function () {
-					axios.post('profilo_esterno') //nostro server
+					axios.get(document.location.href + '/dati') //nostro server
+						.then(response => {
+							this.utente = [response.data];
+							this.ricerca = response.data.competenze;
+							console.log(data);
+						})
+						.catch(error => {
+							console.log(error);
+						});
+					axios.get(document.location.href + '/recensioni') //nostro server
 						.then(response => {
 							this.recensioni = response.data;
 							console.log(data);
@@ -189,8 +188,49 @@
 			<div id=competenze class="big-padding">
 				<h5>Chiedi competenza:</h5>
 				<br>
-				<span v-for="z in ricerca">
-					<button type="button" class="btn btn-dark mr-3">{{z.ric}}</button>
+
+				<span v-for="v in utente">
+					<span v-for="z in ricerca">
+						<!-- deve andare ad id//scambi -->
+
+						<button type="button" class="btn btn-dark mr-3" data-toggle="modal" v-bind:data-target="'#'+z"
+							name="z._id">{{z}}</button>
+
+						<!-- <button type="button" class="btn btn-dark mr-3" name="x._id" onclick="settaAspetta(name,testo)">Invia</button> -->
+						<!-- ///////////////////// -->
+						<div class="modal fade" :id="z" tabindex="-1" role="dialog"
+							aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Compila un breve messaggio da
+											mandare all'utente:</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<form v-bind:action="'/users/'+v.username+'/scambi'" method="POST">
+										<div class="modal-body">
+
+											<div class="form-group">
+
+												<label for="message-text" class="col-form-label">Messaggio:</label>
+												<textarea class="form-control" id="message-text"></textarea>
+												<input type="text" name="competenza" v-bind:value="z">
+											</div>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Chiudi</button>
+											<button type="submit" class="btn btn-primary">invia</button>
+										</div>
+									</form>
+
+								</div>
+							</div>
+						</div>
+
+					</span>
 				</span>
 			</div>
 			<br>
@@ -212,6 +252,11 @@
 				window.location.hash = target;
 			});
 		});
+	</script>
+	<script>
+		function settaAspetta(scambio) {
+			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
+		}
 	</script>
 </body>
 

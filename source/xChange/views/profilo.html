@@ -23,7 +23,10 @@
 				alert(id);
 				$(id).addClass('checked');
 			}
-		}
+			$(document).ready(function(){
+			   
+			   });
+			}
 	</script>
 
 </head>
@@ -127,6 +130,7 @@
 					<h2>Recensioni</h2>
 					<!-- gestire recensioni -->
 					<div v-for="a in recensioni.docs">
+						
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
 							<div class="card-header">recensione di {{a.recensore}} </div>
 							<div class="card-body">
@@ -144,15 +148,56 @@
 					<h2>Notifiche:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
 						<div v-for="n in notifiche.docs">
-							<div class="card" id="'carta">
-								<div class="card-header">
-									Inviata a {{n.richiesto}}
-									<button class="btn btn-danger pull-right">Elimina</button>
+							<div v-if="n.stato=='accettato'">
+								<div class="card bg-success" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
 								</div>
-								<div class="card-body">
-									<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
-									<p class="card-text">{{n.messaggio}}</p>
-									<p class="card-text">{{n.info}}</p>
+							</div>
+							<div v-else-if="n.stato=='rifiutato'">
+								<div class="card bg-danger" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
+								</div>
+							</div>
+							<div v-else-if="n.stato=='attesa'">
+								<div class="card bg-warning" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
+								</div>
+							</div>
+							<div v-else>
+								<div class="card bg-success" v-bind:id="n.stato">
+									<div class="card-header">
+										Inviata a {{n.richiesto}}
+										<button class="btn btn-dark pull-right">Elimina</button>
+									</div>
+									<div class="card-body" >
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+										<p class="card-text">{{n.messaggio}}</p>
+										<p class="card-text">{{n.info}}</p>
+									</div>
 								</div>
 							</div>
 						</div>

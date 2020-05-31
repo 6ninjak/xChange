@@ -216,7 +216,7 @@ router.post('/:id/scambi', (req, res) => {
                         res.send('esiste già uno scambio con questo id')
                     } else {
                         console.log(response);
-                        res.json(documento);
+                        res.redirect('/users/'+req.params.id);
                     }
                 });
             }
