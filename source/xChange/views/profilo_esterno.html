@@ -12,17 +12,14 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-	<!-- <script type="text/javascript" src="/javascript/profilo_esterno.js"></script> -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-
-
 
 	<script>
 
 		function caricaDati() {
-
+			// prende i parametri dal server mettendoli in array / utente array formato da un solo elemento 
+			// ricerca array formato da piu elementi / recensioni array formato da piu elementi 
 			new Vue({
 				el: '#app_v',
 				data: {
@@ -31,7 +28,7 @@
 					recensioni: []
 				},
 				mounted: function () {
-					axios.get(document.location.href + '/dati') //nostro server
+					axios.get(document.location.href + '/dati') 
 						.then(response => {
 							this.utente = [response.data];
 							this.ricerca = response.data.competenze;
@@ -40,7 +37,7 @@
 						.catch(error => {
 							console.log(error);
 						});
-					axios.get(document.location.href + '/recensioni') //nostro server
+					axios.get(document.location.href + '/recensioni')
 						.then(response => {
 							this.recensioni = response.data;
 							console.log(data);
@@ -54,10 +51,11 @@
 		}
 	</script>
 
-	<title>profilo</title>
+	<title>profilo esterno</title>
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati()">
+	<!-- navbar ------------------------------------------------------------------------------------------------------->
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -65,14 +63,12 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<!-- home rimanda alla home-->
+		<!-- navigare all'interno del profilo-->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<!-- bottone generico -->
 				<li>
 					<a class="nav-link" href="../">Home</a>
 				</li>
-				<!-- bottone generico -->
 				<li>
 					<a class="nav-link" href="#profilo">Profilo</a>
 				</li>
@@ -105,17 +101,17 @@
 						<a class="dropdown-item" href="users/1" name="punti">punti</a>
 						<a class="dropdown-item" href="#">recensioni</a>
 						<a class="dropdown-item" href="logout">Log out</a>
-						<!--<div class="dropdown-divider"></div> serve per fare una riga tra le varie voci-->
 					</div>
 				</li>
 			</ul>
 		</div>
 	</nav>
-
+    <!-- campi account utente  ---------------------------------------------------------->
 	<div class="container">
 		<div id="app_v">
 			<div id="profilo" class="big-padding">
 				<h2>Profilo</h2>
+				<!-- dati personalli -->
 				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle mb-3"
 					id="img_profilo">
 
@@ -139,20 +135,15 @@
 					<li class="list-group-item" id="ptt" value="x.punti"> {{x.punti}}</li>
 					<li class="list-group-item" id="rec" value="{{x.recensioni}}"> {{x.recensioni}}</li>
 				</div>
-
-				contatti:
-				//bottoni per facebbok twitter e instagram//
 				<br>
-				//descrizione:
 				<br>
-				<!-- descrizione utente -->
-
+				<!-- sezione descrizione utente -->
 				<div v-for="v in utente">
 					<h5>{{v.descrizione}}</h5>
 				</div>
 				<hr>
 				<hr>
-				<!-- punteggio creazione stelle e aggiornamento -->
+				<!-- sezione punteggio creazione stelle e aggiornamento -->
 				<div id="punti" class="big-padding">
 					<h2>Punti</h2>
 
@@ -169,7 +160,7 @@
 				</div>
 				<hr>
 				<hr>
-				<!-- recenzioni udente selezionato -->
+				<!-- sezione recenzioni utente selezionato -->
 				<div id="recensioni" class="big-padding">
 					<h2>Recensioni</h2>
 					<div v-for="a in recensioni">
@@ -186,18 +177,14 @@
 			<hr>
 			<br>
 			<div id=competenze class="big-padding">
+				<!--sezione per chiedere competenze ad utente -->
 				<h5>Chiedi competenza:</h5>
 				<br>
-
 				<span v-for="v in utente">
 					<span v-for="z in ricerca">
-						<!-- deve andare ad id//scambi -->
-
 						<button type="button" class="btn btn-dark mr-3" data-toggle="modal" v-bind:data-target="'#'+z"
-							name="z._id">{{z}}</button>
-
-						<!-- <button type="button" class="btn btn-dark mr-3" name="x._id" onclick="settaAspetta(name,testo)">Invia</button> -->
-						<!-- ///////////////////// -->
+							name="z._id">{{z}}
+						</button>
 						<div class="modal fade" :id="z" tabindex="-1" role="dialog"
 							aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog">
@@ -225,11 +212,9 @@
 											<button type="submit" class="btn btn-primary">invia</button>
 										</div>
 									</form>
-
 								</div>
 							</div>
 						</div>
-
 					</span>
 				</span>
 			</div>
@@ -240,9 +225,8 @@
 			<br>
 		</div>
 	</div>
-	<script>
+	<script> //scrollpy
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
-
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
 			target = this.hash;
 			e.preventDefault();
@@ -252,11 +236,6 @@
 				window.location.hash = target;
 			});
 		});
-	</script>
-	<script>
-		function settaAspetta(scambio) {
-			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
-		}
 	</script>
 </body>
 
