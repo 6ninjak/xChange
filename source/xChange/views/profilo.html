@@ -16,31 +16,38 @@
 	<title>profilo</title>
 	<script>
 		$(document).ready(function () {
+			
+			function caricaDati() {
+				var stelleList = document.getElementsByName("stella")
+				var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
+				for (var i = 1; i <= mediaRound; i++) {
+					var id = '#stella' + i;
+					$(id).addClass('checked');
+				}
+			}
+			
+			function sendRequest(elem) {
+				var utente = elem.getAttribute("utente");
+				var scambio = elem.getAttribute("scambio");
+				axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
+			}
+			
 			$(document).on('click', '#carta-notifica .btn', function(events){
 				sendRequest(this);
 				$(this).parents('div').eq(2).remove();
 				alert('Richiesta di scambio eliminata con successo');
 			});
+			
+			$("#stelle").ready(function (events) {
+				caricaDati();
+			});
 		});
-		function caricaDati() {
-			var stelleList = document.getElementsByName("stella")
-			var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
-			for (var i = 1; i <= mediaRound; i++) {
-				var id = '#stella' + i;
-				$(id).addClass('checked');
-			}
-		}
-
-		function sendRequest(elem) {
-			var utente = elem.getAttribute("utente");
-			var scambio = elem.getAttribute("scambio");
-			axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
-		}
+			
 	</script>
 
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati();">
+<body data-spy="scroll" data-target="#navbarSupportedContent">
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

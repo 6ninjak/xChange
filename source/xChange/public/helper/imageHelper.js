@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 
 const upload = multer({
-  dest: path.join(__dirname, 'public/temp')
+  dest: path.join(__dirname, '../temp')
 });
 
 module.exports = upload;
