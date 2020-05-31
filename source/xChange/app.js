@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
-const db = require('./public/helper/dbHelper.js')
+const db = require('./public/helper/dbHelper.js');
+const upload = require('./public/helper/imageHelper.js');
 
 // indice necessario per fare query ordinate in base al punteggio
 const indexClassifica = {
@@ -81,10 +82,10 @@ app.use((req, res, next) => {
     }
 });
 
-// app.get('/test', (req, res) => {
-//     db.removeAttachment('6ninjak', 'immagine_profilo', errHandler);
-//     res.send('ok');
-// })
+app.get('/test', (req, res) => {
+    db.addAttachment('6ninjak', './public/images/sarto.jpg','immagine_profilo', 'image/jpeg', errHandler);
+    res.send('ok');
+})
 
 app.get('/file', (req, res) => {
     db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {

@@ -4,13 +4,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<link rel="stylesheet" href="/stylesheets/styleHome.css">
 	<title>ricerca</title>
+	<script>
+		function caricaDati() {
+			var mediaRound = Math.round(parseFloat(media));
+
+		}
+	</script>
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent">
+<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati();">
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -36,7 +43,7 @@
 					</form>
 				</div>
 				<li class="nav-item">
-					<img src="/file?docName=<%= utente.username %>&attName=immagine_profilo" class="rounded-circle">
+					<img src="/file?docName=<%= utente.username %>&attName=immagine_profilo" class="img-profilo rounded-circle">
 				</li>
 				<li class="nav-item dropdown">
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
@@ -70,9 +77,13 @@
 						<div class="col-md-8">
 							<div class="card-body">
 								<form method="POST" name="ut">
-									<a class="card-title btn" v-bind:href="'/users/'+x.username" onclick="daiDati();">{{x.nome}}</a>
-									<p class="card-text">{{x.username}}</p>
-									<p class="card-text"><small class="text-muted">{{x.media}}</small></p>
+									<a class="card-title btn" v-bind:href="'/users/'+x.username">{{x.username}}</a>
+									<p class="card-text">{{x.nome}}
+										<span v-for="index in 5" :key="index" class="pull-right">
+											<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
+											<span v-else name="stella" class="fa fa-star"></span>
+										</span>
+									</p>
 								</form>
 							</div>
 						</div>

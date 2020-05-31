@@ -1,55 +1,85 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../public/helper/dbHelper.js')
+const db = require('../public/helper/dbHelper.js');
 const crypto = require('crypto');
+const upload = require('../public/helper/imageHelper.js');
+const fs = require('fs');
 
+function validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 
 router.post('/', (req, res) => {
     var body = req.body;
-    let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
-    var q = {
-        selector: {
-            tipo: 'user',
-            email: body.email
-        }
-    };
-    db.find(q, (err, response) => {
-        if(!err && response.docs.length==0) {
-            db.insert({
+    if (body.username.includes(":")) {
+        res.render('registrazione', {
+            error: 'username non valido'
+        });
+    } else if (body.password.length < 8) {
+        res.render('registrazione', {
+            error: 'password non valida'
+        });
+    } else if (!validateEmail(body.email)) {
+        res.render('registrazione', {
+            error: 'email non valida'
+        });
+    } else {
+        let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
+        var q = {
+            selector: {
                 tipo: 'user',
-                
-                username: body.username,
-                nome: body.nome,
-                cognome: body.cognome,
-                email: body.email,
-                password: encPwd,
-                punti: 0,
-                media: 0,
-                recensioni: 0
-                
-            }, body.username, (err, response) => {
-                if (err && err.error == 'conflict') {
-                    res.render('registrazione', {
-                        title: 'xChange - registrazione',
-                        error: 'esiste già un utente con questo username'
-                    });
-                } else if (err) {
-                    res.render('registrazione', {
-                        title: 'xChange - registrazione',
-                        error: err
-                    });
-                } else {
-                    console.log(response);
-                    res.redirect('/login');
-                }
-            });
-        } else {
-            res.render('registrazione', {
-                title: 'xChange - registrazione',
-                error: 'esiste già un utente con questa email'
-            });
-        }
-    })
+                email: body.email
+            }
+        };
+        db.find(q, (err, response) => {
+            if(!err && response.docs.length==0) {
+                db.insert({
+                    tipo: 'user',
+                    
+                    username: body.username,
+                    nome: body.nome,
+                    cognome: body.cognome,
+                    email: body.email,
+                    password: encPwd,
+                    punti: 0,
+                    media: 0,
+                    recensioni: 0
+                    
+                }, body.username, (err, response) => {
+                    if (err && err.error == 'conflict') {
+                        res.render('registrazione', {
+                            error: 'esiste già un utente con questo username'
+                        });
+                    } else if (err) {
+                        res.render('registrazione', {
+                            error: err
+                        });
+                    } else {
+                        // db.addAttachment(body.username, 'public/images/profilo.png', 'immagine_profilo', 'image/png', (err, response) => {
+                        //     if (!err) console.log(response);
+                        //     else console.log(err);
+                        // });
+                        fs.readFile('public/images/profilo.png', (err, data) => {
+                            if (!err) {
+                                db.attachment.insert(response.id, 'immagine_profilo', data, 'image/png', { rev:response.rev }, (error, r) => {
+                                    console.log(error || r);
+                                });
+                            }
+                            else console.log(err);
+                        });
+                        console.log(response);
+                        res.redirect('/login');
+                    }
+                });
+            } else {
+                res.render('registrazione', {
+                    title: 'xChange - registrazione',
+                    error: 'esiste già un utente con questa email'
+                });
+            }
+        })
+    }
 });
 
 // get su /users/:id conduce a profilo.html di :id
@@ -105,7 +135,7 @@ router.get('/:id/edit', (req, res) => {
 });
 
 // put su users/:id aggiorna i dati da db e reindirizza a /users/:id
-router.put('/:id', (req, res) => {
+router.post('/:id', (req, res) => {
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
             // inserisci dati su db
@@ -118,14 +148,14 @@ router.put('/:id', (req, res) => {
 
 // questa post serve ad aggiornare l'immagine profilo dell'utente id
 // un utente può aggiornare solo la propria pagina profilo
-router.post('/:id/image', (req, res) => {
+router.post('/:id/image', upload.single('file'), (req, res) => {
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            console.log(req.body.file.type);
-            // db.addAttachment(req.params.id, req.body., 'immagine_profilo', req.body.file.type, (err, response) => {
-            //     if (!err) console.log(response);
-            // });
-            res.redirect('.');
+            // console.log(req.file);
+            db.addAttachment(req.params.id, req.file.path, 'immagine_profilo', req.file.mimetype, (err, response) => {
+                if (!err) console.log(response);
+            });
+            res.redirect('/users/'+ req.params.id);
         } else if (!err) {
             res.send('Non puoi accedere a questa pagina, non fare il furbo!');
         } else res.redirect('/invalid');
@@ -171,7 +201,7 @@ router.get('/:id/effettuate', (req, res) => {
             richiedente: req.params.id,
         },
         sort: [{ data: "desc"}],
-        fields: ["_id", "data", "richiesto", "competenza", "messaggio", "stato", "info"]
+        fields: ["_id", "data", "richiesto", "competenza", "messaggio", "stato", "info", "richiedente"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -209,11 +239,16 @@ router.post('/:id/scambi', (req, res) => {
                     competenza: req.body.competenza,
                     messaggio: req.body.messaggio,
                     stato: 'attesa',
-                    data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
+                    data: Date.now()
                 }
                 db.insert(documento, documento.richiesto + ':' + documento.richiedente + ':' + documento.competenza, (err, response) => {
                     if (err && err.error == 'conflict') {
-                        res.send('esiste già uno scambio con questo id')
+                        delete doc.email;
+                        delete doc.password;
+                        res.render('profilo_esterno', {
+                            error: "hai già fatto una richiesta per la stessa competenza",
+                            utente: doc
+                        });
                     } else {
                         console.log(response);
                         res.json(documento);
@@ -243,13 +278,13 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                 db.get(req.params.id_scambio, (err, document) => {
                     if (err) res.send("l'id di scambio fornito non è corretto");
                     else {
-                        let d = new Date();
                         document.stato = req.body.stato;
                         let rev = document._rev;
                         delete document._rev;
                         delete document._id;
-                        document.data = "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
-                        document.info = 'email: ' + doc.email;
+                        document.data = Date.now();
+                        if (req.body.stato == 'accettato')
+                            document.info = 'email: ' + doc.email +'\nTelefono: ' + doc.telefono;
                         // aggiungere campo del telefono da fornire
                         db.insert(document, req.params.id_scambio + ':' + document.data, (err, response) => {
                             if (!err) {
@@ -261,7 +296,32 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                             } else console.log(err);
                         });
                     }
-                })
+                });
+            } else if (!err) {
+                res.send('Non puoi accedere a questa pagina, non fare il furbo!');
+            } else res.redirect('/invalid');
+        });
+    }
+})
+
+router.post('/:id_user/scambio/:id_scambio/delete', (req, res) => {
+    let arrayScambio = req.params.id_scambio.split(':');
+    if (arrayScambio.length > 4 || arrayScambio.length < 3) 
+        res.send("l'id di scambio fornito non è corretto");
+    else {
+        db.get(req.params.id_user, (err, doc) => {
+            if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password && doc.username == arrayScambio[1]) {
+                db.get(req.params.id_scambio, (err, document) => {
+                    if (err) res.send("l'id di scambio fornito non è corretto");
+                    else {
+                        db.destroy(req.params.id_scambio, document._rev, (err, response) => {
+                            if (!err) {
+                                console.log(response);
+                                res.json(response);
+                            } else console.log(err);
+                        })
+                    }
+                });
             } else if (!err) {
                 res.send('Non puoi accedere a questa pagina, non fare il furbo!');
             } else res.redirect('/invalid');

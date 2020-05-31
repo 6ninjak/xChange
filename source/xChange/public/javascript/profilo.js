@@ -7,34 +7,35 @@ var app = new Vue({
         recensioni: []
     },
     created: function() {
-        axios.get(document.location.href + "/dati") //nostro server
+        var baseUrl = document.location.href.substr(-1) == '/'? document.location.href.replace(/.$/,"") : document.location.href;
+        axios.get(baseUrl + "/dati") //nostro server
             .then(response => {
                 this.utente = [response.data];
-                console.log(data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
         });
-        axios.get(document.location.href + "/ricevute") //nostro server
+        axios.get(baseUrl + "/ricevute") //nostro server
             .then(response => {
                 this.richieste = response.data;
-                console.log(data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
         });
-        axios.get(document.location.href + "/effettuate") //nostro server
+        axios.get(baseUrl + "/effettuate") //nostro server
             .then(response => {
                 this.notifiche = response.data;
-                console.log(data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
         });
-        axios.get(document.location.href + "/recensioni") //nostro server
+        axios.get(baseUrl + "/recensioni") //nostro server
             .then(response => {
                 this.recensioni = response.data;
-                console.log(data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
