@@ -15,6 +15,9 @@ var app = new Vue({
     function gestisciResponse(e) {
       if (e.target.readyState == 4 && e.target.status == 200) {
         app.users = e.target.response.docs;
+        for (let index = 0; index < app.users.length; index++) {
+          app.users[index].media=Math.round(app.users[index].media); 
+        }
       }
     }
   }

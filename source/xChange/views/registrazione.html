@@ -3,13 +3,16 @@
 <head>
 	<meta charset=UTF-8 />
 	<meta name=viewport content="width=device-width, initial-scale= 1" />
-	<title><%= title %></title>
+	<title>xChange - registrazione</title>
 	<link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel=stylesheet href="/stylesheets/styleReg.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 	<script type=text/javascript lang=javascript src=/javascript/registrazione.js></script>
+	<script>
+		if ("<%= error %>") alert("<%= error %>");
+	</script>
 </head>
 
 <body class="text-center">
@@ -26,7 +29,7 @@
 		<tr align="center">
 			<td>
 				<form action="users" class="" method="POST" name="registrazione" onSubmit="return validaForm()">
-					<input type="text" name="username" class="form-control nomeBord" placeholder="Username <%= error %>" required
+					<input type="text" name="username" class="form-control nomeBord" placeholder="Username" required
 						autofocus />
 					<input type="text" name="nome" class="form-control" placeholder="Nome" required autofocus />
 					<input type="text" name="cognome" class="form-control" placeholder="Cognome" required />

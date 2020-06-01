@@ -30,6 +30,10 @@
   line-height: 50px;
   padding-top: 0rem;
 }
+.nav-item .img-profilo {
+  width: 50px;
+  height: 50px;
+}
 .footer {
   min-height: 300px;
   background: #333;
@@ -43,16 +47,19 @@
   box-shadow: none;
 
 }
-.indigo_new{
+.indigo_new {
   background-color: var(--VERDE_SCURO);
 }
-.mio_testo{
+.mio_testo {
   color: var(--NERO)
 }
-.nascondi{
+.nascondi {
   display: none;
 }
-.form_nascosta{
+.altezza0 {
+  height: 0px;
+}
+.form_nascosta {
   display: none;
 }
 footer.page-footer {

@@ -16,6 +16,12 @@ db.updateFields = (docFields, docId, callback) => {
   });
 }
 
+db.delete = (docId, callback) => {
+  db.get(docId, (err, res) => {
+    if (!err) db.destroy(docId, res._rev, callback);
+  });
+}
+
 db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
   fs.readFile(filePath, (err, data) => {
       if (!err) {

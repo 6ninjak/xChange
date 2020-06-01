@@ -4,35 +4,47 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<link rel="stylesheet" href="/stylesheets/styleHome.css">
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="/bower_components/vue/dist/vue.min.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<title>profilo</title>
 	<script>
-		function caricaDati() { //colora le stelle in base al punteggio
-			var stelleList = document.getElementsByName("stella")
-			var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
-			for (var i = 1; i <= mediaRound; i++) {
-				var id = '#stella' + i;
-				alert(id);
-				$(id).addClass('checked');
+		$(document).ready(function () {
+			
+			function caricaDati() {
+				var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
+				for (var i = 1; i <= mediaRound; i++) {
+					var id = '#stella' + i;
+					$(id).addClass('checked');
+				}
 			}
-			$(document).ready(function(){
-			   
-			   });
+			
+			function sendRequest(elem) {
+				var utente = elem.getAttribute("utente");
+				var scambio = elem.getAttribute("scambio");
+				axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
 			}
+			
+			$(document).on('click', '#notifica .btn', function(events){
+				sendRequest(this);
+				$(this).parents('div').eq(2).remove();
+				alert('Richiesta di scambio eliminata con successo');
+			});
+			
+			$("#stelle").ready(function (events) {
+				caricaDati();
+			});
+		});
 	</script>
 
 </head>
-
-<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati();">
-	<!-- navbar ------------------------------------------------------------------------------------------>
+<body data-spy="scroll" data-target="#navbarSupportedContent">
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -44,7 +56,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li>
-					<a class="nav-link" href="../">Home</a>
+					<a class="nav-link" href="/home">Home</a>
 				</li>
 				<li>
 					<a class="nav-link" href="#profilo">Profilo</a>
@@ -65,13 +77,13 @@
 			<ul class="navbar-nav">
 				<!-- bottone/form di ricerca -->
 				<div class="nav-item">
-					<form class="form-inline" action="ricerca" method="GET">
+					<form class="form-inline" action="/ricerca" method="GET">
 						<input class="form-control" name="input" type="search" placeholder="Cerca" aria-label="Cerca">
 						<button id=ricerca class="btn btn-success mr-3" type="submit">Cerca</button>
 					</form>
 				</div>
 
-				<button class="btn btn-danger btn-lg" href="logout">Log out</button>
+				<a href="/logout"><button class="btn btn-danger btn-lg">Log out</button></a>
 
 			</ul>
 		</div>
@@ -82,29 +94,33 @@
 			<div id="profilo" class="big-padding">
                  <!-- dati personalli -->
 				<h2>Profilo</h2>
-				<img v-bind:src="'../file?docName='+utente[0].username+'&attName=immagine_profilo'" alt=""
-					class="rounded-circle mb-3" id="img_profilo">
-				<form v-bind:action="'/users/'+utente[0].username+'/image'" method="POST">
-					<div class="form-group" name="prof">
-						<input name=file type="file" class="form-control-file mb-3" id="exampleFormControlFile1">
-						<button type="submit" class = "btn btn-primary">Conferma</button>
-					</div>
-				</form>
 				<div v-for="n in utente">
+					<img v-bind:src="'/file?docName='+n.username+'&attName=immagine_profilo'" alt="" class="rounded-circle mb-3"
+						id="img_profilo" height="150" width="150">
+					<form v-bind:action="'/users/'+n.username+'/image'" method="POST" enctype="multipart/form-data">
+						<div class="form-group" name="prof">
+							<input name=file type="file" class="form-control-file" id="exampleFormControlFile1">
+							<button type="submit">Conferma</button>
+						</div>
+					</form>
 					<ul class="list-group list-group-horizontal-sm">
 						<li class="list-group-item">Nome: {{n.nome}}</li>
 						<li class="list-group-item">Cognome: {{n.cognome}}</li>
 					</ul>
 					<ul class="list-group">
 						<li class="list-group-item" aria-disabled="true">Email: {{n.email}}</li>
+						<li class="list-group-item" aria-disabled="true">Telefono: {{n.telefono}}</li>
 						<li class="list-group-item">professione: {{n.professione}}</li>
 						<li class="list-group-item">competenze:
-							<span v-for="c in n.competenze">{{c}} </span>
+							<span v-for="(c, index) in n.competenze">
+								<span v-if="index != n.competenze.length - 1">{{c}}, </span>
+								<span v-else>{{c}}</span>
+							</span>
 						</li>
 					</ul>
 					<h3>{{n.descrizione}}</h3>
 				</div>
-				<a href="<%= utente.username %>/edit" class="btn btn-primary btn-lg active" role="button"
+				<a href="<%= utente.username %>/edit" class="btn btn-success btn-lg active" role="button"
 					aria-pressed="true">Modifica</a>
 
 				<hr>
@@ -144,7 +160,7 @@
 				<div id=notifiche class="big-padding">
 					<h2>Notifiche:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
-						<div v-for="n in notifiche.docs">
+						<div v-for="n in notifiche.docs" id="notifica">
 							<div v-if="n.stato=='accettato'">   <!-- accettate -->
 								<div class="card bg-success" v-bind:id="n.stato">
 									<div class="card-header">
@@ -218,20 +234,21 @@
 											{{x.competenza}} </h5>
 										<p class="card-text">{{x.messaggio}}</p>
 										<div>
-											<div class="custom-control custom-switch" :id="'swich'+index">
-												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)">
-												<label class="custom-control-label" :for="index">scambio completato</label>
-											</div>
+											<input type="button" class="btn btn-success" :id="index" value="Scambio completato"
+												onclick="mostraForm(id)">
+											<hr :id="'linea'+index" class="nascondi">
 										</div>
 										<div :id="'form'+index" class="form_nascosta">
-											<form v-bind:action="'./'+x.richiedente+'/recensioni?scambio='+x._id" method="POST">
+											<form v-bind:action="'/users/'+x.richiedente+'/recensioni?scambio='+x._id" method="POST">
 												<br>
-												<span>Lascia una recensione: </span>
-												<input type="text" name="sintesi">
-												<input type="number" name="voto">
-												<button type="submit" class="btn btn-primary">Primary</button>
+												<div>Lascia una recensione: </div>
+												<input type="text" name="sintesi" placeholder="Titolo">
+												<input type="number" name="voto" placeholder="Voto" min="0" max="5">
 												<br>
-												<textarea name="recensione" :id="index" cols="60" rows="5"></textarea>
+												<textarea name="recensione" :id="index" cols="60" rows="5"
+													placeholder="Scrivi qui la tua recensione..."></textarea>
+												<br>
+												<button type="submit" class="btn btn-primary">Invia</button>
 											</form>
 										</div>
 									</div>
@@ -251,21 +268,6 @@
 												onclick="settaSI(id, name)">Accetta</button>
 											<button type="button" :id="index" :name="x._id" class="btn btn-dark"
 												onclick="settaNO(id, name)">Declina</button>
-										</div>
-										<div>
-											<div class="custom-control custom-switch nascondi" :id="'swich'+index">
-												<input type="checkbox" class="custom-control-input" :id="index" onclick="mostraForm(id)">
-												<label class="custom-control-label" :for="index">scambio completato</label>
-											</div>
-										</div>
-										<div :id="'form'+index" class="form_nascosta">
-											<form action="">
-												<br>
-												<span>Lascia una recensione: </span>
-												<button type="submit" class="btn btn-primary">Primary</button>
-												<br>
-												<textarea name="" :id="index" cols="60" rows="5"></textarea>
-											</form>
 										</div>
 									</div>
 								</div>
@@ -288,23 +290,21 @@
 	<script>  // imposta lo stato dello scambio
 
 		function settaSI(e, scambio) {
-			$('#bottoni' + e).remove()
-			$('#swich' + e).css("display", "block")
 			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
 		}
 
+
 		function settaNO(e, scambio) {
-			$('#carta' + e).remove()
 			$.post(document.location.href + '/scambio/' + scambio, { stato: 'rifiutato' })
 		}
 
 		function mostraForm(e) {
-			$('#form' + e).css("display", "block")
+			$("#form" + e).css("display", "block");
+			$("#" + e).addClass("nascondi altezza0");
+			$("#linea" + e).removeClass("nascondi");
 		}
-
 	</script>
-
-	<script> //scrollpy
+  <script>
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
 
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
