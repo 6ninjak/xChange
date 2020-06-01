@@ -251,7 +251,7 @@ router.post('/:id/scambi', (req, res) => {
                         });
                     } else {
                         console.log(response);
-                        res.redirect('/users/'+req.params.id);
+                        res.json(response);
                     }
                 });
             }
@@ -413,7 +413,7 @@ router.post('/:id/recensioni', (req, res) => {
 
 // URL non valido, reindirizza a pagina d'errore
 router.get('*', (req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404NotFound');
 })
 
 module.exports = router;
