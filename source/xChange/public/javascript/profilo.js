@@ -1,3 +1,5 @@
+// immagazzina le varie informazioni riguardante il proprio profilo nei vari Array, per poi essere usati
+// all'interno del file profilo.html
 var app = new Vue({
     el: '#app_ve',
     data: {

@@ -1,3 +1,4 @@
+// rende disponibile le informazioni di un utente diverso dal proprio sul file profilo_esterno.html
 new Vue({
     el: '#app_v',
     data: {

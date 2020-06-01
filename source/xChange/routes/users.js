@@ -251,7 +251,7 @@ router.post('/:id/scambi', (req, res) => {
                         });
                     } else {
                         console.log(response);
-                        res.json(documento);
+                        res.redirect('/users/'+req.params.id);
                     }
                 });
             }
