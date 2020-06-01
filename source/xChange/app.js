@@ -238,7 +238,7 @@ app.get('/Faq', (req, res) => {
 
 // URL non valido, reindirizza a pagina d'errore
 app.get('*', (req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404NotFound');
 })
 
 

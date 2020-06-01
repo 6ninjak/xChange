@@ -16,17 +16,17 @@
 			<div class="form-row mt-3">
 				<div class="col-md-4 mb-3">
 					<label for="ID_nome">Nome:</label>
-					<input type="text" readonly class="form-control" id="ID_nome" value="Simone" required>
+					<input type="text" readonly class="form-control" id="ID_nome" value="<%= utente.nome %>" required>
 					<!-- prendere i dati da scrivre in value -->
 				</div>
 				<div class="col-md-4 mb-3">
 					<label for="ID_Cognome">Cognome:</label>
-					<input type="text" readonly class="form-control" id="ID_Cognome" value="Mastrocola" required>
+					<input type="text" readonly class="form-control" id="ID_Cognome" value="<%= utente.cognome %>" required>
 					<!-- prendere i dati da scrivere in value -->
 				</div>
 				<div class="col-md-4 mb-3">
 					<label for="ID_user">Username:</label>
-					<input type="text" readonly class="form-control" id="ID_user" value="strike96" required>
+					<input type="text" readonly class="form-control" id="ID_user" value="<%= utente.username %>" required>
 					<!-- prendere i dati da scrivere in value -->
 				</div>
 			</div>
@@ -39,7 +39,8 @@
 				</div> -->
 				<div class="col-md-4 mb-3">
 					<label for="competenze">Aggiungi competenza:</label>
-					<select class="selectpicker" multiple id="competenze" placeholder = "Scegli" required>
+					<br>
+					<select name="competenze" class="selectpicker" multiple id="competenze" required>
 						<option value="cassamortaro">cassamortaro</option>
 						<option value="falegname">falegname</option>
 						<option value="idraulico">idraulico</option>
@@ -49,8 +50,9 @@
 					</select>
 				</div>
 				<div class="col-md-4 mb-3">
-					<label for="professione">Professione:</label>
-					<select class="select" id="professione" placeholder = "Scegli" required>
+					<label for="professione">La tua professione:</label>
+					<br>
+					<select name="professione" class="select" id="professione" required>
 						<option selected disabled value="">...</option>
 						<option value="cassamortaro">cassamortaro</option>
 						<option value="falegname">falegname</option>
@@ -62,7 +64,7 @@
 				</div>
 				<div class="col-md-4 mb-3">
 					<label for="ID_telefono">Telefono:</label>
-					<input type="number" class="form-control" id="telefono" name="telefono" required>
+					<input type="number" class="form-control" id="telefono" name="telefono">
 				</div>
 			</div>
 
@@ -73,7 +75,7 @@
 	</div>
 
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script><!-- da cepire -->
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script><!-- da cepire -->
 	<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>

@@ -7,6 +7,8 @@
 	<title><%= title %></title>
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<!-- Google Fonts -->
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
@@ -51,8 +53,8 @@
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente.username %></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="users/<%= utente.username %>">Profilo</a>
-						<a class="dropdown-item" href="logout">Log out</a>
+						<a class="dropdown-item" href="/users/<%= utente.username %>">Profilo</a>
+						<a class="dropdown-item" href="/logout">Log out</a>
 					</div>
 				</li>
 			</ul>
@@ -82,50 +84,58 @@
 					<!-- <h5 class="mio_testo"> aspetta che l'utente accetti la tua richiesta e contattalo!</h5> -->
 				</div>
 			</div>
-			<a class="carousel-control-prev" href="#carouselExampleControls" role="button"
-				data-slide="prev">
+			<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span class="sr-only">Previous</span>
 			</a>
-			<a class="carousel-control-next" href="#carouselExampleControls" role="button"
-				data-slide="next">
+			<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="sr-only">Next</span>
 			</a>
 		</div>
 
-        <!-- testo di presentazione ---------------------------------------------------------------------------->
-		<div class="container font-weight-light big-padding" id=row>
+		<!-- testo di presentazione ---------------------------------------------------------------------------->
+		<div class="container big-padding" id=row>
 			<br>
-			<h1 class="text-center" >xChange</h1>
-			<h4>Benvenuto in xChange la prima comunity italiana basata interamente sul concetto di baratto!! All'interno del sito si 
-				posso offrire le proprie competenze lavorative e non in qualsiasi ambito, in cambio di una rispettiva competenza 
-				offerta da un altro utente.</label></h4>
-			
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nostrum, quam incidunt voluptatum quasi ipsa
-				dolorem facilis alias sit dolores quisquam consequuntur laborum voluptatibus aliquid, eveniet atque sunt
-				sapiente a.</label></p>
+			<h1 class="text-center mb-3">xChange</h1>
+			<h4 class="font-weight-light">Benvenuto in xChange, la prima comunity italiana basata interamente sul concetto di baratto! All'interno del
+				sito si
+				possono offrire le proprie competenze lavorative (e non solo) in qualsiasi ambito in cambio di una rispettiva
+				competenza
+				offerta da un altro utente.</h4>
 
-		<!-- i piu votati ------------------------------------------------------------------------------------->
+			<!-- i piu votati ------------------------------------------------------------------------------------->
 			<div class="big-padding" id="i_piu_recensiti">
 				<h5>I piu recensiti:</h5>
-				<span class="card-group">
-					<div id="app_v">
-						<span v-for="x in scelti">
-							<div class="card">
-								<img v-bind:src="'/file?docName='+x.username+'&attName=immagine_profilo'" class="card-img-top" alt="...">
-								<div class="card-body">
-									<h5><a class="card-title btn" v-bind:href="'/users/'+x.username">{{x.nome}}</a></h5>
-									<p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-										additional
-										content. This content is a little bit longer.</p>
+				<div id="app_v">
+					<span v-for="x in scelti">
+						<div class="card mb-3" style="max-width: 540px;">
+							<div class="row no-gutters">
+								<div class="col-md-4">
+									<img v-bind:src="'/file?docName='+x.username+'&attName=immagine_profilo'" class="card-img">
 								</div>
-								<div class="card-footer">
-									<small class="text-muted">Last updated 3 mins ago</small>
+								<div class="col-md-8">
+									<div class="card-body">
+										<p>
+											<a class="card-title card-link" v-bind:href="'/users/'+x.username">{{x.username}}</a>
+										</p>
+										<p class="card-text">{{x.nome}}
+											<span v-for="index in 5" :key="index" class="pull-right">
+												<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
+												<span v-else name="stella" class="fa fa-star"></span>
+											</span>
+											<div>
+												<span v-for="(c, index) in x.competenze">
+													<span v-if="index != x.competenze.length - 1">{{c}}, </span>
+													<span v-else>{{c}}</span>
+												</span>
+											</div>
+										</p>
+									</div>
 								</div>
 							</div>
-						</span>
-					</div>
+						</div>
+				</div>
 				</span>
 			</div>
 
@@ -137,21 +147,22 @@
 		<footer class="page-footer font-small indigo_new">
 			<div class="container text-center text-md-left">
 				<div class="row">
-					<div class="col-md-3 mx-auto">   <!-- sezione bottoni  -->
+					<div class="col-md-3 mx-auto">
+						<!-- sezione bottoni  -->
 						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Link utili </h5>
 						<ul class="list-unstyled">
 							<li>
 								<a href="Faq" class="bottone_nero" role="button" aria-pressed="true">Faq</a>
 							</li>
 							<li>
-								<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Privacy</a>
+								<a href="#" class="bottone_nero" role="button" aria-pressed="true">Privacy</a>
 							</li>
 							<li>
-								<a href="users/1" class="bottone_nero" role="button" aria-pressed="true">Contattaci</a>
+								<a href="#" class="bottone_nero" role="button" aria-pressed="true">Contattaci</a>
 							</li>
 						</ul>
 					</div>
-					<hr class="clearfix w-100 d-md-none">                        <!-- sezione loghi  -->
+					<hr class="clearfix w-100 d-md-none"> <!-- sezione loghi  -->
 					<div class="col-md-9 mx-auto">
 						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Seguici su</h5>
 						<ul class="list-unstyled">
@@ -186,7 +197,8 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+		<script type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
 		<script type=text/javascript lang=javascript src=/javascript/home.js></script>
 
 		<script> //scrollpy
@@ -202,4 +214,5 @@
 			});
 		</script>
 </body>
+
 </html>

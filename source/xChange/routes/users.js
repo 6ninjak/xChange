@@ -12,7 +12,7 @@ function validateEmail(email) {
 
 router.post('/', (req, res) => {
     var body = req.body;
-    if (body.username.includes(":")) {
+    if (body.username.includes(":") || body.username.includes("?") || body.username.includes("/") || body.username.includes("=")) {
         res.render('registrazione', {
             error: 'username non valido'
         });
@@ -42,6 +42,7 @@ router.post('/', (req, res) => {
                     cognome: body.cognome,
                     email: body.email,
                     password: encPwd,
+                    competenze: [],
                     punti: 0,
                     media: 0,
                     recensioni: 0
@@ -97,7 +98,8 @@ router.get('/:id', (req, res, next) => {
             delete doc.password;
             delete doc.email;
             res.render('profilo_esterno', {
-                utente: doc
+                utente: req.cookies.cookieUtente,
+                media: doc.media
             });
         } else next();
     });
@@ -138,8 +140,31 @@ router.get('/:id/edit', (req, res) => {
 router.post('/:id', (req, res) => {
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            // inserisci dati su db
-            res.redirect('.');
+            console.log(req.body);
+            var array = doc.competenze;
+            if (typeof req.body.competenze == "string") {
+                if (!array.includes(req.body.competenze)) 
+                    array.push(req.body.competenze);
+            } else {
+                for (let index = 0; index < req.body.competenze.length; index++) {
+                    if (!array.includes(req.body.competenze[index])) 
+                        array.push(req.body.competenze[index]);
+                }
+            } 
+            var variazioni = {
+                telefono: req.body.telefono,
+                competenze: array,
+                professione: req.body.professione
+            }
+            db.updateFields(variazioni, req.params.id, (err, response) => {
+                if (!err) {
+                    console.log(response);
+                    delete doc.password
+                    res.render('profilo', {
+                        utente: doc
+                    });
+                }
+            })
         } else if (!err) {
             res.send('Non puoi accedere a questa pagina, non fare il furbo!');
         } else res.redirect('/invalid');
@@ -153,9 +178,11 @@ router.post('/:id/image', upload.single('file'), (req, res) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
             // console.log(req.file);
             db.addAttachment(req.params.id, req.file.path, 'immagine_profilo', req.file.mimetype, (err, response) => {
-                if (!err) console.log(response);
+                if (!err) {
+                    console.log(response);
+                    res.redirect('/users/'+ req.params.id);
+                }
             });
-            res.redirect('/users/'+ req.params.id);
         } else if (!err) {
             res.send('Non puoi accedere a questa pagina, non fare il furbo!');
         } else res.redirect('/invalid');
@@ -177,7 +204,7 @@ router.get('/:id/ricevute', (req, res) => {
             }
         },
         sort: [{ data: "desc"}],
-        fields: ["_id", "data", "richiedente", "competenza", "messaggio", "stato"]
+        fields: ["_id", "data", "richiesto", "richiedente", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
         if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
@@ -245,10 +272,7 @@ router.post('/:id/scambi', (req, res) => {
                     if (err && err.error == 'conflict') {
                         delete doc.email;
                         delete doc.password;
-                        res.render('profilo_esterno', {
-                            error: "hai già fatto una richiesta per la stessa competenza",
-                            utente: doc
-                        });
+                        res.redirect('/users/'+req.params.id);
                     } else {
                         console.log(response);
                         res.redirect('/users/'+req.params.id);
@@ -289,7 +313,8 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                         db.insert(document, req.params.id_scambio + ':' + document.data, (err, response) => {
                             if (!err) {
                                 console.log(response);
-                                res.json(document);
+                                res.json(response);
+                                // res.redirect("/users/" + req.params.id_user);
                                 db.destroy(req.params.id_scambio, rev).then((body) => {
                                     console.log(body);
                                 });
@@ -413,7 +438,7 @@ router.post('/:id/recensioni', (req, res) => {
 
 // URL non valido, reindirizza a pagina d'errore
 router.get('*', (req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404NotFound');
 })
 
 module.exports = router;

@@ -45,8 +45,8 @@
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente.username %></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="users/<%= utente.username %>">Profilo</a>
-						<a class="dropdown-item" href="logout">Log out</a>
+						<a class="dropdown-item" href="/users/<%= utente.username %>">Profilo</a>
+						<a class="dropdown-item" href="/logout">Log out</a>
 					</div>
 				</li>
 			</ul>
@@ -57,7 +57,7 @@
 	<br>
 	<br>
 	<br>
-     <!-- risultato ricerca  ---------------------------------------------------------------------------------------------->
+	<!-- risultato ricerca  ---------------------------------------------------------------------------------------------->
 	<div class="container">
 		<h2>Risultato della ricerca:</h2>
 		<div id="app_vue">
@@ -69,15 +69,21 @@
 						</div>
 						<div class="col-md-8">
 							<div class="card-body">
-								<form method="POST" name="ut">
-									<a class="card-title btn" v-bind:href="'/users/'+x.username">{{x.username}}</a>
-									<p class="card-text">{{x.nome}}
-										<span v-for="index in 5" :key="index" class="pull-right">
-											<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
-											<span v-else name="stella" class="fa fa-star"></span>
+								<p>
+									<a class="card-title card-link" v-bind:href="'/users/'+x.username">{{x.username}}</a>
+								</p>
+								<p class="card-text">{{x.nome}}
+									<span v-for="index in 5" :key="index" class="pull-right">
+										<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
+										<span v-else name="stella" class="fa fa-star"></span>
+									</span>
+									<div>
+										<span v-for="(c, index) in x.competenze">
+											<span v-if="index != x.competenze.length - 1">{{c}}, </span>
+											<span v-else>{{c}}</span>
 										</span>
-									</p>
-								</form>
+									</div>
+								</p>
 							</div>
 						</div>
 					</div>

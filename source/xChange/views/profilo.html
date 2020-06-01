@@ -16,7 +16,7 @@
 	<title>profilo</title>
 	<script>
 		$(document).ready(function () {
-			
+
 			function caricaDati() {
 				var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
 				for (var i = 1; i <= mediaRound; i++) {
@@ -24,19 +24,42 @@
 					$(id).addClass('checked');
 				}
 			}
-			
+
 			function sendRequest(elem) {
 				var utente = elem.getAttribute("utente");
 				var scambio = elem.getAttribute("scambio");
 				axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
 			}
-			
-			$(document).on('click', '#notifica .btn', function(events){
+
+			$(document).on('click', '#notifica .btn', function (events) {
 				sendRequest(this);
-				$(this).parents('div').eq(2).remove();
+				$(this).parents('div').eq(3).remove();
 				alert('Richiesta di scambio eliminata con successo');
 			});
-			
+
+			$(document).on('click', '#richiesta-scambio #accetta', function (events) {
+				var scambio = this.getAttribute("scambio");
+				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
+				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'accettato' })
+					.then(response => {
+						var index = $(this).parents('div').eq(0).attr("id");
+						$("#interno" + index).attr("action", $("#interno" + index).attr("action") + response.data.id);
+						$(this).parents('div').eq(1).children().removeClass("nascondi");
+						$(this).parents('div').eq(0).remove();
+						alert('richiesta accettata con successo');
+					})
+			});
+
+			$(document).on('click', '#richiesta-scambio #declina', function (events) {
+				var scambio = this.getAttribute("scambio");
+				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
+				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'rifiutato' })
+					.then(response => {
+						$(this).parents('div').eq(4).remove();
+						alert('richiesta declinata con successo');
+					})
+			});
+
 			$("#stelle").ready(function (events) {
 				caricaDati();
 			});
@@ -44,6 +67,7 @@
 	</script>
 
 </head>
+
 <body data-spy="scroll" data-target="#navbarSupportedContent">
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
@@ -88,19 +112,19 @@
 			</ul>
 		</div>
 	</nav>
-    <!-- campi account utente  ---------------------------------------------------------->
+	<!-- campi account utente  ---------------------------------------------------------->
 	<div class="container" id="cont">
 		<div id="app_ve">
 			<div id="profilo" class="big-padding">
-                 <!-- dati personalli -->
+				<!-- dati personalli -->
 				<h2>Profilo</h2>
 				<div v-for="n in utente">
 					<img v-bind:src="'/file?docName='+n.username+'&attName=immagine_profilo'" alt="" class="rounded-circle mb-3"
 						id="img_profilo" height="150" width="150">
 					<form v-bind:action="'/users/'+n.username+'/image'" method="POST" enctype="multipart/form-data">
 						<div class="form-group" name="prof">
-							<input name=file type="file" class="form-control-file" id="exampleFormControlFile1">
-							<button type="submit">Conferma</button>
+							<input name=file type="file" class="form-control-file mb-3" id="exampleFormControlFile1" accept=>
+							<button type="submit" class="btn btn-primary">Conferma</button>
 						</div>
 					</form>
 					<ul class="list-group list-group-horizontal-sm">
@@ -120,7 +144,7 @@
 					</ul>
 					<h3>{{n.descrizione}}</h3>
 				</div>
-				<a href="<%= utente.username %>/edit" class="btn btn-success btn-lg active" role="button"
+				<a href="/users/<%= utente.username %>/edit" class="btn btn-success btn-lg active" role="button"
 					aria-pressed="true">Modifica</a>
 
 				<hr>
@@ -139,7 +163,7 @@
 				</div>
 				<hr>
 				<hr>
-                <!-- sezione recensioni -->
+				<!-- sezione recensioni -->
 				<div id="recensioni" class="big-padding">
 
 					<h2>Recensioni</h2>
@@ -156,58 +180,66 @@
 
 				<hr>
 				<hr>
-                <!-- sezione notifiche -->
+				<!-- sezione notifiche -->
 				<div id=notifiche class="big-padding">
 					<h2>Notifiche:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
 						<div v-for="n in notifiche.docs" id="notifica">
-							<div v-if="n.stato=='accettato'">   <!-- accettate -->
+							<div v-if="n.stato=='accettato'">
+								<!-- accettate -->
 								<div class="card bg-success" v-bind:id="n.stato">
 									<div class="card-header">
 										Inviata a {{n.richiesto}}
-										<button class="btn btn-dark pull-right">Elimina</button>
+										<button class="btn btn-dark pull-right" :id="n._id" v-bind:scambio="n._id"
+											v-bind:utente="n.richiedente">Elimina</button>
 									</div>
-									<div class="card-body" >
-										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
 										<p class="card-text">{{n.messaggio}}</p>
 										<p class="card-text">{{n.info}}</p>
 									</div>
 								</div>
 							</div>
-							<div v-else-if="n.stato=='rifiutato'">    <!-- rifiutate -->
+							<div v-else-if="n.stato=='rifiutato'">
+								<!-- rifiutate -->
 								<div class="card bg-danger" v-bind:id="n.stato">
 									<div class="card-header">
 										Inviata a {{n.richiesto}}
-										<button class="btn btn-dark pull-right">Elimina</button>
+										<button class="btn btn-dark pull-right" :id="n._id" v-bind:scambio="n._id"
+											v-bind:utente="n.richiedente">Elimina</button>
 									</div>
-									<div class="card-body" >
-										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
 										<p class="card-text">{{n.messaggio}}</p>
 										<p class="card-text">{{n.info}}</p>
 									</div>
 								</div>
 							</div>
-							<div v-else-if="n.stato=='attesa'">     <!-- attesa -->
+							<div v-else-if="n.stato=='attesa'">
+								<!-- attesa -->
 								<div class="card bg-warning" v-bind:id="n.stato">
 									<div class="card-header">
 										Inviata a {{n.richiesto}}
-										<button class="btn btn-dark pull-right">Elimina</button>
+										<button class="btn btn-dark pull-right" :id="n._id" v-bind:scambio="n._id"
+											v-bind:utente="n.richiedente">Elimina</button>
 									</div>
-									<div class="card-body" >
-										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
 										<p class="card-text">{{n.messaggio}}</p>
 										<p class="card-text">{{n.info}}</p>
 									</div>
 								</div>
 							</div>
-							<div v-else>                <!-- finite -->
+							<div v-else>
+								<!-- finite -->
 								<div class="card bg-success" v-bind:id="n.stato">
 									<div class="card-header">
 										Inviata a {{n.richiesto}}
-										<button class="btn btn-dark pull-right">Elimina</button>
+										<button class="btn btn-dark pull-right" :id="n._id" v-bind:scambio="n._id"
+											v-bind:utente="n.richiedente">Elimina</button>
 									</div>
-									<div class="card-body" >
-										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} {{n.stato}} </h5>
+									<div class="card-body">
+										<h5 class="card-title">Richiesta a {{n.richiesto}} per la sua competenza: {{n.competenza}} </h5>
 										<p class="card-text">{{n.messaggio}}</p>
 										<p class="card-text">{{n.info}}</p>
 									</div>
@@ -223,14 +255,15 @@
 				<div id=richieste class="big-padding">
 					<h2>Richieste di scambio:</h2>
 					<div class="row row-cols-1 row-cols-md-2">
-						<div v-for="(x, index) in richieste.docs">
-							<div v-if="x.stato=='accettato'">    <!-- accettate -->
+						<div v-for="(x, index) in richieste.docs" id="richiesta-scambio">
+							<div v-if="x.stato=='accettato'">
+								<!-- accettate -->
 								<div class="card" :id="'carta'+index">
 									<div class="card-header">
 										Richiesta per {{x.richiedente}}
 									</div>
 									<div class="card-body">
-										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la tua competenza:
+										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la tua competenza di
 											{{x.competenza}} </h5>
 										<p class="card-text">{{x.messaggio}}</p>
 										<div>
@@ -254,20 +287,41 @@
 									</div>
 								</div>
 							</div>
-							<div v-else>   <!-- in attesa -->
-								<div class="card" :id="'carta'+index">
+							<div v-else>
+								<!-- in attesa -->
+								<div class="card">
 									<div class="card-header">
 										Richiesta da {{x.richiedente}}
 									</div>
 									<div class="card-body">
-										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la sua competenza </h5>
+										<h5 class="card-title">Richiesta da parte di {{x.richiedente}} per la tua competenza di
+											{{x.competenza}}</h5>
 										<p class="card-text">{{x.messaggio}}
 										</p>
-										<div :id="'bottoni'+index">
-											<button type="button" :id="index" :name="x._id" class="btn btn-success"
-												onclick="settaSI(id, name)">Accetta</button>
-											<button type="button" :id="index" :name="x._id" class="btn btn-dark"
-												onclick="settaNO(id, name)">Declina</button>
+										<div :id="index">
+											<button type="button" id="accetta" v-bind:scambio="x._id" class="btn btn-success">Accetta</button>
+											<button type="button" id="declina" v-bind:scambio="x._id" class="btn btn-dark">Declina</button>
+										</div>
+										<div class="nascondi">
+											<div>
+												<input type="button" class="btn btn-success" :id="index" value="Scambio completato"
+													onclick="mostraForm(id)">
+												<hr :id="'linea'+index" class="nascondi">
+											</div>
+											<div :id="'form'+index" class="form_nascosta">
+												<form :id="'interno'+index" v-bind:action="'/users/'+x.richiedente+'/recensioni?scambio='"
+													method="POST">
+													<br>
+													<div>Lascia una recensione: </div>
+													<input type="text" name="sintesi" placeholder="Titolo">
+													<input type="number" name="voto" placeholder="Voto" min="0" max="5">
+													<br>
+													<textarea name="recensione" :id="index" cols="60" rows="5"
+														placeholder="Scrivi qui la tua recensione..."></textarea>
+													<br>
+													<button type="submit" class="btn btn-primary">Invia</button>
+												</form>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -283,28 +337,18 @@
 
 	<script type="text/javascript" src="/javascript/profilo.js"></script>
 	<script>
-		function cambiaImg(url) {  
+		function cambiaImg(url) {
 			$("#img_profilo").removeAttr("src").attr("src", url);
 		}
 	</script>
 	<script>  // imposta lo stato dello scambio
-
-		function settaSI(e, scambio) {
-			$.post(document.location.href + '/scambio/' + scambio, { stato: 'accettato' })
-		}
-
-
-		function settaNO(e, scambio) {
-			$.post(document.location.href + '/scambio/' + scambio, { stato: 'rifiutato' })
-		}
-
 		function mostraForm(e) {
 			$("#form" + e).css("display", "block");
 			$("#" + e).addClass("nascondi altezza0");
 			$("#linea" + e).removeClass("nascondi");
 		}
 	</script>
-  <script>
+	<script>
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
 
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {

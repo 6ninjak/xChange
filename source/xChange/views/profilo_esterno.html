@@ -12,15 +12,12 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<script>
-
-		function caricaDati() {
-			// prende i parametri dal server mettendoli in array / utente array formato da un solo elemento 
-			// ricerca array formato da piu elementi / recensioni array formato da piu elementi 
-			new Vue({
+		$(document).ready(function () {
+			var app = new Vue({
 				el: '#app_v',
 				data: {
 					utente: [],
@@ -28,33 +25,43 @@
 					recensioni: []
 				},
 				mounted: function () {
-					axios.get(document.location.href + '/dati') 
-						.then(response => {
-							this.utente = [response.data];
-							this.ricerca = response.data.competenze;
-							console.log(data);
-						})
-						.catch(error => {
-							console.log(error);
-						});
-					axios.get(document.location.href + '/recensioni')
-						.then(response => {
-							this.recensioni = response.data;
-							console.log(data);
-						})
-						.catch(error => {
-							console.log(error);
-						});
+					var baseUrl = document.location.href.substr(-1) == '/'? document.location.href.replace(/.$/,"") : document.location.href;
+					axios.get(baseUrl + '/dati') 
+					.then(response => {
+						this.utente = [response.data];
+						this.ricerca = response.data.competenze;
+						console.log(data);
+					})
+					.catch(error => {
+						console.log(error);
+					});
+					axios.get(baseUrl + '/recensioni')
+					.then(response => {
+						this.recensioni = response.data;
+						console.log(data);
+					})
+					.catch(error => {
+						console.log(error);
+					});
 				}
-
 			})
-		}
-	</script>
-
+			function caricaStelle() {
+				var mediaRound = Math.round(parseFloat("<%= media %>"));
+				for (var i = 1; i <= mediaRound; i++) {
+					var id = '#stella' + i;
+					$(id).addClass('checked');
+				}
+			}
+			
+			$("#stelle").ready(function (events) {
+				caricaStelle();
+			});
+		});
+		</script>
 	<title>profilo esterno</title>
 </head>
 
-<body data-spy="scroll" data-target="#navbarSupportedContent" onload="caricaDati()">
+<body data-spy="scroll" data-target="#navbarSupportedContent">
 	<!-- navbar ------------------------------------------------------------------------------------------------------->
 	<nav class="navbar navbar-expand-md navbar-dark be-dark fixed-top">
 		<a class="navbar-brand" href="#"><img src="/images/logoScrittaBianca.svg" height="30" alt=""></a>
@@ -67,7 +74,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li>
-					<a class="nav-link" href="../">Home</a>
+					<a class="nav-link" href="/home">Home</a>
 				</li>
 				<li>
 					<a class="nav-link" href="#profilo">Profilo</a>
@@ -91,16 +98,14 @@
 					</form>
 				</div>
 				<li class="nav-item">
-					<img src="https://source.unsplash.com/collection/190727/50x50" class="rounded-circle">
+					<img src="/file?docName=<%= utente.username %>&attName=immagine_profilo" class="rounded-circle img-profilo">
 				</li>
 				<li class="nav-item dropdown">
 					<a id=account class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente%></a>
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciao, <%= utente.username %></a>
 					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="users/1">Profilo</a>
-						<a class="dropdown-item" href="users/1" name="punti">punti</a>
-						<a class="dropdown-item" href="#">recensioni</a>
-						<a class="dropdown-item" href="logout">Log out</a>
+						<a class="dropdown-item" href="/users/<%= utente.username %>">Profilo</a>
+						<a class="dropdown-item" href="/logout">Log out</a>
 					</div>
 				</li>
 			</ul>
@@ -112,49 +117,43 @@
 			<div id="profilo" class="big-padding">
 				<h2>Profilo</h2>
 				<!-- dati personalli -->
-				<img src="https://source.unsplash.com/collection/190727/100x100" alt="" class="rounded-circle mb-3"
-					id="img_profilo">
-
 				<div v-for="x in utente">
+					<img v-bind:src="'/file?docName='+x.username+'&attName=immagine_profilo'" alt="" class="rounded-circle mb-3"
+						id="img_profilo" height="150" width="150">
+
 					<ul class="list-group list-group-horizontal-sm">
 						<li class="list-group-item">Nome: {{x.nome}}</li>
 						<li class="list-group-item">Cognome: {{x.cognome}}</li>
 					</ul>
 					<ul class="list-group">
-						<li class="list-group-item disabled" aria-disabled="true">Email: {{x.email}}</li>
 						<li class="list-group-item">Professione: {{x.professione}}</li>
-						<li class="list-group-item" id="comp">
-							<span>competenze: </span>
-							<span v-for="c in x.competenze">{{ c }}</span>
+						<li class="list-group-item">competenze:
+							<span v-for="(c, index) in x.competenze">
+								<span v-if="index != x.competenze.length - 1">{{c}}, </span>
+								<span v-else>{{c}}</span>
+							</span>
 						</li>
-						<li class="list-group-item" id="comp">
-							<span>in cerca di: </span>
-							<span v-for="r in x.ricerca">{{ r }} </span>
-						</li>
+						<li class="list-group-item">punti ricevuti: {{x.punti}}</li>
+						<li class="list-group-item">recensioni ricevute: {{x.recensioni}}</li>
 					</ul>
-					<li class="list-group-item" id="ptt" value="x.punti"> {{x.punti}}</li>
-					<li class="list-group-item" id="rec" value="{{x.recensioni}}"> {{x.recensioni}}</li>
 				</div>
 				<br>
 				<br>
 				<!-- sezione descrizione utente -->
-				<div v-for="v in utente">
+				<!-- <div v-for="v in utente">
 					<h5>{{v.descrizione}}</h5>
-				</div>
+				</div> -->
 				<hr>
 				<hr>
 				<!-- sezione punteggio creazione stelle e aggiornamento -->
 				<div id="punti" class="big-padding">
 					<h2>Punti</h2>
-
-					<input type="text" readonly text="nooo" class="btn" id="pt" value="Punteggio">
-
 					<div id="stelle">
-						<span id="stella" name="stella" class="fa fa-star "></span>
-						<span id="stella" name="stella" class="fa fa-star "></span>
-						<span id="stella" name="stella" class="fa fa-star "></span>
-						<span id="stella" name="stella" class="fa fa-star "></span>
-						<span id="stella" name="stella" class="fa fa-star "></span>
+						<span id="stella1" name="stella" class="fa fa-star"></span>
+						<span id="stella2" name="stella" class="fa fa-star"></span>
+						<span id="stella3" name="stella" class="fa fa-star"></span>
+						<span id="stella4" name="stella" class="fa fa-star"></span>
+						<span id="stella5" name="stella" class="fa fa-star"></span>
 					</div>
 
 				</div>
@@ -163,10 +162,11 @@
 				<!-- sezione recenzioni utente selezionato -->
 				<div id="recensioni" class="big-padding">
 					<h2>Recensioni</h2>
-					<div v-for="a in recensioni">
+					<div v-for="a in recensioni.docs">
 						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
-							<div class="card-header">{{a.sintesi}}</div>
+							<div class="card-header">recensione di {{a.recensore}} </div>
 							<div class="card-body">
+								<p class="card-text">{{a.sintesi}}</p>
 								<p class="card-text">{{a.recensione}}</p>
 							</div>
 						</div>
