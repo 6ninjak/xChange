@@ -4,19 +4,21 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><%= title %></title>
+	<title>xChange - Home</title>
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<!-- Google Fonts -->
-
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<link rel="stylesheet" href="/stylesheets/styleHome.css">
+
+	<script src="/bower_components/vue/dist/vue.min.js"></script>
+	<script src="/bower_components/axios/dist/axios.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent">
@@ -31,9 +33,6 @@
 		<!-- home rimanda alla home-->
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li>
-					<a class="nav-link" href="#nuovi">Nuovi</a>
-				</li>
 				<li>
 					<a class="nav-link" href="#i_piu_recensiti">Top</a>
 				</li>
@@ -98,7 +97,8 @@
 		<div class="container big-padding" id=row>
 			<br>
 			<h1 class="text-center mb-3">xChange</h1>
-			<h4 class="font-weight-light">Benvenuto in xChange, la prima comunity italiana basata interamente sul concetto di baratto! All'interno del
+			<h4 class="font-weight-light">Benvenuto in xChange, la prima community italiana basata interamente sul concetto di
+				baratto! All'interno del
 				sito si
 				possono offrire le proprie competenze lavorative (e non solo) in qualsiasi ambito in cambio di una rispettiva
 				competenza
@@ -124,12 +124,12 @@
 												<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
 												<span v-else name="stella" class="fa fa-star"></span>
 											</span>
-											<div>
-												<span v-for="(c, index) in x.competenze">
-													<span v-if="index != x.competenze.length - 1">{{c}}, </span>
-													<span v-else>{{c}}</span>
-												</span>
-											</div>
+										<div>
+											<span v-for="(c, index) in x.competenze">
+												<span v-if="index != x.competenze.length - 1">{{c}}, </span>
+												<span v-else>{{c}}</span>
+											</span>
+										</div>
 										</p>
 									</div>
 								</div>
@@ -194,13 +194,7 @@
 			</div>
 		</footer>
 
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script type="text/javascript"
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-		<script type=text/javascript lang=javascript src=/javascript/home.js></script>
-
+		<script src="/javascript/home.js"></script>
 		<script> //scrollpy
 			$('body').scrollspy({ target: '#navbarSupportedContent' });
 			$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {

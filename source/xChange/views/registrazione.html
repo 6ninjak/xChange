@@ -1,27 +1,26 @@
+<!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset=UTF-8 />
 	<meta name=viewport content="width=device-width, initial-scale= 1" />
-	<title>xChange - registrazione</title>
+	<title>xChange - Registrazione</title>
+
 	<link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel=stylesheet href="/stylesheets/styleReg.css">
+
 	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-	<script type=text/javascript lang=javascript src=/javascript/registrazione.js></script>
-	<script>
-		if ("<%= error %>") alert("<%= error %>");
-	</script>
 </head>
 
 <body class="text-center">
-     <!-- struttura registrazione ---------------------------------------------->
+	<!-- struttura registrazione ---------------------------------------------->
 	<table align="center">
 		<tr align="center">
 			<td colspan=3 align="center">
 				<h1 class="font-weight-light text-center display-3">Registrati</h1>
-				<h3 class="font-weight-lighter text-center">Hai già un account xChange?<a href="login">Accedi</a></h3>
+				<h3 class="font-weight-lighter text-center">Hai già un account xChange?<a href="/login">Accedi</a></h3>
 				<hr>
 			</td>
 		</tr>
@@ -29,8 +28,7 @@
 		<tr align="center">
 			<td>
 				<form action="users" class="" method="POST" name="registrazione" onSubmit="return validaForm()">
-					<input type="text" name="username" class="form-control nomeBord" placeholder="Username" required
-						autofocus />
+					<input type="text" name="username" class="form-control nomeBord" placeholder="Username" required autofocus />
 					<input type="text" name="nome" class="form-control" placeholder="Nome" required autofocus />
 					<input type="text" name="cognome" class="form-control" placeholder="Cognome" required />
 					<input type="email" name="email" class="form-control" placeholder='Email' required />
@@ -62,6 +60,10 @@
 		</tr>
 	</table>
 
+	<script src=/javascript/registrazione.js></script>
+	<script>
+		if ("<%= error %>") alert("<%= error %>");
+	</script>
 </body>
 
 </html>

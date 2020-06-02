@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>xChange - Ricerca</title>
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<link rel="stylesheet" href="/stylesheets/styleHome.css">
-	<title>ricerca</title>
-	<script>
-	</script>
+
+	<script src="/bower_components/vue/dist/vue.min.js"></script>
+	<script src="/bower_components/axios/dist/axios.min.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent">
@@ -77,12 +81,12 @@
 										<span v-if="5-x.media < index" name="stella" class="fa fa-star checked"></span>
 										<span v-else name="stella" class="fa fa-star"></span>
 									</span>
-									<div>
-										<span v-for="(c, index) in x.competenze">
-											<span v-if="index != x.competenze.length - 1">{{c}}, </span>
-											<span v-else>{{c}}</span>
-										</span>
-									</div>
+								<div>
+									<span v-for="(c, index) in x.competenze">
+										<span v-if="index != x.competenze.length - 1">{{c}}, </span>
+										<span v-else>{{c}}</span>
+									</span>
+								</div>
 								</p>
 							</div>
 						</div>
@@ -91,12 +95,8 @@
 			</div>
 		</div>
 	</div>
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><!-- da cepire -->
-	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/javascript/ricerca.js"></script>
 
+	<script src="/javascript/ricerca.js"></script>
 	<script>
 		$('body').scrollspy({ target: '#navbar-example' });
 	</script>

@@ -1,71 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>xChange - <%= utente.username %></title>
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
 	<link rel="stylesheet" href="/stylesheets/stile.css">
 	<link rel="stylesheet" href="/stylesheets/styleHome.css">
+
 	<script src="/bower_components/vue/dist/vue.min.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="/bower_components/axios/dist/axios.min.js"></script>
 	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-	<title>profilo</title>
-	<script>
-		$(document).ready(function () {
-
-			function caricaDati() {
-				var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
-				for (var i = 1; i <= mediaRound; i++) {
-					var id = '#stella' + i;
-					$(id).addClass('checked');
-				}
-			}
-
-			function sendRequest(elem) {
-				var utente = elem.getAttribute("utente");
-				var scambio = elem.getAttribute("scambio");
-				axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
-			}
-
-			$(document).on('click', '#notifica .btn', function (events) {
-				sendRequest(this);
-				$(this).parents('div').eq(3).remove();
-				alert('Richiesta di scambio eliminata con successo');
-			});
-
-			$(document).on('click', '#richiesta-scambio #accetta', function (events) {
-				var scambio = this.getAttribute("scambio");
-				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
-				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'accettato' })
-					.then(response => {
-						var index = $(this).parents('div').eq(0).attr("id");
-						$("#interno" + index).attr("action", $("#interno" + index).attr("action") + response.data.id);
-						$(this).parents('div').eq(1).children().removeClass("nascondi");
-						$(this).parents('div').eq(0).remove();
-						alert('richiesta accettata con successo');
-					})
-			});
-
-			$(document).on('click', '#richiesta-scambio #declina', function (events) {
-				var scambio = this.getAttribute("scambio");
-				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
-				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'rifiutato' })
-					.then(response => {
-						$(this).parents('div').eq(4).remove();
-						alert('richiesta declinata con successo');
-					})
-			});
-
-			$("#stelle").ready(function (events) {
-				caricaDati();
-			});
-		});
-	</script>
-
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent">
@@ -167,12 +116,20 @@
 				<div id="recensioni" class="big-padding">
 
 					<h2>Recensioni</h2>
-					<div v-for="a in recensioni.docs">
-						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
-							<div class="card-header">recensione di {{a.recensore}} </div>
-							<div class="card-body">
-								<p class="card-text">{{a.sintesi}}</p>
-								<p class="card-text">{{a.recensione}}</p>
+					<div class="row row-cols-1 row-cols-md-2">
+						<div v-for="a in recensioni.docs">
+							<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
+								<div class="card-header">
+									<span>recensione di {{a.recensore}}</span>
+									<span v-for="index in 5" :key="index" class="pull-right">
+										<span v-if="5-a.voto < index" name="stella" class="fa fa-star checked"></span>
+										<span v-else name="stella" class="fa fa-star"></span>
+									</span>
+								</div>
+								<div class="card-body">
+									<h5 class="card-title">{{a.sintesi}}</h5>
+									<p class="card-text">{{a.recensione}}</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -335,11 +292,57 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="/javascript/profilo.js"></script>
+	<script src="/javascript/profilo.js"></script>
 	<script>
-		function cambiaImg(url) {
-			$("#img_profilo").removeAttr("src").attr("src", url);
-		}
+		$(document).ready(function () {
+
+			function caricaDati() {
+				var mediaRound = Math.round(parseFloat("<%= utente.media %>"));
+				for (var i = 1; i <= mediaRound; i++) {
+					var id = '#stella' + i;
+					$(id).addClass('checked');
+				}
+			}
+
+			function sendRequest(elem) {
+				var utente = elem.getAttribute("utente");
+				var scambio = elem.getAttribute("scambio");
+				axios.post("/users/" + utente + "/scambio/" + scambio + "/delete");
+			}
+
+			$(document).on('click', '#notifica .btn', function (events) {
+				sendRequest(this);
+				$(this).parents('div').eq(3).remove();
+				alert('Richiesta di scambio eliminata con successo');
+			});
+
+			$(document).on('click', '#richiesta-scambio #accetta', function (events) {
+				var scambio = this.getAttribute("scambio");
+				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
+				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'accettato' })
+					.then(response => {
+						var index = $(this).parents('div').eq(0).attr("id");
+						$("#interno" + index).attr("action", $("#interno" + index).attr("action") + response.data.id);
+						$(this).parents('div').eq(1).children().removeClass("nascondi");
+						$(this).parents('div').eq(0).remove();
+						alert('richiesta accettata con successo');
+					})
+			});
+
+			$(document).on('click', '#richiesta-scambio #declina', function (events) {
+				var scambio = this.getAttribute("scambio");
+				var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
+				axios.post(baseUrl + '/scambio/' + scambio, { stato: 'rifiutato' })
+					.then(response => {
+						$(this).parents('div').eq(4).remove();
+						alert('richiesta declinata con successo');
+					})
+			});
+
+			$("#stelle").ready(function (events) {
+				caricaDati();
+			});
+		});
 	</script>
 	<script>  // imposta lo stato dello scambio
 		function mostraForm(e) {

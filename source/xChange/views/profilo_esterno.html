@@ -1,64 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity="">
+	<title>xChange - <%= username %></title>
+
+	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel=stylesheet href="/stylesheets/stile.css">
-	<link rel=stylesheet href="/stylesheets/styleHome.css">
+	<link rel="stylesheet" href="/stylesheets/stile.css">
+	<link rel="stylesheet" href="/stylesheets/styleHome.css">
 
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
+	<script src="/bower_components/vue/dist/vue.min.js"></script>
+	<script src="/bower_components/axios/dist/axios.min.js"></script>
 	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
-	<script>
-		$(document).ready(function () {
-			var app = new Vue({
-				el: '#app_v',
-				data: {
-					utente: [],
-					ricerca: [],
-					recensioni: []
-				},
-				mounted: function () {
-					var baseUrl = document.location.href.substr(-1) == '/'? document.location.href.replace(/.$/,"") : document.location.href;
-					axios.get(baseUrl + '/dati') 
-					.then(response => {
-						this.utente = [response.data];
-						this.ricerca = response.data.competenze;
-						console.log(data);
-					})
-					.catch(error => {
-						console.log(error);
-					});
-					axios.get(baseUrl + '/recensioni')
-					.then(response => {
-						this.recensioni = response.data;
-						console.log(data);
-					})
-					.catch(error => {
-						console.log(error);
-					});
-				}
-			})
-			function caricaStelle() {
-				var mediaRound = Math.round(parseFloat("<%= media %>"));
-				for (var i = 1; i <= mediaRound; i++) {
-					var id = '#stella' + i;
-					$(id).addClass('checked');
-				}
-			}
-			
-			$("#stelle").ready(function (events) {
-				caricaStelle();
-			});
-		});
-		</script>
-	<title>profilo esterno</title>
 </head>
 
 <body data-spy="scroll" data-target="#navbarSupportedContent">
@@ -111,7 +67,7 @@
 			</ul>
 		</div>
 	</nav>
-    <!-- campi account utente  ---------------------------------------------------------->
+	<!-- campi account utente  ---------------------------------------------------------->
 	<div class="container">
 		<div id="app_v">
 			<div id="profilo" class="big-padding">
@@ -162,12 +118,20 @@
 				<!-- sezione recenzioni utente selezionato -->
 				<div id="recensioni" class="big-padding">
 					<h2>Recensioni</h2>
-					<div v-for="a in recensioni.docs">
-						<div class="card text-white bg-dark mb-3 " style="max-width: 30rem;">
-							<div class="card-header">recensione di {{a.recensore}} </div>
-							<div class="card-body">
-								<p class="card-text">{{a.sintesi}}</p>
-								<p class="card-text">{{a.recensione}}</p>
+					<div class="row row-cols-1 row-cols-md-2">
+						<div v-for="a in recensioni.docs">
+							<div class="card text-white bg-dark" style="max-width: 30rem;">
+								<div class="card-header">
+									<span>recensione di {{a.recensore}}</span>
+									<span v-for="index in 5" :key="index" class="pull-right">
+										<span v-if="5-a.voto < index" name="stella" class="fa fa-star checked"></span>
+										<span v-else name="stella" class="fa fa-star"></span>
+									</span>
+								</div>
+								<div class="card-body">
+									<h5 class="card-title">{{a.sintesi}}</h5>
+									<p class="card-text">{{a.recensione}}</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -185,8 +149,8 @@
 						<button type="button" class="btn btn-dark mr-3" data-toggle="modal" v-bind:data-target="'#'+z"
 							name="z._id">{{z}}
 						</button>
-						<div class="modal fade" :id="z" tabindex="-1" role="dialog"
-							aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal fade" :id="z" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+							aria-hidden="true">
 							<div class="modal-dialog">
 								<div class="modal-content">
 									<div class="modal-header">
@@ -198,17 +162,15 @@
 									</div>
 									<form v-bind:action="'/users/'+v.username+'/scambi'" method="POST">
 										<div class="modal-body">
-
 											<div class="form-group">
-
 												<label for="message-text" class="col-form-label">Messaggio:</label>
 												<textarea class="form-control" id="message-text"></textarea>
-												<input type="text" name="competenza" v-bind:value="z">
+												<label for="competenza" class="col-form-label">Competenza:</label>
+												<input type="text" readonly name="competenza" v-bind:value="z">
 											</div>
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary"
-												data-dismiss="modal">Chiudi</button>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
 											<button type="submit" class="btn btn-primary">invia</button>
 										</div>
 									</form>
@@ -220,13 +182,57 @@
 			</div>
 			<br>
 			<br>
-
 			<br>
 			<br>
 		</div>
 	</div>
+
+	<script>
+		$(document).ready(function () {
+			var app = new Vue({
+				el: '#app_v',
+				data: {
+					utente: [],
+					ricerca: [],
+					recensioni: []
+				},
+				mounted: function () {
+					var baseUrl = document.location.href.substr(-1) == '/' ? document.location.href.replace(/.$/, "") : document.location.href;
+					axios.get(baseUrl + '/dati')
+						.then(response => {
+							this.utente = [response.data];
+							this.ricerca = response.data.competenze;
+							console.log(data);
+						})
+						.catch(error => {
+							console.log(error);
+						});
+					axios.get(baseUrl + '/recensioni')
+						.then(response => {
+							this.recensioni = response.data;
+							console.log(data);
+						})
+						.catch(error => {
+							console.log(error);
+						});
+				}
+			})
+			function caricaStelle() {
+				var mediaRound = Math.round(parseFloat("<%= media %>"));
+				for (var i = 1; i <= mediaRound; i++) {
+					var id = '#stella' + i;
+					$(id).addClass('checked');
+				}
+			}
+
+			$("#stelle").ready(function (events) {
+				caricaStelle();
+			});
+		});
+	</script>
 	<script> //scrollpy
 		$('body').scrollspy({ target: '#navbarSupportedContent' });
+
 		$(".navbar-collapse ul li a[href^='#'").on('click', function (e) {
 			target = this.hash;
 			e.preventDefault();

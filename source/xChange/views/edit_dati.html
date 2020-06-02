@@ -4,10 +4,14 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" integrity=""> -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-	<title>xChange - account</title>
+	<title>xChange - Modifica dati utente</title>
+	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css">
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+	<script src="/javascript/edit_dati.js"></script>
 </head>
 
 <body>
@@ -40,7 +44,7 @@
 				<div class="col-md-4 mb-3">
 					<label for="competenze">Aggiungi competenza:</label>
 					<br>
-					<select name="competenze" class="selectpicker" multiple id="competenze" required>
+					<select name="competenze" class="selectpicker" multiple id="competenze">
 						<option value="cassamortaro">cassamortaro</option>
 						<option value="falegname">falegname</option>
 						<option value="idraulico">idraulico</option>
@@ -52,7 +56,7 @@
 				<div class="col-md-4 mb-3">
 					<label for="professione">La tua professione:</label>
 					<br>
-					<select name="professione" class="select" id="professione" required>
+					<select name="professione" class="select" id="professione">
 						<option selected disabled value="">...</option>
 						<option value="cassamortaro">cassamortaro</option>
 						<option value="falegname">falegname</option>
@@ -68,18 +72,9 @@
 				</div>
 			</div>
 
-			<button class="btn btn-primary mb-3" type="submit">Aggiorna</button> <!-- invia informazioni al server e aggiorna -->
-			<!-- all'invio verifica ala pasword -->
+			<button class="btn btn-primary mb-3" type="submit">Aggiorna</button>
 		</form>
-		<!-- devo aggiungere uno spazio -->
 	</div>
-
-
-	<script src="/bower_components/jquery/dist/jquery.min.js"></script><!-- da cepire -->
-	<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-	<script src="/javascript/edit_dati.js"></script>
 
 	<script>
 		$('select').selectpicker();

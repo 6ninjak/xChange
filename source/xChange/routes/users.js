@@ -33,10 +33,10 @@ router.post('/', (req, res) => {
             }
         };
         db.find(q, (err, response) => {
-            if(!err && response.docs.length==0) {
+            if (!err && response.docs.length == 0) {
                 db.insert({
                     tipo: 'user',
-                    
+
                     username: body.username,
                     nome: body.nome,
                     cognome: body.cognome,
@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
                     punti: 0,
                     media: 0,
                     recensioni: 0
-                    
+
                 }, body.username, (err, response) => {
                     if (err && err.error == 'conflict') {
                         res.render('registrazione', {
@@ -63,7 +63,7 @@ router.post('/', (req, res) => {
                         // });
                         fs.readFile('public/images/profilo.png', (err, data) => {
                             if (!err) {
-                                db.attachment.insert(response.id, 'immagine_profilo', data, 'image/png', { rev:response.rev }, (error, r) => {
+                                db.attachment.insert(response.id, 'immagine_profilo', data, 'image/png', { rev: response.rev }, (error, r) => {
                                     console.log(error || r);
                                 });
                             }
@@ -99,7 +99,8 @@ router.get('/:id', (req, res, next) => {
             delete doc.email;
             res.render('profilo_esterno', {
                 utente: req.cookies.cookieUtente,
-                media: doc.media
+                media: doc.media,
+                username: doc.username
             });
         } else next();
     });
@@ -143,14 +144,14 @@ router.post('/:id', (req, res) => {
             console.log(req.body);
             var array = doc.competenze;
             if (typeof req.body.competenze == "string") {
-                if (!array.includes(req.body.competenze)) 
+                if (!array.includes(req.body.competenze))
                     array.push(req.body.competenze);
             } else {
                 for (let index = 0; index < req.body.competenze.length; index++) {
-                    if (!array.includes(req.body.competenze[index])) 
+                    if (!array.includes(req.body.competenze[index]))
                         array.push(req.body.competenze[index]);
                 }
-            } 
+            }
             var variazioni = {
                 telefono: req.body.telefono,
                 competenze: array,
@@ -180,7 +181,7 @@ router.post('/:id/image', upload.single('file'), (req, res) => {
             db.addAttachment(req.params.id, req.file.path, 'immagine_profilo', req.file.mimetype, (err, response) => {
                 if (!err) {
                     console.log(response);
-                    res.redirect('/users/'+ req.params.id);
+                    res.redirect('/users/' + req.params.id);
                 }
             });
         } else if (!err) {
@@ -198,12 +199,13 @@ router.get('/:id/ricevute', (req, res) => {
         selector: {
             tipo: "scambio",
             richiesto: req.params.id,
-            stato: { $and: [
-                { $ne: 'rifiutato' },
-                { $ne: 'concluso' }]
+            stato: {
+                $and: [
+                    { $ne: 'rifiutato' },
+                    { $ne: 'concluso' }]
             }
         },
-        sort: [{ data: "desc"}],
+        sort: [{ data: "desc" }],
         fields: ["_id", "data", "richiesto", "richiedente", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
@@ -227,7 +229,7 @@ router.get('/:id/effettuate', (req, res) => {
             tipo: "scambio",
             richiedente: req.params.id,
         },
-        sort: [{ data: "desc"}],
+        sort: [{ data: "desc" }],
         fields: ["_id", "data", "richiesto", "competenza", "messaggio", "stato", "info", "richiedente"]
     };
     db.get(req.params.id, (err, doc) => {
@@ -272,10 +274,10 @@ router.post('/:id/scambi', (req, res) => {
                     if (err && err.error == 'conflict') {
                         delete doc.email;
                         delete doc.password;
-                        res.redirect('/users/'+req.params.id);
+                        res.redirect('/users/' + req.params.id);
                     } else {
                         console.log(response);
-                        res.redirect('/users/'+req.params.id);
+                        res.redirect('/users/' + req.params.id);
                     }
                 });
             }
@@ -292,9 +294,9 @@ router.post('/:id/scambi', (req, res) => {
 // viene eliminato il documento con la richiesta in attesa, rendendo possibile effettuare un'altra richiesta
 router.post('/:id_user/scambio/:id_scambio', (req, res) => {
     let arrayScambio = req.params.id_scambio.split(':');
-    if (arrayScambio.length != 3) 
+    if (arrayScambio.length != 3)
         res.send("l'id di scambio fornito non è corretto");
-    else if (!(req.body.stato && ["accettato", "rifiutato"].includes(req.body.stato))) 
+    else if (!(req.body.stato && ["accettato", "rifiutato"].includes(req.body.stato)))
         res.send('parametro di stato non presente o scorretto!');
     else {
         db.get(req.params.id_user, (err, doc) => {
@@ -308,7 +310,7 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                         delete document._id;
                         document.data = Date.now();
                         if (req.body.stato == 'accettato')
-                            document.info = 'email: ' + doc.email +'\nTelefono: ' + doc.telefono;
+                            document.info = 'email: ' + doc.email + '\nTelefono: ' + doc.telefono;
                         // aggiungere campo del telefono da fornire
                         db.insert(document, req.params.id_scambio + ':' + document.data, (err, response) => {
                             if (!err) {
@@ -331,7 +333,7 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
 
 router.post('/:id_user/scambio/:id_scambio/delete', (req, res) => {
     let arrayScambio = req.params.id_scambio.split(':');
-    if (arrayScambio.length > 4 || arrayScambio.length < 3) 
+    if (arrayScambio.length > 4 || arrayScambio.length < 3)
         res.send("l'id di scambio fornito non è corretto");
     else {
         db.get(req.params.id_user, (err, doc) => {
@@ -364,7 +366,7 @@ router.get('/:id/recensioni', (req, res) => {
             tipo: "recensione",
             recensito: req.params.id,
         },
-        sort: [{ data: "desc"}],
+        sort: [{ data: "desc" }],
         fields: ["recensore", "sintesi", "recensione", "voto"]
     };
     db.get(req.params.id, (err, doc) => {
@@ -412,11 +414,11 @@ router.post('/:id/recensioni', (req, res) => {
                                 console.log(response);
                                 let new_punti = parseInt(doc.punti) + parseInt(documento.voto);
                                 let new_recensioni = doc.recensioni + 1;
-                                let new_media = new_punti/new_recensioni;
+                                let new_media = new_punti / new_recensioni;
                                 db.updateFields({
                                     punti: new_punti,
                                     recensioni: new_recensioni,
-                                    media : new_media,
+                                    media: new_media,
                                 }, doc.username, (err, res) => {
                                     if (!err) console.log(res)
                                 });

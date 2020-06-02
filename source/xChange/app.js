@@ -11,19 +11,19 @@ const upload = require('./public/helper/imageHelper.js');
 const indexClassifica = {
     index: { fields: ['media', 'recensioni'] },
     name: 'classifica'
-  };
-  db.createIndex(indexClassifica).then((result) => {
+};
+db.createIndex(indexClassifica).then((result) => {
     console.log(result);
-  })
-  
-  // indice necessario per ordinare i documenti per data, se hanno questo campo
-  const indexData = {
+})
+
+// indice necessario per ordinare i documenti per data, se hanno questo campo
+const indexData = {
     index: { fields: ['data'] },
     name: 'data'
-  };
-  db.createIndex(indexData).then((result) => {
+};
+db.createIndex(indexData).then((result) => {
     console.log(result);
-  })
+})
 
 function errHandler(err, res) {
     if (err) console.log(err);
@@ -40,7 +40,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 // middleware di body parser per riconoscere diversi tipi di url
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // riconoscce il percorso public
@@ -54,41 +54,41 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    if (req.cookies.cookieUtente == undefined && 
-            (!(["/login", "/registrazione", "/"].includes(req.path) 
-                || (req.path == '/users' && req.method == 'POST')
-            ))
-        ){
+    if (req.cookies.cookieUtente == undefined &&
+        (!(["/login", "/registrazione", "/"].includes(req.path)
+            || (req.path == '/users' && req.method == 'POST')
+        ))
+    ) {
         res.redirect('/login');
     }
-    else if(req.cookies.cookieUtente != undefined){
+    else if (req.cookies.cookieUtente != undefined) {
         db.get(req.cookies.cookieUtente.id, (err, response) => {
-            if (!err && req.cookies.cookieUtente.password == response.password){
+            if (!err && req.cookies.cookieUtente.password == response.password) {
                 // per non dover modificare le get di login e registrazione e verificare se è già loggato
-                if(["/login", "/registrazione", "/"].includes(req.path)){
+                if (["/login", "/registrazione", "/"].includes(req.path)) {
                     res.redirect('/home');
                 }
                 else next();
             }
-            else{
+            else {
                 //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
                 res.clearCookie('cookieUtente');
                 res.redirect('/login');
             }
         });
     }
-    else{
+    else {
         next();
     }
 });
 
 app.get('/test', (req, res) => {
-    db.addAttachment('6ninjak', './public/images/sarto.jpg','immagine_profilo', 'image/jpeg', errHandler);
+    db.addAttachment('6ninjak', './public/images/sarto.jpg', 'immagine_profilo', 'image/jpeg', errHandler);
     res.send('ok');
 })
 
 app.get('/file', (req, res) => {
-    db.attachment.get(req.query.docName, req.query.attName, (err, body )=> {
+    db.attachment.get(req.query.docName, req.query.attName, (err, body) => {
         res.end(body);
     });
 });
@@ -125,7 +125,7 @@ app.post('/login', (req, res) => {
             });
         } else {
             let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
-            if(encPwd == response.password){
+            if (encPwd == response.password) {
                 res.cookie("cookieUtente", utente = {
                     id: response._id,
                     password: response.password,
@@ -133,23 +133,23 @@ app.post('/login', (req, res) => {
                 });
                 res.redirect('/home');
             }
-            else{
+            else {
                 res.render('login', {
                     title: 'xChange - login',
                     error: '',
                     pass: 'errata'
                 });
-            }     
+            }
         }
     });
 });
 
 app.get('/logout', (req, res) => {
-    if(req.cookies.cookieUtente != undefined){
+    if (req.cookies.cookieUtente != undefined) {
         res.clearCookie("cookieUtente");
         res.redirect('/');
     }
-    else{
+    else {
         res.redirect('/');
     }
 });
@@ -164,7 +164,7 @@ app.get('/registrazione', (req, res) => {
 
 app.get('/home', (req, res) => {
     // console.log(req.cookies.cookieProva);
-    
+
     res.render('home', {
         title: 'xChange - Home',
         utente: req.cookies.cookieUtente
@@ -177,7 +177,7 @@ app.post('/migliori', (req, res) => {
             tipo: 'user',
             media: { $gte: 4 }
         },
-        sort: [{ media:"desc" }, { recensioni: "desc" }],
+        sort: [{ media: "desc" }, { recensioni: "desc" }],
         fields: ["username", "nome", "media", "competenze"],
         limit: 5
     };
@@ -202,19 +202,19 @@ app.post('/ricerca', (req, res) => {
         sort: [{ media: "desc" }, { recensioni: "desc" }],
         fields: ["username", "nome", "media", "competenze"],
         limit: 10
-    };    
+    };
     if (req.query.input) {
         var query = req.query.input.split(" ");
         for (let i = 0; i < query.length; i++) {
-        
+
             q.selector.$or.push(
                 { username: { $regex: "(?i)" + query[i] } },
                 { nome: { $regex: "(?i)" + query[i] } },
                 { cognome: { $regex: "(?i)" + query[i] } },
                 { competenze: { $elemMatch: { $regex: "(?i)" + query[i] } } }
-            );    
-        }    
-    }    
+            );
+        }
+    }
     // console.log(q);
     // console.log(query);
     db.find(q, (err, body) => {
