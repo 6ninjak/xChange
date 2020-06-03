@@ -1,14 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../public/helper/dbHelper.js');
+const dbHelper = require('../public/helper/dbHelper.js');
 const crypto = require('crypto');
 const upload = require('../public/helper/imageHelper.js');
 const fs = require('fs');
+let db;
+
 
 function validateEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
+
+router.use((req, res, next) => {
+    dbHelper().then(res => {
+        db = res;
+        next();
+    })
+})
 
 router.post('/', (req, res) => {
     var body = req.body;
@@ -147,10 +156,13 @@ router.post('/:id', (req, res) => {
                 if (!array.includes(req.body.competenze))
                     array.push(req.body.competenze);
             } else {
-                for (let index = 0; index < req.body.competenze.length; index++) {
-                    if (!array.includes(req.body.competenze[index]))
-                        array.push(req.body.competenze[index]);
+                if(req.body.competenze) {
+                    for (let index = 0; index < req.body.competenze.length; index++) {
+                        if (!array.includes(req.body.competenze[index]))
+                            array.push(req.body.competenze[index]);
+                    }
                 }
+                else array = [];
             }
             var variazioni = {
                 telefono: req.body.telefono,
@@ -444,4 +456,3 @@ router.get('*', (req, res) => {
 })
 
 module.exports = router;
-

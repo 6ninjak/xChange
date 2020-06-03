@@ -4,26 +4,10 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
-const db = require('./public/helper/dbHelper.js');
+var dbHelper = require('./public/helper/dbHelper.js');
 const upload = require('./public/helper/imageHelper.js');
 
-// indice necessario per fare query ordinate in base al punteggio
-const indexClassifica = {
-    index: { fields: ['media', 'recensioni'] },
-    name: 'classifica'
-};
-db.createIndex(indexClassifica).then((result) => {
-    console.log(result);
-})
-
-// indice necessario per ordinare i documenti per data, se hanno questo campo
-const indexData = {
-    index: { fields: ['data'] },
-    name: 'data'
-};
-db.createIndex(indexData).then((result) => {
-    console.log(result);
-})
+let db;
 
 function errHandler(err, res) {
     if (err) console.log(err);
@@ -48,6 +32,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // log automatico delle richieste al server
+app.use((req, res, next) => {
+    dbHelper().then(res => {
+        db = res;
+        next();
+    });
+})
+
 app.use((req, res, next) => {
     console.log(req.method + ": " + req.path);
     next();
@@ -246,8 +237,4 @@ app.get('*', (req, res) => {
 app.listen(3000, () => {
     console.log('Server in ascolto sulla porta 3000...');
 });
-
-
-
-
 
