@@ -1,4 +1,5 @@
-# xChange ![logo xChange](source/xChange/public/images/logoScrittaBianca.svg)
+![logo xChange](source/xChange/public/images/logoScrittaBianca.svg)
+# xChange
 Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsiasi altra cosa. Il denaro non esiste... un vero e proprio baratto online
 
 ----------
@@ -130,3 +131,11 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 3. eseguire il comando `npm install` per installare tutti i moduli necessari
 4. eseguire il comando `bower install` per installare le componenti bower
 5. eseguire il comando `nodemon` per far partire il server sulla porta 3000
+
+----------
+
+# Autori
+
+@6ninjak *Giacomo Colizzi Coin*
+@lorenzoCatini *Lorenzo Catini*
+@simone1708475 *Simone Mastrocola*
