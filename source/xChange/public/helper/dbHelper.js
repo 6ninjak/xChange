@@ -15,7 +15,7 @@ const indexData = {
     name: 'data'
 };
 const dbHelper = async () => {
-    await nano.db.create('xchange').then(res=> {
+    await nano.db.create('xchange').then(res => {
         console.log('creato il db xchange!')
     }).catch(error => {
     });
@@ -29,20 +29,20 @@ const dbHelper = async () => {
             db.insert(docData, docId, callback);
         });
     }
-    
+
     db.updateFields = (docFields, docId, callback) => {
         db.get(docId, (err, res) => {
             if (!err) db.insertOrUpdate(Object.assign(res, docFields), docId, callback);
             else callback();
         });
     }
-    
+
     db.delete = (docId, callback) => {
         db.get(docId, (err, res) => {
             if (!err) db.destroy(docId, res._rev, callback);
         });
     }
-    
+
     db.addAttachment = (docId, filePath, fileName, contentType, callback) => {
         fs.readFile(filePath, (err, data) => {
             if (!err) {
@@ -52,7 +52,7 @@ const dbHelper = async () => {
             }
         });
     }
-    
+
     db.removeAttachment = (docId, fileName, callback) => {
         db.get(docId, (error, res) => {
             if (!error) db.attachment.destroy(docId, fileName, { rev: res._rev }, callback);
@@ -64,13 +64,17 @@ const dbHelper = async () => {
 // queste due funzioni creano indici necessari alla ricerca sul database... vengono eseguite solo all'apertura dal server
 dbHelper().then(res => {
     res.createIndex(indexClassifica).then((result) => {
-    console.log(result);
-});
+        console.log(result);
+    }).catch(error => {
+        console.log(error);
+    });
 });
 dbHelper().then(res => {
     res.createIndex(indexData).then((result) => {
-    console.log(result);
-});
+        console.log(result);
+    }).catch(error => {
+        console.log(error);
+    });
 });
 
 module.exports = dbHelper;
