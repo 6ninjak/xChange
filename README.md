@@ -136,6 +136,6 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 
 # Autori
 
-@6ninjak *Giacomo Colizzi Coin*
-@lorenzoCatini *Lorenzo Catini*
-@simone1708475 *Simone Mastrocola*
+- @6ninjak *Giacomo Colizzi Coin*
+- @lorenzoCatini *Lorenzo Catini*
+- @simone1708475 *Simone Mastrocola*
