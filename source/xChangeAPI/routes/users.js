@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbHelper = require('../helper/dbHelper.js');
 const crypto = require('crypto');
+const multer = require('multer');
 const upload = require('../helper/imageHelper.js');
 const fs = require('fs');
 let db;
@@ -23,14 +24,15 @@ router.use((req, res, next) => {
 // richiede parametri in input: "username", "nome", "cognome", "password", "email"
 // in caso di errore viene restituito un json di errore
 router.post('/', (req, res) => {
+    console.log(req.body);
     var body = req.body;
     if (!(body.username && body.nome && body.cognome && body.password && body.email)) res.json({error: "manca qualche parametro"});
     if (body.username.includes(":") || body.username.includes("?") || body.username.includes("/") || body.username.includes("=")) {
-        res.json({error: 'username non valido'});
+        res.status(400).json({error: 'username non valido'});
     } else if (body.password.length < 8) {
-        res.json({error: 'password non valida'});
+        res.status(400).json({error: 'password non valida'});
     } else if (!validateEmail(body.email)) {
-        res.json({error: 'email non valida'});
+        res.status(400).json({error: 'email non valida'});
     } else {
         let encPwd = crypto.createHash('md5').update(body.password).digest('hex'); // Codifichiamo la password in MD5
         var q = {
@@ -57,9 +59,9 @@ router.post('/', (req, res) => {
                 };
                 db.insert(documento, body.username, (err, response) => {
                     if (err && err.error == 'conflict') {
-                        res.json({error: 'esiste già un utente con questo username'});
+                        res.status(409).json({error: 'esiste già un utente con questo username'});
                     } else if (err) {
-                        res.json({error: err});
+                        res.status(500).json({error: err});
                     } else {
                         // db.addAttachment(body.username, 'public/images/profilo.png', 'immagine_profilo', 'image/png', (err, response) => {
                         //     if (!err) console.log(response);
@@ -78,7 +80,7 @@ router.post('/', (req, res) => {
                     }
                 });
             } else {
-                res.json({error: 'esiste già un utente con questa email'});
+                res.status(409).json({error: 'esiste già un utente con questa email'});
             }
         })
     }
@@ -88,31 +90,31 @@ router.post('/', (req, res) => {
 // non richiede parametri
 // un utente non può accedere ai dati di contatto di un altro utente
 router.get('/:id/dati', (req, res, next) => {
-    // console.log(req.cookies.cookieUtente)
     db.get(req.params.id, (err, doc) => {
         // console.log(err);
         // console.log(doc);
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+        if (!err && req.userId.user.id == doc.username) {
             delete doc.password;
-            console.log(doc);
+            doc.me = true
             res.json(doc);
         } else if (!err) {
             delete doc.password;
             delete doc.email;
             delete doc.telefono
+            doc.me = false;
             res.json(doc);
         } else next();
     });
 });
 
-// questa put aggiorna i dati dell'utente :id
+// questa post aggiorna i dati dell'utente :id
 // un utente può modificare solo il proprio profilo
 // richiede parametri: "competenze" (array o stringa), "telefono" (numero o stringa), "professione" (stringa)
 // i parametri non forniti non vanno a modificare il documento sul db
 // in caso di errore viene restituito un json di errore
 router.post('/:id', (req, res) => {
     db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+        if (!err && req.userId.user.id == doc.username) {
             console.log(req.body);
             var array = doc.competenze;
             if (typeof req.body.competenze == "string") {
@@ -130,13 +132,13 @@ router.post('/:id', (req, res) => {
             var variazioni = {};
             if (["string", "number", "undefined"].includes(typeof req.body.telefono)) {
                 if (req.body.telefono != null) variazioni.telefono = req.body.telefono;
-            } else res.json({error: "il numero di telefono deve essere una stringa o un numero"});
+            } else res.status(400).json({error: "il numero di telefono deve essere una stringa o un numero"});
 
             variazioni.competenze = array;
 
             if (["string", "undefined"].includes(typeof req.body.professione)) {
-                if (req.body.professione != null) variazioni.profesione = req.body.professione;
-            } else res.json({error: "la professione deve essere una stringa"});
+                if (req.body.professione != null) variazioni.professione = req.body.professione;
+            } else res.status(400).json({error: "la professione deve essere una stringa"});
 
             db.updateFields(variazioni, req.params.id, (err, response) => {
                 if (!err) {
@@ -146,26 +148,33 @@ router.post('/:id', (req, res) => {
                 }
             })
         } else if (!err) {
-            res.json({error: "non puoi accedere a questa pagina"});
+            res.status(403).json({error: "non puoi accedere a questa pagina"});
         } else res.redirect('/invalid');
     });
 });
 
 // questa post serve ad aggiornare l'immagine profilo dell'utente id
 // un utente può aggiornare solo la propria pagina profilo
-router.post('/:id/image', upload.single('file'), (req, res) => {
-    db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            // console.log(req.file);
-            db.addAttachment(req.params.id, req.file.path, 'immagine_profilo', req.file.mimetype, (err, response) => {
-                if (!err) {
-                    console.log(response);
-                    res.json(response);
-                }
+router.post('/:id/image', (req, res) => {
+    upload.single('file')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            res.status(400).json({error: err.message})
+          } else {
+            console.log(req.file.path);
+            db.get(req.params.id, (err, doc) => {
+                if (!err && req.userId.user.id == req.params.id) {
+                    // console.log(req.file);
+                    db.addAttachment(req.params.id, req.file.path, 'immagine_profilo', req.file.mimetype, (err, response) => {
+                        if (!err) {
+                            console.log(response);
+                            res.json(response);
+                        }
+                    });
+                } else if (!err) {
+                    res.status(403).json({error: "non puoi accedere a questa pagina"});
+                } else res.redirect('/invalid');
             });
-        } else if (!err) {
-            res.json({error: "non puoi accedere a questa pagina"});
-        } else res.redirect('/invalid');
+        }
     });
 })
 
@@ -188,12 +197,12 @@ router.get('/:id/ricevute', (req, res) => {
         fields: ["_id", "data", "richiesto", "richiedente", "competenza", "messaggio", "stato"]
     };
     db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+        if (!err && req.userId.user.id == req.params.id) {
             db.find(q, (err, body) => {
                 if (!err) res.json(body);
                 console.log(body);
             });
-        } else if (!err) res.json({error: "non puoi accedere a questa pagina"});
+        } else if (!err) res.status(403).json({error: "non puoi accedere a questa pagina"});
         else res.redirect('/invalid');
     });
 })
@@ -212,12 +221,12 @@ router.get('/:id/effettuate', (req, res) => {
         fields: ["_id", "data", "richiesto", "richiedente", "competenza", "messaggio", "stato", "info"]
     };
     db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
+        if (!err && req.userId.user.id == req.params.id) {
             db.find(q, (err, body) => {
                 if (!err) res.json(body);
                 console.log(body);
             });
-        } else if (!err) res.json({error: "non puoi accedere a questa pagina"});
+        } else if (!err) res.status(403).json({error: "non puoi accedere a questa pagina"});
         else res.redirect('/invalid');
     });
 })
@@ -233,17 +242,17 @@ router.get('/:id/effettuate', (req, res) => {
 // quando la richiesta viene declinata o accettata all'id viene aggiunto il timestamp dell'accettazione
 router.post('/:id/scambi', (req, res) => {
     db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            res.json({error: "non puoi accedere a questa pagina"});
+        if (!err && req.userId.user.id == req.params.id) {
+            res.status(403).json({error: "non puoi accedere a questa pagina"});
         } else if (!err) {
-            if (!doc.competenze.includes(req.body.competenza)) res.json({error: "competenza richiesta non valida"});
+            if (!doc.competenze.includes(req.body.competenza)) res.status(400).json({error: "competenza richiesta non valida"});
             else {
                 let d = new Date();
                 var documento = {
                     tipo: 'scambio',
 
                     richiesto: req.params.id,
-                    richiedente: req.cookies.cookieUtente.username,
+                    richiedente: req.userId.user.id,
                     competenza: req.body.competenza,
                     messaggio: req.body.messaggio,
                     stato: 'attesa',
@@ -253,7 +262,7 @@ router.post('/:id/scambi', (req, res) => {
                     if (err && err.error == 'conflict') {
                         delete doc.email;
                         delete doc.password;
-                        res.json({error: "competenza già richiesta, attendere risposta"});
+                        res.status(409).json({error: "competenza già richiesta, attendere risposta"});
                     } else {
                         console.log(response);
                         res.json(documento);
@@ -274,14 +283,14 @@ router.post('/:id/scambi', (req, res) => {
 router.post('/:id_user/scambio/:id_scambio', (req, res) => {
     let arrayScambio = req.params.id_scambio.split(':');
     if (arrayScambio.length != 3)
-        res.json({error: "id di scambio non corretto"});
+        res.status(400).json({error: "id di scambio non corretto"});
     else if (!(req.body.stato && ["accettato", "rifiutato"].includes(req.body.stato)))
-        res.json({error: "parametro di stato mancante o scorretto"});
+        res.status(400).json({error: "parametro di stato mancante o scorretto"});
     else {
         db.get(req.params.id_user, (err, doc) => {
-            if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password && doc.username == arrayScambio[0]) {
+            if (!err && req.userId.user.id == doc.username && doc.username == arrayScambio[0]) {
                 db.get(req.params.id_scambio, (err, document) => {
-                    if (err) res.json({error: "id di scambio non corretto"});
+                    if (err) res.status(400).json({error: "id di scambio non corretto"});
                     else {
                         document.stato = req.body.stato;
                         let rev = document._rev;
@@ -304,7 +313,7 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                     }
                 });
             } else if (!err) {
-                res.json({error: "non puoi accedere a questa pagina"});
+                res.status(403).json({error: "non puoi accedere a questa pagina"});
             } else res.redirect('/invalid');
         });
     }
@@ -313,13 +322,13 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
 // in caso di errori di qualsiasi tipo si riceverà un json di errore
 router.post('/:id_user/scambio/:id_scambio/delete', (req, res) => {
     let arrayScambio = req.params.id_scambio.split(':');
-    if (arrayScambio.length != 3)
-        res.json({error: "id di scambio non corretto"});
+    if (arrayScambio.length < 3)
+        res.status(400).json({error: "id di scambio non corretto"});
     else {
         db.get(req.params.id_user, (err, doc) => {
-            if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password && doc.username == arrayScambio[1]) {
+            if (!err && req.userId.user.id == doc.username && doc.username == arrayScambio[1]) {
                 db.get(req.params.id_scambio, (err, document) => {
-                    if (err) res.json({error: "id di scambio non corretto"});
+                    if (err) res.status(400).json({error: "id di scambio non corretto"});
                     else {
                         db.destroy(req.params.id_scambio, document._rev, (err, response) => {
                             if (!err) {
@@ -330,7 +339,7 @@ router.post('/:id_user/scambio/:id_scambio/delete', (req, res) => {
                     }
                 });
             } else if (!err) {
-                res.json({error: "non puoi accedere a questa pagina"});
+                res.status(403).json({error: "non puoi accedere a questa pagina"});
             } else res.redirect('/invalid');
         });
     }
@@ -360,8 +369,7 @@ router.get('/:id/recensioni', (req, res) => {
 })
 
 // questa post serve a pubblicare recensioni. 
-// deve essere fornito nell'url come query l'id dello scambio associato, nella forma "?scambio=<id_scambio>"
-// la richiesta deve avere tre parametri: "sintesi", "recensione", "voto"
+// la richiesta deve avere quattro parametri: "sintesi", "recensione", "voto", "scambio"
 // se qualche parametro non è corretto si riceve un json di errore. 
 // Un utente non può recensire se stesso
 // se una recensione con il medesimo id esiste già, si riceve un messaggio di errore
@@ -369,27 +377,27 @@ router.get('/:id/recensioni', (req, res) => {
 // una volta pubblicata la recensione vengono aggiornati i dati di punteggio dell'utente recensito
 router.post('/:id/recensioni', (req, res) => {
     db.get(req.params.id, (err, doc) => {
-        if (!err && req.cookies.cookieUtente.username == doc.username && req.cookies.cookieUtente.password == doc.password) {
-            res.json({error: "non puoi accedere a questa pagina"});
+        if (!err && req.userId.user.id == doc.username) {
+            res.status(403).json({error: "non puoi accedere a questa pagina"});
         } else if (!err) {
-            if (req.body.voto > 5 || req.body.voto < 0) res.json({error: "voto non valido"});
+            if (req.body.voto > 5 || req.body.voto < 0) res.status(400).json({error: "voto non valido"});
             else {
                 let d = new Date();
                 var documento = {
                     tipo: 'recensione',
 
                     recensito: req.params.id,
-                    recensore: req.cookies.cookieUtente.username,
+                    recensore: req.userId.user.id,
                     sintesi: req.body.sintesi,
                     recensione: req.body.recensione,
                     voto: req.body.voto,
                     data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                 }
-                db.get(req.query.scambio, (err, document) => {
+                db.get(req.body.scambio, (err, document) => {
                     if (!err && document.stato == "accettato")
-                        db.insert(documento, req.query.scambio + ':recensione', (err, response) => {
+                        db.insert(documento, req.body.scambio + ':recensione', (err, response) => {
                             if (err && err.error == 'conflict') {
-                                res.json({error: "recensione già esistente"})
+                                res.status(409).json({error: "recensione già esistente"})
                             } else {
                                 console.log(response);
                                 let new_punti = parseInt(doc.punti) + parseInt(documento.voto);
@@ -404,14 +412,14 @@ router.post('/:id/recensioni', (req, res) => {
                                 });
                                 db.updateFields({
                                     stato: 'concluso'
-                                }, req.query.scambio, (err, res) => {
+                                }, req.body.scambio, (err, res) => {
                                     if (!err) console.log(res)
                                 });
                                 res.json(documento);
                             }
                         });
-                    else if (!err) res.json({error: "stato dello scambio non valido"});
-                    else res.json({error: "id scambio non valido"});
+                    else if (!err) res.status(400).json({error: "stato dello scambio non valido"});
+                    else res.status(400).json({error: "id scambio non valido"});
                 });
             }
         } else res.redirect('/invalid');

@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 var dbHelper = require('./helper/dbHelper.js');
 const upload = require('./helper/imageHelper.js');
+const jwt = require('jsonwebtoken');
+
 
 let db;
 
@@ -26,7 +27,22 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+function ensureToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        var userId;
+        if (userId = jwt.verify(bearerToken, 'secret_key')) {
+            req.userId = userId;
+            req.token = bearerToken;
+            console.log('authorized!');
+            next();
+        } else res.status(403).json({error: "non sei autorizzato"});
+    } else {
+        res.status(403).json({error: "non sei autorizzato"});
+    }
+}
 
 // log automatico delle richieste al server
 app.use((req, res, next) => {
@@ -41,26 +57,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.post('/authenticate', ensureToken, (req, res) => {
+    res.json({success: "tutto OK"});
+})
+
 // impedisce che vengano hittati percorsi non accessibili ai non utenti
 app.use((req, res, next) => {
-    if (req.cookies.cookieUtente == undefined && !(['/login', '/users'].includes(req.path) && req.method == 'POST')){
-        res.json({error: "login richiesto"});
-    }
-    else if (req.cookies.cookieUtente != undefined) {
-        db.get(req.cookies.cookieUtente.id, (err, response) => {
-            if (!err && req.cookies.cookieUtente.password == response.password) {
-                // per non dover modificare le get di login e registrazione e verificare se è già loggato
-                if (["/login", '/users'].includes(req.path) && req.method == 'POST') {
-                    res.json({error: "login già effettuato"});
-                }
-                else next();
-            }
-            else {
-                //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
-                res.clearCookie('cookieUtente');
-                res.json({error: "cookie sbagliati"});
-            }
-        });
+    if (!(['/login', '/users'].includes(req.path) && req.method == 'POST')){
+        ensureToken(req, res, next);
     }
     else {
         next();
@@ -79,8 +83,8 @@ app.get('/test', (req, res) => {
 app.get('/file', (req, res) => {
     db.attachment.get(req.query.docName, req.query.attName, (err, body) => {
         if (err) res.json({error: err});
-        else res.end(body);
-    });
+        else db.attachment.getAsStream(req.query.docName, req.query.attName).pipe(res);
+    })
 });
 
 // post su /login
@@ -92,32 +96,36 @@ app.post('/login', (req, res) => {
         console.log(err);
         console.log(response);
         if (err && err.error == 'not_found') {
-            res.json({error: 'utente inesistente'});
+            res.status(404).json({error: 'utente inesistente'});
         } else if (err) {
-            res.json({error: err});
+            res.status(404).json({error: err});
         } else {
             let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
             if (encPwd == response.password) {
-                res.cookie("cookieUtente", utente = {
-                    id: response._id,
-                    password: response.password,
+                //autentica user e restituisce il token
+                const user = {
+                    id: response.username
+                }
+                const token = jwt.sign({ user }, 'secret_key');
+                res.json({
+                    token: token,
                     username: response.username
                 });
-                res.json({success: "utente loggato correttamente"});
             }
             else {
-                res.json({error: "password errata"});
+                res.status(400).json({error: "password errata"});
             }
         }
     });
 });
 
+// non ha senso il logout in un servizio di API, visto che il token va mandato ad ogni richiesta
 // get (meglio post?) su /logout
 // effettua il logout dell'user attuale
-app.get('/logout', (req, res) => {
-    res.clearCookie("cookieUtente");     
-    res.json({success: "logout effettuato correttamente"});
-});
+// app.get('/logout', (req, res) => {
+//     res.clearCookie("cookieUtente");     
+//     res.json({success: "logout effettuato correttamente"});
+// });
 
 // post (meglio get?) su /migliori
 // restituisce i 5 utenti meglio recensiti
@@ -133,6 +141,7 @@ app.post('/migliori', (req, res) => {
     };
     db.find(q, (err, body) => {
         if (!err) res.json(body);
+        else res.status(500).json({error: 'qualcosa è andato storto'});
         console.log(body);
     });
 });
@@ -152,8 +161,8 @@ app.post('/ricerca', (req, res) => {
         fields: ["username", "nome", "media", "competenze"],
         limit: 10
     };
-    if (req.query.input) {
-        var query = req.query.input.split(" ");
+    if (req.body.input) {
+        var query = req.body.input.split(" ");
         for (let i = 0; i < query.length; i++) {
 
             q.selector.$or.push(
@@ -178,15 +187,7 @@ app.post('/ricerca', (req, res) => {
 const users = require('./routes/users');
 app.use('/users', users);
 
-/* -------------in allestimento--------------- */
-// get su /Faq mostra Faq.html 
-// app.get('/Faq', (req, res) => {
-//     res.render('Faq', {
-//         title: 'xChange - Faq'
-//     });
-// })
-
-// URL non valido, reindirizza a pagina d'errore
+// URL non valido, invia errore con stato 404
 app.get('*', (req, res) => {
     res.status(404).json({error: "Page Not Found"});
 })
