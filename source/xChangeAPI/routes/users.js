@@ -75,8 +75,8 @@ router.post('/', (req, res) => {
                             }
                             else console.log(err);
                         });
-                        console.log(response);
                         res.json(documento);
+                        console.log(response);
                     }
                 });
             } else {
@@ -369,7 +369,8 @@ router.get('/:id/recensioni', (req, res) => {
 })
 
 // questa post serve a pubblicare recensioni. 
-// la richiesta deve avere quattro parametri: "sintesi", "recensione", "voto", "scambio"
+// deve essere fornito nell'url come query l'id dello scambio associato, nella forma "?scambio=<id_scambio>"
+// la richiesta deve avere quattro parametri: "sintesi", "recensione", "voto"
 // se qualche parametro non è corretto si riceve un json di errore. 
 // Un utente non può recensire se stesso
 // se una recensione con il medesimo id esiste già, si riceve un messaggio di errore
@@ -393,9 +394,9 @@ router.post('/:id/recensioni', (req, res) => {
                     voto: req.body.voto,
                     data: "" + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
                 }
-                db.get(req.body.scambio, (err, document) => {
+                db.get(req.query.scambio, (err, document) => {
                     if (!err && document.stato == "accettato")
-                        db.insert(documento, req.body.scambio + ':recensione', (err, response) => {
+                        db.insert(documento, req.query.scambio + ':recensione', (err, response) => {
                             if (err && err.error == 'conflict') {
                                 res.status(409).json({error: "recensione già esistente"})
                             } else {
@@ -412,7 +413,7 @@ router.post('/:id/recensioni', (req, res) => {
                                 });
                                 db.updateFields({
                                     stato: 'concluso'
-                                }, req.body.scambio, (err, res) => {
+                                }, req.query.scambio, (err, res) => {
                                     if (!err) console.log(res)
                                 });
                                 res.json(documento);

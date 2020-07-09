@@ -93,8 +93,6 @@ app.get('/file', (req, res) => {
 // in caso di errore restituisce un json di errore
 app.post('/login', (req, res) => {
     db.get(req.body.username, (err, response) => {
-        console.log(err);
-        console.log(response);
         if (err && err.error == 'not_found') {
             res.status(404).json({error: 'utente inesistente'});
         } else if (err) {
@@ -161,8 +159,8 @@ app.post('/ricerca', (req, res) => {
         fields: ["username", "nome", "media", "competenze"],
         limit: 10
     };
-    if (req.body.input) {
-        var query = req.body.input.split(" ");
+    if (req.query.input) {
+        var query = req.query.input.split(" ");
         for (let i = 0; i < query.length; i++) {
 
             q.selector.$or.push(

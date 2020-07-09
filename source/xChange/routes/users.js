@@ -1,27 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const dbHelper = require('../public/helper/dbHelper.js');
-const crypto = require('crypto');
 const upload = require('../public/helper/imageHelper.js');
 const fs = require('fs');
 const axios = require('axios').default;
 const FormData = require('form-data');
 
 axios.defaults.baseURL = 'http://localhost:3001';
-let db;
-
-
-function validateEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
-
-router.use((req, res, next) => {
-    dbHelper().then(res => {
-        db = res;
-        next();
-    })
-})
 
 router.post('/', (req, res) => {
     axios.post('/users', req.body, req.objHeader).
@@ -231,8 +215,12 @@ router.get('/:id/recensioni', (req, res) => {
 // una volta pubblicata la recnsione vengono aggiornati i dati i punteggio dell'utente recensito
 router.post('/:id/recensioni', (req, res) => {
     req.body.scambio = req.query.scambio
-    axios.post('/users/'+req.params.id+'/recensioni', req.body, req.objHeader).
-        then(response => {
+    axios.post('/users/'+req.params.id+'/recensioni', req.body, {
+            headers: req.objHeader.headers,
+            params: {
+                scambio: req.query.scambio
+            }
+        }).then(response => {
             res.redirect('/users/'+req.cookies.cookieUtente.username);
         }).catch(error => {
             if (error.response) {

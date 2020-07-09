@@ -3,14 +3,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
-const crypto = require('crypto');
-var dbHelper = require('./public/helper/dbHelper.js');
 const upload = require('./public/helper/imageHelper.js');
 const axios = require('axios').default;
 
 axios.defaults.baseURL = 'http://localhost:3001';
-
-let db;
 
 function errHandler(err, res) {
     if (err) console.log(err);
@@ -52,6 +48,7 @@ app.use((req, res, next) => {
         var objHeader = {
             headers: { Authorization: 'Bearer ' + req.cookies.JWT_token.token}
         };
+        // controlla validità dei cookie
         axios.post('/authenticate', null, objHeader).then(response => {
             console.log(response.data);
             if (["/login", "/users"].includes(req.path) && req.method == 'POST') {
@@ -62,7 +59,7 @@ app.use((req, res, next) => {
                 next();
             }
         }).catch(error => {
-            //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
+            // entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
             res.clearCookie('JWT_token');
             res.redirect('/login');
         })
@@ -166,8 +163,12 @@ app.get('/ricerca', (req, res) => {
 });
 
 app.post('/ricerca', (req, res) => {
-    axios.post('/ricerca', {input: req.query.input}, req.objHeader).
-        then(response => {
+    axios.post('/ricerca', null, {
+            headers: req.objHeader.headers,
+            params: {
+                input: req.query.input
+            }
+        }).then(response => {
             res.json(response.data);
         }).catch(error => {
             console.log(error.data)
