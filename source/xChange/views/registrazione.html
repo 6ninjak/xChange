@@ -62,7 +62,9 @@
 
 	<script src=/javascript/registrazione.js></script>
 	<script>
-		if ("<%= error %>") alert("<%= error %>");
+		$(document).ready(function () {
+			if ("<%= error %>") alert("<%= error %>");
+		});
 	</script>
 </body>
 

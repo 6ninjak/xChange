@@ -3,11 +3,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
-const crypto = require('crypto');
-var dbHelper = require('./public/helper/dbHelper.js');
 const upload = require('./public/helper/imageHelper.js');
+const axios = require('axios').default;
 
-let db;
+axios.defaults.baseURL = 'http://localhost:3001';
 
 function errHandler(err, res) {
     if (err) console.log(err);
@@ -33,55 +32,60 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // log automatico delle richieste al server
 app.use((req, res, next) => {
-    dbHelper().then(res => {
-        db = res;
-        next();
-    });
-})
-
-app.use((req, res, next) => {
     console.log(req.method + ": " + req.path);
     next();
 });
 
 app.use((req, res, next) => {
-    if (req.cookies.cookieUtente == undefined &&
+    if (req.cookies.JWT_token == undefined &&
         (!(["/login", "/registrazione", "/"].includes(req.path)
             || (req.path == '/users' && req.method == 'POST')
         ))
     ) {
         res.redirect('/login');
     }
-    else if (req.cookies.cookieUtente != undefined) {
-        db.get(req.cookies.cookieUtente.id, (err, response) => {
-            if (!err && req.cookies.cookieUtente.password == response.password) {
-                // per non dover modificare le get di login e registrazione e verificare se è già loggato
-                if (["/login", "/registrazione", "/"].includes(req.path)) {
-                    res.redirect('/home');
-                }
-                else next();
+    else if (req.cookies.JWT_token != undefined) {
+        var objHeader = {
+            headers: { Authorization: 'Bearer ' + req.cookies.JWT_token.token}
+        };
+        // controlla validità dei cookie
+        axios.post('/authenticate', null, objHeader).then(response => {
+            console.log(response.data);
+            if (["/login", "/users"].includes(req.path) && req.method == 'POST') {
+                res.redirect('/home');
             }
             else {
-                //entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
-                res.clearCookie('cookieUtente');
-                res.redirect('/login');
+                req.objHeader = objHeader;
+                next();
             }
-        });
-    }
+        }).catch(error => {
+            // entrando qui abbiamo rilevato dei cookie sbagliati e perciò lo indirizziamo a login ma svuotando i cookie, così da non entrare dentro un loop
+            res.clearCookie('JWT_token');
+            res.redirect('/login');
+        })
+    } 
     else {
         next();
     }
 });
 
 app.get('/test', (req, res) => {
-    db.addAttachment('6ninjak', './public/images/sarto.jpg', 'immagine_profilo', 'image/jpeg', errHandler);
     res.send('ok');
 })
 
 app.get('/file', (req, res) => {
-    db.attachment.get(req.query.docName, req.query.attName, (err, body) => {
-        res.end(body);
-    });
+    axios.get('/file/', {
+        headers: req.objHeader.headers,
+        params: {
+            docName: req.query.docName,
+            attName: req.query.attName
+        },
+        responseType: 'stream'
+    }).then(response => {
+        response.data.pipe(res);
+    }).catch(error => {
+        console.log(error.data);
+    })
 });
 
 // get su / mostra home.html
@@ -99,50 +103,31 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    db.get(req.body.username, (err, response) => {
-        console.log(err);
-        console.log(response);
-        if (err && err.error == 'not_found') {
-            res.render('login', {
-                title: 'xChange - login',
-                error: 'Utente inesistente',
-                pass: ''
+    axios.post('/login', req.body).
+        then(response => {
+            console.log(response.data)
+            // cookie per l'autorizzazione delle api
+            res.cookie("JWT_token", token = {
+                token: response.data.token
             });
-        } else if (err) {
-            res.render('login', {
-                title: 'xChange - login',
-                error: err,
-                pass: ''
+            res.cookie("cookieUtente", utente = {
+                username: response.data.username
             });
-        } else {
-            let encPwd = crypto.createHash('md5').update(req.body.password).digest('hex'); // Codifichiamo la password in MD5
-            if (encPwd == response.password) {
-                res.cookie("cookieUtente", utente = {
-                    id: response._id,
-                    password: response.password,
-                    username: response.username
-                });
-                res.redirect('/home');
-            }
-            else {
-                res.render('login', {
-                    title: 'xChange - login',
-                    error: '',
-                    pass: 'errata'
-                });
-            }
-        }
-    });
+            res.redirect('/home')
+        }).catch(error => {
+            console.log(error.toJSON());
+            res.render('login', {
+                error: error.response.data.error
+            })
+        })
 });
 
 app.get('/logout', (req, res) => {
-    if (req.cookies.cookieUtente != undefined) {
+    if (req.cookies.cookieUtente != undefined)
         res.clearCookie("cookieUtente");
-        res.redirect('/');
-    }
-    else {
-        res.redirect('/');
-    }
+    if (req.cookies.JWT_token != undefined)
+        res.clearCookie("JWT_token");
+    res.redirect('/');
 });
 
 // get su /registrazione mostra registrazione.html
@@ -163,19 +148,12 @@ app.get('/home', (req, res) => {
 });
 
 app.post('/migliori', (req, res) => {
-    var q = {
-        selector: {
-            tipo: 'user',
-            media: { $gte: 4 }
-        },
-        sort: [{ media: "desc" }, { recensioni: "desc" }],
-        fields: ["username", "nome", "media", "competenze"],
-        limit: 5
-    };
-    db.find(q, (err, body) => {
-        if (!err) res.json(body);
-        console.log(body);
-    });
+    axios.post('/migliori', null, req.objHeader).
+        then(response => {
+            res.json(response.data);
+        }).catch(error => {
+            console.log(error.data);
+        })
 });
 
 app.get('/ricerca', (req, res) => {
@@ -185,39 +163,23 @@ app.get('/ricerca', (req, res) => {
 });
 
 app.post('/ricerca', (req, res) => {
-    var q = {
-        selector: {
-            tipo: "user",
-            $or: []
-        },
-        sort: [{ media: "desc" }, { recensioni: "desc" }],
-        fields: ["username", "nome", "media", "competenze"],
-        limit: 10
-    };
-    if (req.query.input) {
-        var query = req.query.input.split(" ");
-        for (let i = 0; i < query.length; i++) {
-
-            q.selector.$or.push(
-                { username: { $regex: "(?i)" + query[i] } },
-                { nome: { $regex: "(?i)" + query[i] } },
-                { cognome: { $regex: "(?i)" + query[i] } },
-                { competenze: { $elemMatch: { $regex: "(?i)" + query[i] } } }
-            );
-        }
-    }
-    // console.log(q);
-    // console.log(query);
-    db.find(q, (err, body) => {
-        if (!err) res.json(body);
-        console.log(body);
-    });
+    axios.post('/ricerca', null, {
+            headers: req.objHeader.headers,
+            params: {
+                input: req.query.input
+            }
+        }).then(response => {
+            res.json(response.data);
+        }).catch(error => {
+            console.log(error.data)
+        });
 })
 
 
 
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');
+const { Stream } = require('stream');
 app.use('/users', users);
 
 // get su /Faq mostra Faq.html
