@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const upload = require('../helper/imageHelper.js');
 const fs = require('fs');
+const amqp = require('amqplib/callback_api');
 let db;
 
 
@@ -105,6 +106,42 @@ router.get('/:id/dati', (req, res, next) => {
             res.json(doc);
         } else next();
     });
+});
+
+router.get('/:id/notifiche', (req, res) => {
+    if (req.userId.user.id == req.params.id) {
+        amqp.connect('amqp://localhost', function(error0, connection) {
+            if (error0) {
+                throw error0;
+            }
+            connection.createChannel(function(error1, channel) {
+                if (error1) {
+                    res.status(404).json({error: error1});
+                }
+                var queue = req.params.id;  // da prendere in maniera dinamica
+
+                channel.assertQueue(queue, {
+                durable: true
+                });
+                var array = [];
+            
+                // console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+                channel.consume(queue, function(msg) {
+                // console.log(" [x] Received %s", msg.content.toString());
+                array[i]=  msg.content.toString();
+                i++;
+                // console.log(array);
+                //immagaziono array
+                }, {
+                    noAck: true
+                });
+                res.json({notifiche: array});
+                // send
+            }); 
+        });
+    } else {
+        res.status(403).json({error: "non puoi accedere a questa pagina"});
+    }
 });
 
 // questa post aggiorna i dati dell'utente :id
@@ -265,6 +302,34 @@ router.post('/:id/scambi', (req, res) => {
                         res.status(409).json({error: "competenza già richiesta, attendere risposta"});
                     } else {
                         console.log(response);
+
+                        // connessione a rabbitmq per mandare messaggi
+                        amqp.connect('amqp://localhost', function(error0, connection) {
+                            if (error0) {
+                                throw error0;
+                            }
+                            connection.createChannel(function(error1, channel) {
+                                if (error1) {
+                                throw error1;
+                                }
+                                var queue = req.params.id;  // da prendere in maniera dinamica
+                                var msg = documento.richiedente + ' ha richiesto la tua competenza: ' + documento.competenza + '.\n' 
+                                        + documento.messaggio;
+
+                                channel.assertQueue(queue, {
+                                durable: true
+                                });
+
+                                channel.sendToQueue(queue, Buffer.from(msg), {
+                                persistent: true
+                                });
+                                console.log(" [x] Sent %s", msg);
+                            });
+                            setTimeout(function() { 
+                                connection.close(); 
+                                process.exit(0) 
+                            }, 500);
+                        });
                         res.json(documento);
                     }
                 });

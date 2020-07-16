@@ -52,6 +52,14 @@ router.get('/:id/dati', (req, res, next) => {
             next();
         })
 });
+router.get('/:id/notifiche', (req, res, next) => {
+    axios.get('/users/'+req.params.id+'/notifiche', req.objHeader).
+    then(response => {
+        res.json(response.data);
+    }).catch(error => {
+        next();
+    })
+});
 
 // get su /users/:id/edit conduce a edit_dati.html di :id
 router.get('/:id/edit', (req, res, next) => {
