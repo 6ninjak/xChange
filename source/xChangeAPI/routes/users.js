@@ -6,6 +6,7 @@ const multer = require('multer');
 const upload = require('../helper/imageHelper.js');
 const fs = require('fs');
 const amqp = require('amqplib/callback_api');
+const { abort } = require('process');
 let db;
 
 
@@ -110,10 +111,11 @@ router.get('/:id/dati', (req, res, next) => {
 
 router.get('/:id/notifiche', (req, res) => {
     if (req.userId.user.id == req.params.id) {
+        var array = [];
         amqp.connect('amqp://localhost', function(error0, connection) {
             if (error0) {
-                throw error0;
-            }
+                console.log(error0);
+            } else {
             connection.createChannel(function(error1, channel) {
                 if (error1) {
                     res.status(404).json({error: error1});
@@ -123,21 +125,25 @@ router.get('/:id/notifiche', (req, res) => {
                 channel.assertQueue(queue, {
                 durable: true
                 });
-                var array = [];
+                var i = 0;
             
                 // console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
                 channel.consume(queue, function(msg) {
                 // console.log(" [x] Received %s", msg.content.toString());
-                array[i]=  msg.content.toString();
-                i++;
-                // console.log(array);
+                    array[i]=  msg.content.toString();
+                    i++;
+                    console.log("Received: " + msg.content.toString());
                 //immagaziono array
                 }, {
                     noAck: true
                 });
-                res.json({notifiche: array});
                 // send
-            }); 
+            });
+            setTimeout(function () {
+                connection.close();
+                res.json({notifiche: array})
+            }, 100)
+            }
         });
     } else {
         res.status(403).json({error: "non puoi accedere a questa pagina"});
@@ -306,29 +312,30 @@ router.post('/:id/scambi', (req, res) => {
                         // connessione a rabbitmq per mandare messaggi
                         amqp.connect('amqp://localhost', function(error0, connection) {
                             if (error0) {
-                                throw error0;
-                            }
+                                console.log(error0);
+                            } else {
                             connection.createChannel(function(error1, channel) {
                                 if (error1) {
-                                throw error1;
+                                    console.log(error1);
+                                } else {
+                                    var queue = req.params.id;  // da prendere in maniera dinamica
+                                    var msg = documento.richiedente + ' ha richiesto la tua competenza ' + documento.competenza + '. ' 
+                                            + documento.messaggio;
+
+                                    channel.assertQueue(queue, {
+                                    durable: true
+                                    });
+
+                                    channel.sendToQueue(queue, Buffer.from(msg), {
+                                    persistent: true
+                                    });
+                                    console.log(" [x] Sent %s", msg);
                                 }
-                                var queue = req.params.id;  // da prendere in maniera dinamica
-                                var msg = documento.richiedente + ' ha richiesto la tua competenza: ' + documento.competenza + '.\n' 
-                                        + documento.messaggio;
-
-                                channel.assertQueue(queue, {
-                                durable: true
                                 });
-
-                                channel.sendToQueue(queue, Buffer.from(msg), {
-                                persistent: true
-                                });
-                                console.log(" [x] Sent %s", msg);
-                            });
-                            setTimeout(function() { 
-                                connection.close(); 
-                                process.exit(0) 
-                            }, 500);
+                                setTimeout(function() { 
+                                    connection.close(); 
+                                }, 1500);
+                            }
                         });
                         res.json(documento);
                     }
@@ -368,6 +375,32 @@ router.post('/:id_user/scambio/:id_scambio', (req, res) => {
                         db.insert(document, req.params.id_scambio + ':' + document.data, (err, response) => {
                             if (!err) {
                                 console.log(response);
+                                amqp.connect('amqp://localhost', function(error0, connection) {
+                                    if (error0) {
+                                        console.log(error0);
+                                    } else {
+                                    connection.createChannel(function(error1, channel) {
+                                        if (error1) {
+                                            console.log(error1);
+                                        } else {
+                                            var queue = document.richiedente;  // da prendere in maniera dinamica
+                                            var msg = doc.username + " ha " + req.body.stato +  " la tua richiesta di scambio per la competenza: " + document.competenza;
+
+                                            channel.assertQueue(queue, {
+                                            durable: true
+                                            });
+
+                                            channel.sendToQueue(queue, Buffer.from(msg), {
+                                            persistent: true
+                                            });
+                                            console.log(" [x] Sent %s", msg);
+                                        }
+                                        });
+                                        setTimeout(function() { 
+                                            connection.close(); 
+                                        }, 1500);
+                                    }
+                                });
                                 res.json(response);
                                 // res.redirect("/users/" + req.params.id_user);
                                 db.destroy(req.params.id_scambio, rev).then((body) => {
@@ -480,6 +513,32 @@ router.post('/:id/recensioni', (req, res) => {
                                     stato: 'concluso'
                                 }, req.query.scambio, (err, res) => {
                                     if (!err) console.log(res)
+                                });
+                                amqp.connect('amqp://localhost', function(error0, connection) {
+                                    if (error0) {
+                                        console.log(error0);
+                                    } else {
+                                    connection.createChannel(function(error1, channel) {
+                                        if (error1) {
+                                            console.log(error1);
+                                        } else {
+                                            var queue = documento.recensito;  // da prendere in maniera dinamica
+                                            var msg = documento.recensore + " ti ha lasciato una recensione";
+
+                                            channel.assertQueue(queue, {
+                                            durable: true
+                                            });
+
+                                            channel.sendToQueue(queue, Buffer.from(msg), {
+                                            persistent: true
+                                            });
+                                            console.log(" [x] Sent %s", msg);
+                                        }
+                                        });
+                                        setTimeout(function() { 
+                                            connection.close(); 
+                                        }, 1500);
+                                    }
                                 });
                                 res.json(documento);
                             }

@@ -10,16 +10,7 @@ new Vue({
             axios.post('/migliori') //nostro server
                 .then(response => {
                     this.scelti = response.data.docs;
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            
-            axios.get("/users/"+ username +"/notifiche")
-                .then(response => {
-                    this.notifiche = response.data.docs;
-                    console.log(data);
+                    console.log(response.data);
                 })
                 .catch(error => {
                     console.log(error);
