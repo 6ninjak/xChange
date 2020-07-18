@@ -37,6 +37,9 @@ li.show #notifiche.nav-link, li.show #account.nav-link {
   background-color: inherit;
 }
 
+.nonTroppoGrande{
+  max-width: 60px;
+}
 .big-padding{
   padding-top: 100px;
 }

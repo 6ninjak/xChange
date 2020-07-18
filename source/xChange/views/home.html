@@ -43,7 +43,7 @@
 				<li class="nav-item dropdown">
 					<a id=notifiche class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notifiche</a>
-					<div class="dropdown-menu be-dark" aria-labelledby="navbarDropdown">
+					<div class="dropdown-menu p-4 text-muted be-dark" style="max-width: 300px;" aria-labelledby="navbarDropdown">
 					</div>
 				</li>
 				<div class="nav-item">
@@ -227,7 +227,7 @@
 						console.log(response.data);
 						if (response.data.notifiche) {
 							response.data.notifiche.forEach(element => {
-								text += "<a class=dropdown-item href=/users/<%=utente.username%>>" + element + "</a>\n";
+								text += "<a class=text-light href=/users/<%=utente.username%>>" + element + "</a>\n <div class=dropdown-divider></div>";
 							});
 						}
 						if (text != "")
