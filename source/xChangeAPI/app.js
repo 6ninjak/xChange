@@ -142,6 +142,7 @@ app.post('/addusername/:googleId', (req, res) => {
                 nome: doc.nome,
                 cognome: doc.cognome,
                 email: doc.email,
+                posizione: '',
                 competenze: [],
                 punti: 0,
                 media: 0,

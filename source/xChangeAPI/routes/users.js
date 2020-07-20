@@ -6,6 +6,7 @@ const multer = require('multer');
 const upload = require('../helper/imageHelper.js');
 const fs = require('fs');
 const amqp = require('amqplib/callback_api');
+const axios = require('axios').default;
 const { abort } = require('process');
 let db;
 
@@ -53,6 +54,7 @@ router.post('/', (req, res) => {
                     cognome: body.cognome,
                     email: body.email,
                     password: encPwd,
+                    posizione: '',
                     competenze: [],
                     punti: 0,
                     media: 0,
@@ -156,44 +158,58 @@ router.get('/:id/notifiche', (req, res) => {
 // i parametri non forniti non vanno a modificare il documento sul db
 // in caso di errore viene restituito un json di errore
 router.post('/:id', (req, res) => {
-    db.get(req.params.id, (err, doc) => {
-        if (!err && req.userId.user.id == doc.username) {
-            console.log(req.body);
-            var array = doc.competenze;
-            if (typeof req.body.competenze == "string") {
-                if (!array.includes(req.body.competenze))
-                    array.push(req.body.competenze);
-            } else {
-                if(req.body.competenze) {
-                    for (let index = 0; index < req.body.competenze.length; index++) {
-                        if (!array.includes(req.body.competenze[index]))
-                            array.push(req.body.competenze[index]);
-                    }
-                }
+    axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+            params:{
+            address: req.body.posizione,
+            key:'AIzaSyBIWsFd0UcqVghv3LWyvJX7KclteXePTaE',
+            language: 'it'
             }
-
-            var variazioni = {};
-            if (["string", "number", "undefined"].includes(typeof req.body.telefono)) {
-                if (req.body.telefono != null) variazioni.telefono = req.body.telefono;
-            } else res.status(400).json({error: "il numero di telefono deve essere una stringa o un numero"});
-
-            variazioni.competenze = array;
-
-            if (["string", "undefined"].includes(typeof req.body.professione)) {
-                if (req.body.professione != null) variazioni.professione = req.body.professione;
-            } else res.status(400).json({error: "la professione deve essere una stringa"});
-
-            db.updateFields(variazioni, req.params.id, (err, response) => {
-                if (!err) {
-                    console.log(response);
-                    delete doc.password
-                    res.json({doc, variazioni});
-                }
-            })
-        } else if (!err) {
-            res.status(403).json({error: "non puoi accedere a questa pagina"});
-        } else res.redirect('/invalid');
-    });
+        })
+        .then(axiosResponse => {
+            db.get(req.params.id, (err, doc) => {
+                if (!err && req.userId.user.id == doc.username) {
+                    console.log(req.body);
+                    var array = doc.competenze;
+                    if (typeof req.body.competenze == "string") {
+                        if (!array.includes(req.body.competenze))
+                            array.push(req.body.competenze);
+                    } else {
+                        if(req.body.competenze) {
+                            for (let index = 0; index < req.body.competenze.length; index++) {
+                                if (!array.includes(req.body.competenze[index]))
+                                    array.push(req.body.competenze[index]);
+                            }
+                        }
+                    }
+        
+                    var variazioni = {};
+                    if (["string", "number", "undefined"].includes(typeof req.body.telefono)) {
+                        if (req.body.telefono != null) variazioni.telefono = req.body.telefono;
+                    } else res.status(400).json({error: "il numero di telefono deve essere una stringa o un numero"});
+        
+                    variazioni.competenze = array;
+        
+                    if (["string", "undefined"].includes(typeof req.body.professione)) {
+                        if (req.body.professione != null) variazioni.professione = req.body.professione;
+                    } else res.status(400).json({error: "la professione deve essere una stringa"});
+        
+                    if (axiosResponse.data.results && axiosResponse.data.results.length > 0)
+                        variazioni.posizione = axiosResponse.data.results[0];
+                        
+                    db.updateFields(variazioni, req.params.id, (err, response) => {
+                        if (!err) {
+                            console.log(response);
+                            delete doc.password
+                            res.json({doc, variazioni});
+                        }
+                    })
+                } else if (!err) {
+                    res.status(403).json({error: "non puoi accedere a questa pagina"});
+                } else res.redirect('/invalid');
+            });
+        }).catch(error => {
+            console.log(error);
+        })
 });
 
 // questa post serve ad aggiornare l'immagine profilo dell'utente id
