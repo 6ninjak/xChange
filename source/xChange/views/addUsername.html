@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale= 1">
+    <title>Completa la registrazione</title>
+
+    <link rel=stylesheet href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel=stylesheet href="/stylesheets/styleLog.css">
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+
+</head>
+
+<body class="text-center">
+    <table align="center">
+        <tr align="center">
+            <td>
+                <form action="/addusername/<%= googleId %>" method="POST" name="addUsername">
+                    <input type="text" name="username" class="form-control nomeBord" placeholder="Username" required
+                        autofocus />
+                    <button class="btn btn-md btn-primary btn-block" name="btnConferma" type="submit">Conferma</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <script>
+        $(document).ready(function () {
+            if ("<%= error %>") alert("<%= error %>");
+        });
+    </script>
+</body>
+
+</html>
