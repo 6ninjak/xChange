@@ -10,6 +10,17 @@ const jwt = require('jsonwebtoken');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
+var config = {
+    OAUTH_CLIENT_ID: 'client_id',
+    OAUTH_CLIENT_SECRET: 'client_secret',
+    GOOGLE_MAPS_API_KEY: 'google_maps_api_key'
+};
+try {
+    config = require('../config.js');
+} catch (error) {
+    console.log('Manca config.js! Ti serve nella cartella source per avere client id e client secret')
+}
+
 
 let db;
 
@@ -73,8 +84,8 @@ app.use((req, res, next) => {
 });
 
 passport.use(new GoogleStrategy({
-    clientID: '1011578368251-ulleto7urkdglnanmainbemc5hihcgl5.apps.googleusercontent.com',
-    clientSecret: 'HhWpePp9aHEGcrvG131AIPPl',
+    clientID: config.OAUTH_CLIENT_ID,
+    clientSecret: config.OAUTH_CLIENT_SECRET,
     callbackURL: "http://localhost:3001/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
     console.log(profile);

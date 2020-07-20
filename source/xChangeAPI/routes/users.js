@@ -10,6 +10,16 @@ const axios = require('axios').default;
 const { abort } = require('process');
 let db;
 
+var config = {
+    OAUTH_CLIENT_ID: 'client_id',
+    OAUTH_CLIENT_SECRET: 'client_secret',
+    GOOGLE_MAPS_API_KEY: 'google_maps_api_key'
+};
+try {
+    config = require('../../config.js');
+} catch (error) {
+}
+
 
 function validateEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -161,7 +171,7 @@ router.post('/:id', (req, res) => {
     axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
             params:{
             address: req.body.posizione,
-            key:'AIzaSyBIWsFd0UcqVghv3LWyvJX7KclteXePTaE',
+            key: config.GOOGLE_MAPS_API_KEY,
             language: 'it'
             }
         })
