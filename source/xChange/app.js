@@ -7,6 +7,7 @@ const upload = require('./public/helper/imageHelper.js');
 const axios = require('axios').default;
 
 axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.maxRedirects = 5;
 
 function errHandler(err, res) {
     if (err) console.log(err);
@@ -36,22 +37,27 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/test', (req, res) => {
+    res.send('ok');
+})
+
+// controllo percorsi e sicurezza
 app.use((req, res, next) => {
-    if (req.cookies.JWT_token == undefined &&
-        (!(["/login", "/registrazione", "/"].includes(req.path)
-            || (req.path == '/users' && req.method == 'POST')
-        ))
-    ) {
+    const percorsiLogin = ["/login", "/registrazione", "/", "/auth/google", "/login/callback", "/registrazione/callback"];
+
+    if (req.cookies.JWT_token == undefined && (!(
+        percorsiLogin.includes(req.path) || (req.path == '/users' && req.method == 'POST') || 
+        (req.path.split('/')[1] == 'addusername' && req.path.split('/').length == 3)
+        ))) {
         res.redirect('/login');
-    }
-    else if (req.cookies.JWT_token != undefined) {
+    } else if (req.cookies.JWT_token != undefined) {
         var objHeader = {
-            headers: { Authorization: 'Bearer ' + req.cookies.JWT_token.token}
+            headers: { Authorization: 'Bearer ' + req.cookies.JWT_token.token }
         };
         // controlla validità dei cookie
         axios.post('/authenticate', null, objHeader).then(response => {
             console.log(response.data);
-            if (["/login", "/users"].includes(req.path) && req.method == 'POST') {
+            if (percorsiLogin.includes(req.path) || (req.path == '/users' && req.method == 'POST')) {
                 res.redirect('/home');
             }
             else {
@@ -63,35 +69,52 @@ app.use((req, res, next) => {
             res.clearCookie('JWT_token');
             res.redirect('/login');
         })
-    } 
+    }
     else {
         next();
     }
 });
 
-app.get('/test', (req, res) => {
-    res.send('ok');
-})
-
-app.get('/file', (req, res) => {
-    axios.get('/file/', {
-        headers: req.objHeader.headers,
-        params: {
-            docName: req.query.docName,
-            attName: req.query.attName
-        },
-        responseType: 'stream'
-    }).then(response => {
-        response.data.pipe(res);
-    }).catch(error => {
-        console.log(error.data);
-    })
-});
-
-// get su / mostra home.html
+// get su / mostra homepage.html
 app.get('/', (req, res) => {
     res.render('homepage');
 });
+
+// get su /registrazione mostra registrazione.html
+app.get('/registrazione', (req, res) => {
+    res.render('registrazione', {
+        title: 'xChange - registrazione',
+        error: ''
+    });
+});
+
+app.get('/registrazione/callback', (req, res) => {
+    res.redirect(req.url.replace('registrazione', 'login'));
+});
+
+app.get('/auth/google', (req, res) => {
+    res.redirect('http://localhost:3001/auth/google');
+});
+
+app.post('/addusername/:googleId', (req, res) => {
+    axios.post('/addusername/' + req.params.googleId, req.body)
+        .then(response => {
+            console.log(response.data)
+            // cookie per l'autorizzazione delle api
+            res.cookie("JWT_token", token = {
+                token: response.data.token
+            });
+            res.cookie("cookieUtente", utente = {
+                username: response.data.username
+            });
+            res.redirect('/home');
+        }).catch(error => {
+            res.render('addUsername', {
+                error: error.response.data.error,
+                googleId: req.params.googleId
+            });
+        })
+})
 
 // get su /login mostra login.html
 app.get('/login', (req, res) => {
@@ -113,13 +136,45 @@ app.post('/login', (req, res) => {
             res.cookie("cookieUtente", utente = {
                 username: response.data.username
             });
-            res.redirect('/home')
+            res.redirect('/home');
         }).catch(error => {
-            console.log(error.toJSON());
             res.render('login', {
                 error: error.response.data.error
-            })
+            });
         })
+});
+
+app.get('/login/callback', (req, res) => {
+    if (req.query.token && req.query.username) {
+        res.cookie("JWT_token", token = {
+            token: req.query.token
+        });
+        res.cookie("cookieUtente", utente = {
+            username: req.query.username
+        });
+        res.redirect('/home');
+    } else if (req.query.googleId) {
+        res.render('addUsername', {
+            googleId: req.query.googleId,
+            error: ''
+        });
+    } else redirect('/login');
+});
+
+
+app.get('/file', (req, res) => {
+    axios.get('/file/', {
+        headers: req.objHeader.headers,
+        params: {
+            docName: req.query.docName,
+            attName: req.query.attName
+        },
+        responseType: 'stream'
+    }).then(response => {
+        response.data.pipe(res);
+    }).catch(error => {
+        console.log(error.data);
+    })
 });
 
 app.get('/logout', (req, res) => {
@@ -130,13 +185,7 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// get su /registrazione mostra registrazione.html
-app.get('/registrazione', (req, res) => {
-    res.render('registrazione', {
-        title: 'xChange - registrazione',
-        error: ''
-    });
-});
+
 
 app.get('/home', (req, res) => {
     // console.log(req.cookies.cookieProva);
@@ -164,15 +213,15 @@ app.get('/ricerca', (req, res) => {
 
 app.post('/ricerca', (req, res) => {
     axios.post('/ricerca', null, {
-            headers: req.objHeader.headers,
-            params: {
-                input: req.query.input
-            }
-        }).then(response => {
-            res.json(response.data);
-        }).catch(error => {
-            console.log(error.data)
-        });
+        headers: req.objHeader.headers,
+        params: {
+            input: req.query.input
+        }
+    }).then(response => {
+        res.json(response.data);
+    }).catch(error => {
+        console.log(error.data)
+    });
 })
 
 
@@ -180,6 +229,8 @@ app.post('/ricerca', (req, res) => {
 // i percorsi da seguire facendo richieste su /users si trovano in routes/users
 const users = require('./routes/users');
 const { Stream } = require('stream');
+const { url } = require('inspector');
+const { parse } = require('path');
 app.use('/users', users);
 
 // get su /Faq mostra Faq.html
