@@ -31,6 +31,9 @@ La nostra applicazione funziona su due server: uno costituito esclusivamente da 
 7. eseguire il comando `npm install` per installare tutti i moduli necessari
 8. eseguire il comando `nodemon` per far partire il server principale sulla porta 3001
 
+## Documentazione
+- [Documentazione API](https://github.com/6ninjak/xChange/wiki/API)
+
 ----------
 
 # Autori
