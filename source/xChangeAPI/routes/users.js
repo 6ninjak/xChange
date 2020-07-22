@@ -39,7 +39,7 @@ router.use((req, res, next) => {
 router.post('/', (req, res) => {
     console.log(req.body);
     var body = req.body;
-    if (!(body.username && body.nome && body.cognome && body.password && body.email)) res.json({error: "manca qualche parametro"});
+    if (!(body.username && body.nome && body.cognome && body.password && body.email)) res.status(400).json({error: "manca qualche parametro"});
     if (body.username.includes(":") || body.username.includes("?") || body.username.includes("/") || body.username.includes("=")) {
         res.status(400).json({error: 'username non valido'});
     } else if (body.password.length < 8) {
@@ -130,7 +130,7 @@ router.get('/:id/notifiche', (req, res) => {
             } else {
             connection.createChannel(function(error1, channel) {
                 if (error1) {
-                    res.status(404).json({error: error1});
+                    res.status(500).json({error: error1});
                 }
                 var queue = req.params.id;  // da prendere in maniera dinamica
 
@@ -227,7 +227,7 @@ router.post('/:id', (req, res) => {
 router.post('/:id/image', (req, res) => {
     upload.single('file')(req, res, (err) => {
         if (err instanceof multer.MulterError) {
-            res.status(400).json({error: err.message})
+            res.status(500).json({error: err.message})
           } else {
             console.log(req.file.path);
             db.get(req.params.id, (err, doc) => {
