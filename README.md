@@ -4,7 +4,7 @@ Un sito web che permette agli utenti di scambiare oggetti, competenze o qualsias
 ----------
 
 ## Descrizione
-La nostra applicazione funziona su due server: uno principale costituito esclusivamente da API (infatti è completamente autonomo) e uno secondario che si appoggia al principale e si occupa di mostrare le pagine html dell'applicazione
+La nostra applicazione funziona su due server: uno costituito esclusivamente da API (infatti è completamente autonomo) e un altro che si appoggia al primo e si occupa di mostrare le pagine html dell'applicazione
 
 ## Link utili
 - [couchdb](https://docs.couchdb.org/en/3.0.0/index.html)
